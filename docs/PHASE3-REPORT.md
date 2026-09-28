@@ -71,8 +71,8 @@ Checks all 52 generated pages: route count, H1 count, title/description/canonica
 ---
 
 ## Deliverables
-- Commit: (see final report message)
-- Archive: `lottery-calculator-phase3-20260928.zip` → Google Drive folder **Lottery Calculator**
+- Commit: `20ad65dd` on `main` (parent `33c54b92`) — https://github.com/childygyan/lottery-calculator
+- Archive: `lottery-calculator-phase3-20260928.zip` (158,416 bytes, 97 files) → Google Drive folder **Lottery Calculator** — https://drive.google.com/file/d/1SHin8j8n6bA_uhVs8vM_Me1DwbJLChHJ/view?usp=drivesdk
 - This report: `docs/PHASE3-REPORT.md`
 
 **STOP — awaiting Firoz's next specification (Powerball, Mega Millions, payout, or odds calculators).**
