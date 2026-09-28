@@ -1,0 +1,384 @@
+---
+/**
+ * Lottery number generator — generic custom-lottery builder and locked
+ * game variant (Powerball / Mega Millions).
+ *
+ * The random logic lives in src/lib/generator/; this component only reads
+ * inputs, calls generateTickets(), and renders the sets. Game rules come
+ * from the centralized LotteryConfig via data attributes — never hard-coded
+ * here. Client script is a plain bundled Astro script (no define:vars) so
+ * Vite bundles its imports. Randomness uses crypto.getRandomValues().
+ *
+ * This is a random-number utility only. Nothing here claims generated
+ * numbers improve odds, are lucky, or can predict future drawings.
+ */
+import { getLotteryConfig } from "../data/lotteries/index.ts";
+import { generatorConfigFromLotteryConfig } from "../lib/generator/index.ts";
+
+interface Props {
+  /** When set, the generator is locked to this game's verified rules. */
+  lotteryId?: "powerball" | "mega-millions";
+}
+
+const { lotteryId } = Astro.props;
+const gameConfig = lotteryId ? getLotteryConfig(lotteryId) : undefined;
+if (lotteryId && !gameConfig) {
+  throw new Error(`Unknown lotteryId "${lotteryId}" in NumberGenerator.`);
+}
+const genConfig = gameConfig ? generatorConfigFromLotteryConfig(gameConfig) : undefined;
+const locked = gameConfig !== undefined;
+
+const DISCLAIMER =
+  "These numbers are randomly generated for entertainment and convenience. Randomly generated numbers do not improve the mathematical odds of winning and cannot predict future winning numbers.";
+---
+
+<form
+  id="gen-form"
+  class="card !p-6 sm:!p-8"
+  data-locked={locked ? "true" : "false"}
+  data-game-name={genConfig?.gameName ?? "Custom lottery"}
+  data-main-pick={genConfig?.mainNumbersToPick ?? ""}
+  data-main-pool={genConfig?.mainNumberPool ?? ""}
+  data-main-ball-name={genConfig?.mainBallName ?? "main numbers"}
+  data-bonus-pick={genConfig?.bonusNumbersToPick ?? ""}
+  data-bonus-pool={genConfig?.bonusNumberPool ?? ""}
+  data-bonus-name={genConfig?.bonusNumberName ?? "Bonus ball"}
+  novalidate
+>
+  {
+    locked && gameConfig && genConfig ? (
+      <div class="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-700">
+        <p>
+          <strong class="text-slate-900">{gameConfig.name} rules (verified):</strong> {genConfig.mainNumbersToPick}{" "}
+          {gameConfig.mainBallName} from 1–{genConfig.mainNumberPool} plus {genConfig.bonusNumbersToPick}{" "}
+          {gameConfig.bonusNumberName} from 1–{genConfig.bonusNumberPool}. Ticket price $
+          {gameConfig.ticketPrice.toFixed(2)} per play.
+        </p>
+      </div>
+    ) : (
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="gen-main-pick" class="form-label">
+            Main numbers per set
+          </label>
+          <input
+            id="gen-main-pick"
+            name="mainPick"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            value="5"
+            class="form-input"
+          />
+        </div>
+        <div>
+          <label for="gen-main-pool" class="form-label">
+            Main number pool (1 to …)
+          </label>
+          <input
+            id="gen-main-pool"
+            name="mainPool"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            value="69"
+            class="form-input"
+          />
+          <p class="form-hint">Numbers run from 1 to this value.</p>
+        </div>
+        <div>
+          <label for="gen-bonus-pick" class="form-label">
+            Bonus balls per set
+          </label>
+          <input
+            id="gen-bonus-pick"
+            name="bonusPick"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            value="1"
+            class="form-input"
+          />
+          <p class="form-hint">Enter 0 for a lottery with no bonus ball.</p>
+        </div>
+        <div>
+          <label for="gen-bonus-pool" class="form-label">
+            Bonus number pool (1 to …)
+          </label>
+          <input
+            id="gen-bonus-pool"
+            name="bonusPool"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            value="26"
+            class="form-input"
+          />
+        </div>
+      </div>
+    )
+  }
+
+  <div class="mt-6">
+    <span id="gen-qty-label" class="form-label">How many sets?</span>
+    <div class="mt-2 flex flex-wrap items-center gap-2" role="group" aria-labelledby="gen-qty-label">
+      <button type="button" class="btn-secondary !min-h-[44px] !px-4 !py-2" data-qty="1">1</button>
+      <button type="button" class="btn-secondary !min-h-[44px] !px-4 !py-2" data-qty="5">5</button>
+      <button type="button" class="btn-secondary !min-h-[44px] !px-4 !py-2" data-qty="10">10</button>
+      <label for="gen-qty" class="sr-only">
+        Custom number of sets (1 to 100)
+      </label>
+      <input
+        id="gen-qty"
+        name="qty"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        max="100"
+        value="5"
+        class="form-input !w-28"
+      />
+    </div>
+    <p class="form-hint">Maximum 100 sets per generation.</p>
+  </div>
+
+  <div class="mt-4">
+    <label class="inline-flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+      <input id="gen-dedup" type="checkbox" checked class="h-5 w-5 accent-blue-700" />
+      Avoid duplicate combinations across sets
+    </label>
+  </div>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <button type="submit" class="btn-primary">Generate numbers</button>
+  </div>
+
+  <p id="gen-error" class="mt-4 hidden text-sm font-semibold text-red-700" role="alert"></p>
+</form>
+
+<section id="gen-results" class="mt-8 hidden" aria-labelledby="gen-results-heading">
+  <div class="card !p-6 sm:!p-8">
+    <h2 id="gen-results-heading" class="text-lg font-bold text-slate-900">
+      Your generated sets
+    </h2>
+    <p id="gen-status" class="sr-only" role="status" aria-live="polite"></p>
+    <ol id="gen-list" class="mt-4 space-y-3"></ol>
+    <div class="no-print mt-6 flex flex-wrap gap-3">
+      <button type="button" id="gen-copy" class="btn-secondary" disabled>Copy all sets</button>
+      <button type="button" id="gen-print" class="btn-secondary" disabled>Print</button>
+    </div>
+    <p id="gen-copy-status" class="mt-2 text-sm text-slate-600" role="status" aria-live="polite"></p>
+    <p class="mt-4 border-t border-slate-200 pt-4 text-sm leading-relaxed text-slate-600">
+      {DISCLAIMER}
+    </p>
+  </div>
+</section>
+
+<section id="gen-history-wrap" class="mt-8 hidden" aria-labelledby="gen-history-heading">
+  <div class="card !p-6 sm:!p-8">
+    <div class="flex items-center justify-between gap-4">
+      <h2 id="gen-history-heading" class="text-lg font-bold text-slate-900">
+        Session history
+      </h2>
+      <button type="button" id="gen-history-clear" class="btn-secondary !min-h-[40px] !px-3 !py-1.5 !text-sm">
+        Clear
+      </button>
+    </div>
+    <p class="mt-1 text-sm text-slate-500">
+      Kept only in this browser session — never sent anywhere. Shows the last 20 sets.
+    </p>
+    <ol id="gen-history" class="mt-4 space-y-2 text-sm"></ol>
+  </div>
+</section>
+
+<script>
+  import {
+    generateTickets,
+    formatGeneratedTicket,
+    type GeneratedTicket,
+    type GeneratorGameConfig,
+  } from "../lib/generator/index.ts";
+
+  const form = document.getElementById("gen-form") as HTMLFormElement | null;
+  if (form) {
+    const locked = form.dataset.locked === "true";
+    const results = document.getElementById("gen-results") as HTMLElement;
+    const list = document.getElementById("gen-list") as HTMLOListElement;
+    const status = document.getElementById("gen-status") as HTMLElement;
+    const errorEl = document.getElementById("gen-error") as HTMLElement;
+    const copyBtn = document.getElementById("gen-copy") as HTMLButtonElement;
+    const printBtn = document.getElementById("gen-print") as HTMLButtonElement;
+    const copyStatus = document.getElementById("gen-copy-status") as HTMLElement;
+    const historyWrap = document.getElementById("gen-history-wrap") as HTMLElement;
+    const historyList = document.getElementById("gen-history") as HTMLOListElement;
+    const historyClear = document.getElementById("gen-history-clear") as HTMLButtonElement;
+    const qtyInput = document.getElementById("gen-qty") as HTMLInputElement;
+    const dedupInput = document.getElementById("gen-dedup") as HTMLInputElement;
+
+    /** Session-only history (in memory, never persisted or sent anywhere). */
+    const history: { ticket: GeneratedTicket; config: GeneratorGameConfig }[] = [];
+    const HISTORY_LIMIT = 20;
+
+    function showError(message: string): void {
+      errorEl.textContent = message;
+      errorEl.classList.remove("hidden");
+      results.classList.add("hidden");
+    }
+
+    function clearError(): void {
+      errorEl.textContent = "";
+      errorEl.classList.add("hidden");
+    }
+
+    function readConfig(): GeneratorGameConfig | null {
+      if (locked) {
+        const mainPick = Number(form.dataset.mainPick);
+        const mainPool = Number(form.dataset.mainPool);
+        const bonusPick = Number(form.dataset.bonusPick);
+        const bonusPool = Number(form.dataset.bonusPool);
+        if (![mainPick, mainPool, bonusPick, bonusPool].every(Number.isFinite)) {
+          showError("The game configuration could not be read. Please reload the page.");
+          return null;
+        }
+        return {
+          gameName: form.dataset.gameName ?? "Lottery",
+          mainNumbersToPick: mainPick,
+          mainNumberPool: mainPool,
+          mainBallName: form.dataset.mainBallName ?? "main numbers",
+          bonusNumbersToPick: bonusPick,
+          bonusNumberPool: bonusPool,
+          bonusNumberName: form.dataset.bonusName ?? "Bonus ball",
+        };
+      }
+      const mainPick = Number((document.getElementById("gen-main-pick") as HTMLInputElement).value);
+      const mainPool = Number((document.getElementById("gen-main-pool") as HTMLInputElement).value);
+      const bonusPick = Number((document.getElementById("gen-bonus-pick") as HTMLInputElement).value);
+      const bonusPool = Number((document.getElementById("gen-bonus-pool") as HTMLInputElement).value);
+      return {
+        gameName: "Custom lottery",
+        mainNumbersToPick: mainPick,
+        mainNumberPool: mainPool,
+        mainBallName: "main numbers",
+        bonusNumbersToPick: bonusPick,
+        bonusNumberPool: bonusPool,
+        bonusNumberName: "Bonus ball",
+      };
+    }
+
+    function ballSpan(n: number, bonus: boolean): HTMLSpanElement {
+      const s = document.createElement("span");
+      s.className = bonus
+        ? "inline-flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white"
+        : "inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-sm font-bold text-white";
+      s.textContent = String(n);
+      return s;
+    }
+
+    function renderSetItem(ticket: GeneratedTicket, config: GeneratorGameConfig): HTMLLIElement {
+      const li = document.createElement("li");
+      li.className = "flex flex-wrap items-center gap-1.5 rounded-xl bg-slate-50 px-3 py-2.5";
+      for (const n of ticket.mainNumbers) li.appendChild(ballSpan(n, false));
+      if (ticket.bonusNumbers.length > 0) {
+        const plus = document.createElement("span");
+        plus.className = "mx-1 text-lg font-bold text-slate-400";
+        plus.textContent = "+";
+        plus.setAttribute("aria-hidden", "true");
+        li.appendChild(plus);
+        for (const n of ticket.bonusNumbers) li.appendChild(ballSpan(n, true));
+        const sr = document.createElement("span");
+        sr.className = "sr-only";
+        sr.textContent = ` ${config.bonusNumberName}: ${ticket.bonusNumbers.join(", ")}`;
+        li.appendChild(sr);
+      }
+      li.setAttribute(
+        "aria-label",
+        `Main numbers ${ticket.mainNumbers.join(", ")}` +
+          (ticket.bonusNumbers.length > 0
+            ? `, ${config.bonusNumberName} ${ticket.bonusNumbers.join(", ")}`
+            : ""),
+      );
+      return li;
+    }
+
+    function renderHistory(): void {
+      historyList.innerHTML = "";
+      if (history.length === 0) {
+        historyWrap.classList.add("hidden");
+        return;
+      }
+      historyWrap.classList.remove("hidden");
+      for (const { ticket, config } of history) {
+        const li = document.createElement("li");
+        li.className = "rounded-lg bg-slate-50 px-3 py-2 text-slate-700";
+        li.textContent = formatGeneratedTicket(ticket, config);
+        historyList.appendChild(li);
+      }
+    }
+
+    form.querySelectorAll<HTMLButtonElement>("[data-qty]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        qtyInput.value = btn.dataset.qty ?? "5";
+        qtyInput.focus();
+      });
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      clearError();
+      copyStatus.textContent = "";
+      const config = readConfig();
+      if (!config) return;
+      const qty = Number(qtyInput.value);
+      const result = generateTickets(
+        config,
+        qty,
+        { avoidDuplicates: dedupInput.checked },
+      );
+      if (!result.ok) {
+        showError(result.error);
+        copyBtn.disabled = true;
+        printBtn.disabled = true;
+        return;
+      }
+      list.innerHTML = "";
+      for (const ticket of result.tickets) {
+        list.appendChild(renderSetItem(ticket, config));
+      }
+      results.classList.remove("hidden");
+      copyBtn.disabled = false;
+      printBtn.disabled = false;
+      const noun = result.tickets.length === 1 ? "set" : "sets";
+      status.textContent = `${result.tickets.length} new lottery number ${noun} generated.`;
+      // Newest first, capped at HISTORY_LIMIT.
+      for (let i = result.tickets.length - 1; i >= 0; i--) {
+        const ticket = result.tickets[i];
+        if (ticket) history.unshift({ ticket, config });
+      }
+      history.length = Math.min(history.length, HISTORY_LIMIT);
+      renderHistory();
+      results.scrollIntoView?.({ behavior: "smooth", block: "start" });
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      const items = [...list.children] as HTMLElement[];
+      // Rebuild text from the last config via aria-labels (no hidden state).
+      const lines = items.map((li, i) => `Set ${i + 1}: ${li.getAttribute("aria-label") ?? ""}`);
+      const text = lines.join("\n");
+      try {
+        await navigator.clipboard.writeText(text);
+        copyStatus.textContent = "Copied to clipboard.";
+      } catch {
+        copyStatus.textContent = "Copy failed — your browser blocked clipboard access.";
+      }
+    });
+
+    printBtn.addEventListener("click", () => {
+      window.print();
+    });
+
+    historyClear.addEventListener("click", () => {
+      history.length = 0;
+      renderHistory();
+    });
+  }
+</script>

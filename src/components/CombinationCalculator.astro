@@ -1,0 +1,192 @@
+---
+/**
+ * Lottery combination explorer — how many distinct tickets a lottery's
+ * rules allow. Reuses Phase 6's calculateCombinations(); no duplicate
+ * combination logic here.
+ *
+ * Illustrative math only: the "cost to cover every combination" figure is a
+ * multiplication, not purchasing advice — buying every combination is not
+ * practically possible (sales cutoffs, logistics, shared jackpots).
+ */
+import {
+  calculateCombinations,
+  formatOneInX,
+  formatWholeNumber,
+} from "../lib/calculator/odds.ts";
+import { formatCurrency } from "../lib/calculator/formatting.ts";
+---
+
+<form id="combo-form" class="card !p-6 sm:!p-8" novalidate>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="combo-main-pick" class="form-label">Main numbers per ticket</label>
+      <input id="combo-main-pick" type="number" inputmode="numeric" min="1" value="5" class="form-input" />
+    </div>
+    <div>
+      <label for="combo-main-pool" class="form-label">Main number pool (1 to …)</label>
+      <input id="combo-main-pool" type="number" inputmode="numeric" min="1" value="69" class="form-input" />
+    </div>
+    <div>
+      <label for="combo-bonus-pick" class="form-label">Bonus balls per ticket</label>
+      <input id="combo-bonus-pick" type="number" inputmode="numeric" min="0" value="1" class="form-input" />
+      <p class="form-hint">Enter 0 for a lottery with no bonus ball.</p>
+    </div>
+    <div>
+      <label for="combo-bonus-pool" class="form-label">Bonus number pool (1 to …)</label>
+      <input id="combo-bonus-pool" type="number" inputmode="numeric" min="0" value="26" class="form-input" />
+    </div>
+    <div>
+      <label for="combo-price" class="form-label">Ticket price (optional)</label>
+      <input id="combo-price" type="number" inputmode="decimal" min="0" step="0.01" placeholder="2.00" class="form-input" />
+      <p class="form-hint">Used only for the illustrative full-coverage cost.</p>
+    </div>
+  </div>
+  <div class="mt-6 flex flex-wrap gap-3">
+    <button type="submit" class="btn-primary">Count combinations</button>
+  </div>
+  <p id="combo-error" class="mt-4 hidden text-sm font-semibold text-red-700" role="alert"></p>
+</form>
+
+<section id="combo-results" class="mt-8 hidden" aria-labelledby="combo-results-heading">
+  <div class="card !p-6 sm:!p-8">
+    <h2 id="combo-results-heading" class="text-lg font-bold text-slate-900">Combinations</h2>
+    <p id="combo-status" class="sr-only" role="status" aria-live="polite"></p>
+    <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl bg-slate-50 p-4">
+        <dt class="text-sm text-slate-600">Total distinct combinations</dt>
+        <dd id="combo-total" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+      <div class="rounded-xl bg-slate-50 p-4">
+        <dt class="text-sm text-slate-600">Jackpot odds for one ticket</dt>
+        <dd id="combo-odds" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+      <div class="rounded-xl bg-slate-50 p-4">
+        <dt class="text-sm text-slate-600">Main-number combinations</dt>
+        <dd id="combo-main" class="mt-1 text-lg font-bold text-slate-900"></dd>
+      </div>
+      <div class="rounded-xl bg-slate-50 p-4">
+        <dt class="text-sm text-slate-600">Bonus combinations</dt>
+        <dd id="combo-bonus" class="mt-1 text-lg font-bold text-slate-900"></dd>
+      </div>
+    </dl>
+    <div id="combo-cost-wrap" class="mt-4 hidden rounded-xl bg-slate-50 p-4">
+      <p class="text-sm text-slate-600">Illustrative cost to buy one of every combination</p>
+      <p id="combo-cost" class="mt-1 text-2xl font-extrabold text-slate-900"></p>
+      <p class="mt-1 text-sm text-slate-500">
+        A multiplication, not purchasing advice — covering every combination is not
+        practically possible.
+      </p>
+    </div>
+    <div class="no-print mt-6 flex flex-wrap gap-3">
+      <button type="button" id="combo-copy" class="btn-secondary" disabled>Copy results</button>
+    </div>
+    <p id="combo-copy-status" class="mt-2 text-sm text-slate-600" role="status" aria-live="polite"></p>
+  </div>
+</section>
+
+<script>
+  import {
+    calculateCombinations,
+    calculateJackpotCombinations,
+    formatOneInX,
+    formatWholeNumber,
+  } from "../lib/calculator/odds.ts";
+  import { formatCurrency } from "../lib/calculator/formatting.ts";
+
+  const form = document.getElementById("combo-form") as HTMLFormElement | null;
+  if (form) {
+    const results = document.getElementById("combo-results") as HTMLElement;
+    const status = document.getElementById("combo-status") as HTMLElement;
+    const errorEl = document.getElementById("combo-error") as HTMLElement;
+    const copyBtn = document.getElementById("combo-copy") as HTMLButtonElement;
+    const copyStatus = document.getElementById("combo-copy-status") as HTMLElement;
+    const costWrap = document.getElementById("combo-cost-wrap") as HTMLElement;
+
+    const num = (id: string): number =>
+      Number((document.getElementById(id) as HTMLInputElement).value);
+
+    function showError(message: string): void {
+      errorEl.textContent = message;
+      errorEl.classList.remove("hidden");
+      results.classList.add("hidden");
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      errorEl.classList.add("hidden");
+      errorEl.textContent = "";
+      copyStatus.textContent = "";
+
+      const mainPick = num("combo-main-pick");
+      const mainPool = num("combo-main-pool");
+      const bonusPick = num("combo-bonus-pick");
+      const bonusPool = num("combo-bonus-pool");
+      const priceRaw = (document.getElementById("combo-price") as HTMLInputElement).value.trim();
+      const price = priceRaw === "" ? null : Number(priceRaw);
+
+      const jackpot = calculateJackpotCombinations({
+        mainNumbersToPick: mainPick,
+        mainNumberPool: mainPool,
+        bonusNumbersToPick: bonusPick,
+        bonusNumberPool: bonusPool,
+      });
+      if (!jackpot.ok) {
+        showError(jackpot.error);
+        return;
+      }
+      if (price !== null && (!Number.isFinite(price) || price < 0)) {
+        showError("Ticket price must be zero or more.");
+        return;
+      }
+
+      // Main-only count is for display; it cannot fail once the jackpot total succeeded.
+      const main = calculateCombinations(mainPool, mainPick);
+      const mainValue = main.ok ? main.value : 0;
+      const total = jackpot.value;
+
+      (document.getElementById("combo-total") as HTMLElement).textContent =
+        formatWholeNumber(total);
+      (document.getElementById("combo-odds") as HTMLElement).textContent =
+        formatOneInX(total);
+      (document.getElementById("combo-main") as HTMLElement).textContent =
+        `C(${mainPool}, ${mainPick}) = ${formatWholeNumber(mainValue)}`;
+      (document.getElementById("combo-bonus") as HTMLElement).textContent =
+        bonusPick > 0
+          ? `C(${bonusPool}, ${bonusPick}) = ${formatWholeNumber(total / mainValue)}`
+          : "None";
+
+      if (price !== null && price > 0) {
+        (document.getElementById("combo-cost") as HTMLElement).textContent =
+          formatCurrency(total * price);
+        costWrap.classList.remove("hidden");
+      } else {
+        costWrap.classList.add("hidden");
+      }
+
+      results.classList.remove("hidden");
+      copyBtn.disabled = false;
+      status.textContent = `Total combinations: ${formatWholeNumber(total)}.`;
+      results.scrollIntoView?.({ behavior: "smooth", block: "start" });
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      const lines = [
+        `Total distinct combinations: ${(document.getElementById("combo-total") as HTMLElement).textContent}`,
+        `Jackpot odds for one ticket: ${(document.getElementById("combo-odds") as HTMLElement).textContent}`,
+        `Main-number combinations: ${(document.getElementById("combo-main") as HTMLElement).textContent}`,
+        `Bonus combinations: ${(document.getElementById("combo-bonus") as HTMLElement).textContent}`,
+      ];
+      if (!costWrap.classList.contains("hidden")) {
+        lines.push(
+          `Illustrative full-coverage cost: ${(document.getElementById("combo-cost") as HTMLElement).textContent}`,
+        );
+      }
+      try {
+        await navigator.clipboard.writeText(lines.join("\n"));
+        copyStatus.textContent = "Copied to clipboard.";
+      } catch {
+        copyStatus.textContent = "Copy failed — your browser blocked clipboard access.";
+      }
+    });
+  }
+</script>

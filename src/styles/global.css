@@ -53,6 +53,16 @@ body {
   .field-hint {
     @apply mt-1.5 text-sm text-slate-500;
   }
+  /* Aliases used by the odds/probability/generator components. */
+  .form-input {
+    @apply input;
+  }
+  .form-label {
+    @apply label;
+  }
+  .form-hint {
+    @apply field-hint;
+  }
 }
 
 /* Respect reduced motion */

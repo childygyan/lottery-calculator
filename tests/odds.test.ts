@@ -183,7 +183,7 @@ describe("calculateAtLeastOneWin", () => {
     const counts = [1, 2, 10, 100, 1000, 10000, 100000];
     const probs = counts.map(atLeast);
     for (let i = 1; i < probs.length; i++) {
-      assert.ok(probs[i] > probs[i - 1], `not monotonic at ${counts[i]}`);
+      assert.ok((probs[i] ?? 0) > (probs[i - 1] ?? 0), `not monotonic at ${counts[i]}`);
     }
   });
   it("probability never exceeds 100%", () => {

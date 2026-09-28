@@ -1,0 +1,171 @@
+---
+/**
+ * /lottery-combination-generator/ — count the distinct combinations a
+ * lottery's rules allow.
+ *
+ * Reuses Phase 6's calculateCombinations(); no duplicate combination logic.
+ * Illustrative math only — the full-coverage cost is a multiplication, never
+ * purchasing advice.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import CombinationCalculator from "../../components/CombinationCalculator.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import {
+  calculateCombinations,
+  formatOneInX,
+  formatWholeNumber,
+} from "../../lib/calculator/odds.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Combination Generator — Count Possible Combinations",
+  description:
+    "Count the distinct combinations any lottery's rules allow: main pools, bonus balls, jackpot odds, and the illustrative cost of full coverage.",
+  path: "/lottery-combination-generator/",
+});
+
+// Worked examples, computed at build time with the shared engine.
+function combosOrThrow(pool: number, pick: number): number {
+  const r = calculateCombinations(pool, pick);
+  if (!r.ok) throw new Error(`C(${pool},${pick}) failed: ${r.error}`);
+  return r.value;
+}
+const pb = combosOrThrow(69, 5) * 26;
+const mm = combosOrThrow(70, 5) * 24;
+const six49 = combosOrThrow(49, 6);
+
+const faqs = [
+  {
+    question: "How many combinations does Powerball have?",
+    answer: `C(69, 5) = ${formatWholeNumber(combosOrThrow(69, 5))} ways to choose the white balls, each pairable with 26 Powerballs: ${formatWholeNumber(pb)} total combinations, or ${formatOneInX(pb)} jackpot odds.`,
+  },
+  {
+    question: "How many combinations does Mega Millions have?",
+    answer: `C(70, 5) = ${formatWholeNumber(combosOrThrow(70, 5))} white-ball combinations × 24 Mega Balls = ${formatWholeNumber(mm)} total, or ${formatOneInX(mm)} jackpot odds.`,
+  },
+  {
+    question: "How is the combination count calculated?",
+    answer:
+      "With the combinations formula C(n, r) = n! / (r! × (n−r)!), computed here with a stable multiplicative method — no factorial recursion. The bonus ball multiplies the main-ball combinations because it is drawn from a separate pool.",
+  },
+  {
+    question: "Does knowing the combination count help me win?",
+    answer:
+      "No. It only describes the size of the possibility space. Every combination has exactly the same probability in every drawing, so counting them changes nothing about your chances.",
+  },
+  {
+    question: "What does the 'cost to cover every combination' figure mean?",
+    answer:
+      "It is a plain multiplication — total combinations × ticket price — shown for mathematical illustration. Covering every combination is not practically possible (sales cutoffs, logistics, and the chance of splitting a jackpot with another winner), so treat it as arithmetic, not a plan.",
+  },
+  {
+    question: "Why do bonus balls multiply the total instead of adding?",
+    answer:
+      "Each main-ball combination can pair with every possible bonus ball. With 11,238,513 white-ball combinations and 26 Powerballs, the total is 11,238,513 × 26 — one independent choice multiplied by the other.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Combination Generator", url: absoluteUrl("/lottery-combination-generator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Lottery Combination Generator" }]} />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Lottery Combination Generator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Count the distinct combinations any lottery's rules allow. Enter the main-number and
+    bonus-ball pools to see the total combinations, the jackpot odds for one ticket, and —
+    if you enter a ticket price — the illustrative cost of covering every combination.
+  </p>
+
+  <section aria-label="Lottery combination calculator" class="mt-8">
+    <CombinationCalculator />
+  </section>
+
+  <section aria-label="Worked examples" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Worked Examples
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        <strong class="text-slate-800">Powerball (5/69 + 1/26):</strong> C(69, 5) ={" "}
+        {formatWholeNumber(combosOrThrow(69, 5))} white-ball combinations × 26 Powerballs ={" "}
+        <strong class="text-slate-800">{formatWholeNumber(pb)}</strong> total.
+      </p>
+      <p>
+        <strong class="text-slate-800">Mega Millions (5/70 + 1/24):</strong> C(70, 5) ={" "}
+        {formatWholeNumber(combosOrThrow(70, 5))} × 24 ={" "}
+        <strong class="text-slate-800">{formatWholeNumber(mm)}</strong> total.
+      </p>
+      <p>
+        <strong class="text-slate-800">Classic 6/49:</strong> C(49, 6) ={" "}
+        <strong class="text-slate-800">{formatWholeNumber(six49)}</strong> total —{" "}
+        {formatOneInX(six49)} jackpot odds.
+      </p>
+      <p>
+        These figures are computed at build time with the same engine that powers the
+        calculator above — the combination math lives in one place.
+      </p>
+    </div>
+  </section>
+
+  <div class="mt-14 max-w-3xl">
+    <Methodology
+      points={[
+        "Totals use C(n, r) via the shared Phase 6 odds engine — stable multiplicative computation, no factorial recursion.",
+        "Bonus balls multiply main-ball combinations (separate pool); a zero bonus count leaves the main total unchanged.",
+        "Results beyond safe-integer range are reported as uncountable, never approximated silently.",
+        "The full-coverage cost is illustrative multiplication, not purchasing advice.",
+      ]}
+    />
+  </div>
+
+  <FAQ items={faqs} />
+
+  <div class="mt-14 max-w-4xl">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Lottery Number Generator",
+          href: "/lottery-number-generator/",
+          description: "Generate random sets for any lottery's number pools.",
+        },
+        {
+          label: "Lottery Odds Calculator",
+          href: "/lottery-odds-calculator/",
+          description: "Jackpot odds, probabilities, and expected tickets for any lottery.",
+        },
+        {
+          label: "Powerball Odds Calculator",
+          href: "/powerball-odds-calculator/",
+          description: "Jackpot and prize-tier odds for Powerball.",
+        },
+        {
+          label: "Mega Millions Odds Calculator",
+          href: "/mega-millions-odds-calculator/",
+          description: "Jackpot and prize-tier odds for Mega Millions.",
+        },
+        {
+          label: "Lottery Probability Calculator",
+          href: "/lottery-probability-calculator/",
+          description: "Chance of at least one win across ticket counts.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-14 max-w-3xl">
+    <Disclaimer />
+  </div>
+</Layout>

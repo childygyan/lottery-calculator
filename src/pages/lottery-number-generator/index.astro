@@ -1,0 +1,156 @@
+---
+/**
+ * /lottery-number-generator/ — random number sets for any lottery shape.
+ *
+ * A random-number utility only: it never claims generated numbers improve
+ * odds, are lucky, or can predict future drawings.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import NumberGenerator from "../../components/NumberGenerator.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Number Generator — Random Number Sets",
+  description:
+    "Generate random lottery number sets for any game: custom number pools, bonus balls, 1–100 sets, no duplicates. Free, private, runs in your browser.",
+  path: "/lottery-number-generator/",
+});
+
+const faqs = [
+  {
+    question: "Do randomly generated numbers improve my odds of winning?",
+    answer:
+      "No. Every possible combination has exactly the same probability in every drawing. Random generation only picks combinations for you — it does not change the mathematics. These numbers are randomly generated for entertainment and convenience. Randomly generated numbers do not improve the mathematical odds of winning and cannot predict future winning numbers.",
+  },
+  {
+    question: "How are the numbers generated?",
+    answer:
+      "In your browser, using crypto.getRandomValues() — the browser's cryptographic random source — with rejection sampling so every number in the pool is equally likely. Nothing is sent to any server, and no account is needed.",
+  },
+  {
+    question: "Are generated numbers better than numbers I pick myself?",
+    answer:
+      "Neither is better. Your birthday numbers, a Quick Pick, and this generator all face identical odds for the same game. The only thing that changes your chance of winning is how many distinct combinations your tickets cover.",
+  },
+  {
+    question: "Can the generator predict future winning numbers?",
+    answer:
+      "No. Lottery drawings are independent events — past results do not influence future ones. There is no hot, cold, or 'due' number, and no tool here analyzes historical draws or predicts anything.",
+  },
+  {
+    question: "Will I get duplicate sets?",
+    answer:
+      "By default, 'Avoid duplicate combinations across sets' is on, so every set in one generation is unique. You can turn it off if you want fully independent draws, which may occasionally repeat a combination.",
+  },
+  {
+    question: "What happens if I request more sets than mathematically possible?",
+    answer:
+      "The generator counts the total possible combinations first (using the same combination math as the odds calculator). If you ask for more unique sets than exist, it stops with the message 'Please choose a smaller number of combinations.'",
+  },
+  {
+    question: "Is my generation history saved or sent anywhere?",
+    answer:
+      "No. History lives only in your browser's memory for this session (the last 20 sets), is never sent to a server, and disappears when you leave or refresh the page.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Number Generator", url: absoluteUrl("/lottery-number-generator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Lottery Number Generator" }]} />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Lottery Number Generator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Generate random lottery number sets for any game. Set the main-number pool and bonus
+    balls (or start from the Powerball / Mega Millions presets), choose 1–100 sets, and get
+    sorted, duplicate-free combinations — privately, in your browser.
+  </p>
+
+  <section aria-label="Lottery number generator" class="mt-8">
+    <NumberGenerator />
+  </section>
+
+  <section aria-label="How random generation works" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Random Generation Works
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Each set is drawn with a partial Fisher–Yates shuffle over the number pool, so every
+        combination is equally likely. Randomness comes from{" "}
+        <code class="rounded bg-slate-100 px-1.5 py-0.5 text-sm text-slate-800">
+          crypto.getRandomValues()
+        </code>
+        , the browser's cryptographic random source, with rejection sampling to avoid modulo
+        bias. Generation happens entirely on your device — no numbers are sent anywhere.
+      </p>
+      <p>
+        What this tool does <em>not</em> do matters more: it does not analyze past drawings,
+        it has no hot or cold numbers, and it cannot predict anything. A random set and a
+        hand-picked set have exactly the same chance in the next drawing.
+      </p>
+    </div>
+  </section>
+
+  <div class="mt-14 max-w-3xl">
+    <Methodology
+      points={[
+        "Each set is a uniform random draw: main numbers are distinct, sorted ascending, and kept separate from the bonus ball(s).",
+        "Randomness uses crypto.getRandomValues() with rejection sampling (no modulo bias); Math.random() is never used for generation.",
+        "With duplicate avoidance on, every set in a generation is unique; requests exceeding the total possible combinations are rejected up front.",
+        "History is session-only (last 20 sets, in-memory) — nothing is stored, tracked, or transmitted.",
+      ]}
+    />
+  </div>
+
+  <FAQ items={faqs} />
+
+  <div class="mt-14 max-w-4xl">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Powerball Number Generator",
+          href: "/powerball-number-generator/",
+          description: "Random sets using the verified 5/69 + 1/26 Powerball rules.",
+        },
+        {
+          label: "Mega Millions Number Generator",
+          href: "/mega-millions-number-generator/",
+          description: "Random sets using the verified 5/70 + 1/24 Mega Millions rules.",
+        },
+        {
+          label: "Lottery Combination Generator",
+          href: "/lottery-combination-generator/",
+          description: "Count how many distinct combinations a lottery's rules allow.",
+        },
+        {
+          label: "Lottery Odds Calculator",
+          href: "/lottery-odds-calculator/",
+          description: "Derive jackpot odds for any lottery's number pools.",
+        },
+        {
+          label: "Lottery Probability Calculator",
+          href: "/lottery-probability-calculator/",
+          description: "Chance of at least one win across ticket counts.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-14 max-w-3xl">
+    <Disclaimer />
+  </div>
+</Layout>

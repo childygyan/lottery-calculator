@@ -1,0 +1,176 @@
+---
+/**
+ * /powerball-number-generator/ — random sets under the verified Powerball rules.
+ *
+ * Locked to the centralized Powerball configuration (5/69 + 1/26); the jackpot
+ * odds shown are derived from those rules through the shared odds engine.
+ * A random-number utility only — no luck, prediction, or odds-improvement claims.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import NumberGenerator from "../../components/NumberGenerator.astro";
+import LotteryGameHeader from "../../components/LotteryGameHeader.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { getLotteryConfig, formatOdds } from "../../data/lotteries/index.ts";
+import {
+  lotteryOddsConfigFromGame,
+  calculateJackpotCombinations,
+  formatOneInX,
+} from "../../lib/calculator/odds.ts";
+
+const meta = buildPageMeta({
+  title: "Powerball Number Generator — Random Powerball Picks",
+  description:
+    "Generate random Powerball number sets under the verified 5/69 + 1/26 rules. 1–100 sets, no duplicates, private and free in your browser.",
+  path: "/powerball-number-generator/",
+});
+
+const config = getLotteryConfig("powerball");
+if (!config) throw new Error("Powerball config missing.");
+const oddsConfig = lotteryOddsConfigFromGame(config);
+const combos = calculateJackpotCombinations(oddsConfig);
+if (!combos.ok) throw new Error("Could not derive Powerball jackpot combinations.");
+const jackpotOdds = formatOneInX(combos.value);
+
+const faqs = [
+  {
+    question: "Do these random Powerball numbers improve my odds?",
+    answer: `No. Every one of the ${formatOneInX(combos.value)} possible combinations has exactly the same chance in every drawing. Random generation only picks combinations for you. These numbers are randomly generated for entertainment and convenience. Randomly generated numbers do not improve the mathematical odds of winning and cannot predict future winning numbers.`,
+  },
+  {
+    question: "What rules does this generator use?",
+    answer: `The verified Powerball rules: 5 white balls from 1–69 plus 1 Powerball from 1–26, $${config.ticketPrice.toFixed(2)} per play, drawn ${config.drawDays}. The rules come from the same centralized configuration as the rest of this site — never typed in by hand on this page.`,
+  },
+  {
+    question: "How are the numbers generated?",
+    answer:
+      "In your browser with crypto.getRandomValues() — the browser's cryptographic random source — using a partial Fisher–Yates shuffle with rejection sampling, so every combination is equally likely. Nothing leaves your device.",
+  },
+  {
+    question: "Can the generator predict the next Powerball drawing?",
+    answer:
+      "No. Drawings are independent — past results do not influence future ones. This tool does not analyze historical draws, has no hot or cold numbers, and cannot predict anything.",
+  },
+  {
+    question: "What are the jackpot odds for a generated set?",
+    answer: `One set has jackpot odds of ${jackpotOdds}, the same as any ticket you fill in by hand. Buying additional tickets increases the number of combinations covered, but the jackpot probability may remain extremely small.`,
+  },
+  {
+    question: "Will I get duplicate sets?",
+    answer:
+      "Not by default — duplicate avoidance is on, so every set in one generation is a unique combination. You can disable it for fully independent draws.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Powerball Number Generator", url: absoluteUrl("/powerball-number-generator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Powerball Number Generator" }]} />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Powerball Number Generator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Generate random Powerball sets under the verified rules: 5 white balls from 1–69 plus 1
+    Powerball from 1–26. Choose 1–100 sets — sorted, unique by default, generated privately
+    in your browser.
+  </p>
+
+  <div class="mt-8">
+    <LotteryGameHeader
+      config={config}
+      tagline="Random Powerball picks — 5 white balls plus the Powerball, drawn with cryptographic randomness."
+    />
+  </div>
+
+  <section aria-label="Powerball number generator" class="mt-8">
+    <NumberGenerator lotteryId="powerball" />
+  </section>
+
+  <section aria-label="About these Powerball picks" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      About These Powerball Picks
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Each set holds 5 distinct white balls (1–69, sorted ascending) plus a separate
+        Powerball (1–26). One set's jackpot odds are{" "}
+        <strong class="text-slate-800">{jackpotOdds}</strong> — identical to any ticket,
+        however chosen. See the{" "}
+        <a href="/powerball-odds-calculator/" class="font-semibold text-blue-700 hover:underline">
+          Powerball odds calculator
+        </a>{" "}
+        for the full derivation.
+      </p>
+      <p>
+        Randomness comes from <code class="rounded bg-slate-100 px-1.5 py-0.5 text-sm text-slate-800">crypto.getRandomValues()</code> in
+        your browser. The generator never analyzes past drawings and cannot predict future
+        ones — a random set and your lucky numbers face exactly the same odds.
+      </p>
+    </div>
+  </section>
+
+  <div class="mt-14 max-w-3xl">
+    <Methodology
+      points={[
+        "Game rules (5/69 + 1/26) come from the centralized verified Powerball configuration.",
+        "Each set is a uniform random draw via crypto.getRandomValues() with rejection sampling.",
+        `Jackpot odds (${jackpotOdds}) are derived from the rules through the shared odds engine.`,
+        "Duplicate avoidance is on by default; history is session-only and never transmitted.",
+      ]}
+    />
+  </div>
+
+  <FAQ items={faqs} />
+
+  <div class="mt-14 max-w-4xl">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Powerball Odds Calculator",
+          href: "/powerball-odds-calculator/",
+          description: "Jackpot and prize-tier odds for Powerball.",
+        },
+        {
+          label: "Powerball Calculator",
+          href: "/powerball-calculator/",
+          description: "Estimate Powerball winnings and take-home after taxes.",
+        },
+        {
+          label: "Mega Millions Number Generator",
+          href: "/mega-millions-number-generator/",
+          description: "Random sets using the verified 5/70 + 1/24 Mega Millions rules.",
+        },
+        {
+          label: "Lottery Number Generator",
+          href: "/lottery-number-generator/",
+          description: "Random sets for any lottery's number pools.",
+        },
+        {
+          label: "Lottery Probability Calculator",
+          href: "/lottery-probability-calculator/",
+          description: "Chance of at least one win across ticket counts.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-14 max-w-4xl">
+    <SourceList ids={["powerball-official-rules"]} />
+  </div>
+
+  <div class="mt-14 max-w-3xl">
+    <Disclaimer />
+  </div>
+</Layout>
