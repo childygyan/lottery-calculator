@@ -1,0 +1,286 @@
+---
+/**
+ * Probability explorer: given a lottery's jackpot odds ("1 in X"), show how
+ * the chance of at least one win changes with the ticket count.
+ *
+ * Lottery choice comes from centralized configs via data attributes; the
+ * math (1 - (1-p)^n) lives in src/lib/calculator/odds.ts. Plain bundled
+ * Astro script — no define:vars.
+ */
+import { getLotteryConfig } from "../data/lotteries/index.ts";
+import { lotteryOddsConfigFromGame, calculateJackpotCombinations } from "../lib/calculator/odds.ts";
+
+const pbGame = getLotteryConfig("powerball");
+const mmGame = getLotteryConfig("mega-millions");
+if (!pbGame || !mmGame) throw new Error("Game configs missing for ProbabilityExplorer.");
+
+const pbCombos = calculateJackpotCombinations(lotteryOddsConfigFromGame(pbGame));
+const mmCombos = calculateJackpotCombinations(lotteryOddsConfigFromGame(mmGame));
+if (!pbCombos.ok || !mmCombos.ok) throw new Error("Could not derive jackpot combinations.");
+
+const PRESET_COUNTS = [1, 10, 100, 1000, 10000];
+---
+
+<form
+  id="prob-form"
+  class="card !p-6 sm:!p-8"
+  data-pb-combos={pbCombos.value}
+  data-mm-combos={mmCombos.value}
+  data-pb-price={pbGame.ticketPrice}
+  data-mm-price={mmGame.ticketPrice}
+  novalidate
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="prob-lottery" class="form-label">
+        Lottery
+      </label>
+      <select id="prob-lottery" name="lottery" class="form-input">
+        <option value="powerball">Powerball (1 in 292,201,338)</option>
+        <option value="mega-millions">Mega Millions (1 in 290,472,336)</option>
+        <option value="custom">Custom odds…</option>
+      </select>
+    </div>
+    <div id="prob-custom-wrap" class="hidden">
+      <label for="prob-custom-odds" class="form-label">
+        Custom jackpot odds ("1 in X")
+      </label>
+      <input
+        id="prob-custom-odds"
+        name="customOdds"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        placeholder="e.g. 13983816"
+        class="form-input"
+      />
+      <p class="form-hint">Enter the X in "1 in X".</p>
+    </div>
+    <div>
+      <label for="prob-ticket-count" class="form-label">
+        Your ticket count
+      </label>
+      <input
+        id="prob-ticket-count"
+        name="ticketCount"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        value="10"
+        class="form-input"
+      />
+    </div>
+    <div>
+      <label for="prob-ticket-price" class="form-label">
+        Ticket price ($) <span class="font-normal text-slate-500">(optional)</span>
+      </label>
+      <input
+        id="prob-ticket-price"
+        name="ticketPrice"
+        type="number"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        placeholder="Leave blank to skip cost"
+        class="form-input"
+      />
+    </div>
+  </div>
+
+  <p id="prob-error" role="alert" class="mt-4 hidden text-sm font-semibold text-red-700"></p>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <button type="submit" class="btn-primary">
+      Calculate Probability
+    </button>
+  </div>
+
+  <div id="prob-results" class="mt-8 hidden" aria-live="polite">
+    <h3 class="text-lg font-bold text-slate-900">
+      Chance of at least one jackpot win — <span id="prob-game-name"></span>
+    </h3>
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-left text-sm sm:text-base">
+        <caption class="sr-only">
+          At-least-one-win probability by ticket count
+        </caption>
+        <thead>
+          <tr class="border-b border-slate-200">
+            <th scope="col" class="py-2 pr-4 font-semibold text-slate-700">Tickets</th>
+            <th scope="col" class="py-2 pr-4 font-semibold text-slate-700">
+              Chance of at least one win
+            </th>
+            <th scope="col" id="prob-cost-head" class="hidden py-2 font-semibold text-slate-700">
+              Ticket cost
+            </th>
+          </tr>
+        </thead>
+        <tbody id="prob-table-body"></tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Your count: <span id="prob-your-count"></span> ticket(s)
+        </p>
+        <p id="prob-your-chance" class="mt-1 text-2xl font-extrabold text-slate-900"></p>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Expected tickets for one win
+        </p>
+        <p id="prob-expected" class="mt-1 text-2xl font-extrabold text-slate-900"></p>
+      </div>
+    </div>
+
+    <p class="mt-4 text-sm leading-relaxed text-slate-600">
+      Buying additional tickets increases the number of combinations covered, but the jackpot
+      probability may remain extremely small. Expected tickets are a mathematical average,
+      not a guarantee — buying that many tickets never assures a win.
+    </p>
+  </div>
+</form>
+
+<script>
+  import {
+    calculateAtLeastOneWin,
+    calculateExpectedTickets,
+    calculateTicketCost,
+    formatTinyPercent,
+    formatWholeNumber,
+  } from "../lib/calculator/odds.ts";
+  import { formatCurrency } from "../lib/calculator/formatting.ts";
+
+  const PRESET_COUNTS = [1, 10, 100, 1000, 10000];
+
+  const form = document.getElementById("prob-form") as HTMLFormElement | null;
+  if (form) {
+    const lotterySel = document.getElementById("prob-lottery") as HTMLSelectElement;
+    const customWrap = document.getElementById("prob-custom-wrap") as HTMLDivElement;
+    const errorEl = document.getElementById("prob-error") as HTMLParagraphElement;
+    const resultsEl = document.getElementById("prob-results") as HTMLDivElement;
+    const tbody = document.getElementById("prob-table-body") as HTMLTableSectionElement;
+    const costHead = document.getElementById("prob-cost-head") as HTMLTableCellElement;
+
+    lotterySel.addEventListener("change", () => {
+      customWrap.classList.toggle("hidden", lotterySel.value !== "custom");
+    });
+
+    function showError(message: string): void {
+      errorEl.textContent = message;
+      errorEl.classList.remove("hidden");
+      resultsEl.classList.add("hidden");
+    }
+
+    function fieldNum(id: string): number | undefined {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (!el) return undefined;
+      const raw = el.value.trim();
+      if (raw === "") return undefined;
+      const v = Number(raw);
+      return Number.isFinite(v) ? v : NaN;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      errorEl.classList.add("hidden");
+
+      let oneInX: number | undefined;
+      let gameName = "";
+      let defaultPrice: number | undefined;
+      const choice = lotterySel.value;
+      if (choice === "powerball") {
+        oneInX = Number(form.dataset.pbCombos);
+        gameName = "Powerball";
+        defaultPrice = Number(form.dataset.pbPrice);
+      } else if (choice === "mega-millions") {
+        oneInX = Number(form.dataset.mmCombos);
+        gameName = "Mega Millions";
+        defaultPrice = Number(form.dataset.mmPrice);
+      } else {
+        oneInX = fieldNum("prob-custom-odds");
+        gameName = "Custom lottery";
+        if (oneInX === undefined || Number.isNaN(oneInX)) {
+          showError('Please enter the custom jackpot odds ("1 in X").');
+          return;
+        }
+      }
+      if (!Number.isInteger(oneInX) || oneInX < 1) {
+        showError('Jackpot odds must be a whole number ("1 in X") of 1 or more.');
+        return;
+      }
+
+      const ticketCount = fieldNum("prob-ticket-count");
+      if (ticketCount === undefined || Number.isNaN(ticketCount)) {
+        showError("Please enter your ticket count.");
+        return;
+      }
+      let price = fieldNum("prob-ticket-price");
+      if (price === undefined) price = defaultPrice;
+      if (price !== undefined && (Number.isNaN(price) || price < 0)) {
+        showError("The ticket price must be $0 or more.");
+        return;
+      }
+
+      const p = 1 / oneInX;
+      const rows: Array<{ count: number; chance: string; cost: string | null }> = [];
+      const counts = [...PRESET_COUNTS];
+      if (!counts.includes(ticketCount)) counts.push(ticketCount);
+      counts.sort((a, b) => a - b);
+      for (const count of counts) {
+        const r = calculateAtLeastOneWin(p, count);
+        if (!r.ok) {
+          showError(r.error);
+          return;
+        }
+        let cost: string | null = null;
+        if (price !== undefined) {
+          const c = calculateTicketCost(count, price);
+          if (!c.ok) {
+            showError(c.error);
+            return;
+          }
+          cost = formatCurrency(c.cost);
+        }
+        rows.push({ count, chance: formatTinyPercent(r.probability), cost });
+      }
+
+      const your = calculateAtLeastOneWin(p, ticketCount);
+      const expected = calculateExpectedTickets(p);
+      if (!your.ok || !expected.ok) {
+        showError(your.ok ? (expected as { error: string }).error : your.error);
+        return;
+      }
+
+      (document.getElementById("prob-game-name") as HTMLElement).textContent =
+        `${gameName} (${oneInX.toLocaleString("en-US")} combinations)`;
+      (document.getElementById("prob-your-count") as HTMLElement).textContent =
+        formatWholeNumber(ticketCount);
+      (document.getElementById("prob-your-chance") as HTMLElement).textContent =
+        formatTinyPercent(your.probability);
+      (document.getElementById("prob-expected") as HTMLElement).textContent =
+        formatWholeNumber(expected.tickets);
+
+      const showCost = price !== undefined;
+      costHead.classList.toggle("hidden", !showCost);
+      tbody.innerHTML = "";
+      for (const row of rows) {
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-slate-100";
+        const isYours = row.count === ticketCount;
+        tr.innerHTML =
+          `<th scope="row" class="py-2 pr-4 font-semibold text-slate-900">${formatWholeNumber(row.count)}${isYours ? ' <span class="text-xs font-normal text-slate-500">(yours)</span>' : ""}</th>` +
+          `<td class="py-2 pr-4 text-slate-700">${row.chance}</td>` +
+          (showCost ? `<td class="py-2 text-slate-700">${row.cost ?? ""}</td>` : "");
+        tbody.appendChild(tr);
+      }
+
+      resultsEl.classList.remove("hidden");
+      resultsEl.setAttribute(
+        "aria-label",
+        `Results calculated for ${gameName}: ${formatTinyPercent(your.probability)} chance with ${formatWholeNumber(ticketCount)} tickets.`,
+      );
+    });
+  }
+</script>

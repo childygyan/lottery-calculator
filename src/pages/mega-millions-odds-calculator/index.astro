@@ -1,0 +1,210 @@
+---
+/**
+ * /mega-millions-odds-calculator/ — Mega Millions jackpot + prize-tier odds.
+ * Locked to the centralized verified Mega Millions configuration; jackpot
+ * combinations are derived from the rules (5/70 + 1/24) through the shared
+ * odds engine, never hard-coded.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import OddsCalculator from "../../components/OddsCalculator.astro";
+import LotteryPrizeTable from "../../components/LotteryPrizeTable.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { getLotteryConfig, formatOdds } from "../../data/lotteries/index.ts";
+import {
+  lotteryOddsConfigFromGame,
+  calculateJackpotCombinations,
+  calculateCombinations,
+  formatOneInX,
+  formatTinyPercent,
+  formatWholeNumber,
+} from "../../lib/calculator/odds.ts";
+
+const meta = buildPageMeta({
+  title: "Mega Millions Odds Calculator — Calculate Your Winning Chances",
+  description:
+    "Calculate Mega Millions jackpot odds, prize-tier odds, and your chance of winning with multiple tickets. Uses the verified 5/70 + 1/24 game rules.",
+  path: "/mega-millions-odds-calculator/",
+});
+
+const config = getLotteryConfig("mega-millions");
+if (!config) throw new Error("Mega Millions config missing.");
+const oddsConfig = lotteryOddsConfigFromGame(config);
+const combos = calculateJackpotCombinations(oddsConfig);
+if (!combos.ok) throw new Error("Could not derive Mega Millions jackpot combinations.");
+const mainCombos = calculateCombinations(oddsConfig.mainNumberPool, oddsConfig.mainNumbersToPick);
+if (!mainCombos.ok) throw new Error("Could not compute C(70,5).");
+const singleProb = 1 / combos.value;
+
+const faqs = [
+  {
+    question: "What are the odds of winning the Mega Millions jackpot?",
+    answer: `The odds are ${formatOneInX(combos.value)} — about ${formatTinyPercent(singleProb)} per $5 ticket. You must match all 5 white balls (1–70) plus the Mega Ball (1–24).`,
+  },
+  {
+    question: "How are the Mega Millions jackpot odds calculated?",
+    answer: `There are C(70, 5) = ${formatWholeNumber(mainCombos.value)} ways to choose 5 white balls from 70. Each pairs with 24 possible Mega Balls, giving ${formatWholeNumber(mainCombos.value)} × 24 = ${formatWholeNumber(combos.value)} possible combinations — hence ${formatOneInX(combos.value)}.`,
+  },
+  {
+    question: "What are the odds of winning any Mega Millions prize?",
+    answer: `About 1 in 23 across all nine prize tiers — from the $10 Mega Ball–only prize (1 in 35) up to the jackpot. The full tier table below lists every tier's odds and prize at each multiplier level.`,
+  },
+  {
+    question: "Does the multiplier change the jackpot odds?",
+    answer:
+      "No. One of five multipliers (2X–10X) is randomly assigned at purchase and included in the $5 ticket price, but it applies only to non-jackpot prizes. It changes prize amounts, not odds.",
+  },
+  {
+    question: "Do more Mega Millions tickets meaningfully improve my chances?",
+    answer:
+      "Buying additional tickets increases the number of combinations covered, but the jackpot probability may remain extremely small. Ten tickets give about a 0.000003443% chance — ten times a microscopic probability is still microscopic.",
+  },
+  {
+    question: "Is the jackpot really harder to win than Powerball's?",
+    answer: `The two games' jackpot odds are very close: ${formatOneInX(combos.value)} for Mega Millions versus 1 in 292,201,338 for Powerball. Both probabilities are microscopic, and the difference has no practical meaning for a ticket buyer.`,
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Mega Millions Odds Calculator", url: absoluteUrl("/mega-millions-odds-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Mega Millions Odds Calculator" }]} />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Mega Millions Odds Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Calculate your Mega Millions chances under the verified rules: 5 white balls from 1–70 plus
+    1 gold Mega Ball from 1–24, $5 per play with the multiplier included. Enter a ticket count
+    to see the jackpot odds, your probability, the total cost, and the expected tickets for
+    one win.
+  </p>
+
+  <section aria-label="Mega Millions odds calculator" class="mt-8">
+    <OddsCalculator lotteryId="mega-millions" />
+  </section>
+
+  <section aria-label="How the Mega Millions jackpot odds are derived" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How the Jackpot Odds Are Derived
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The jackpot requires matching all 5 white balls and the Mega Ball. The white-ball
+        combinations are C(70, 5) = <strong class="text-slate-800">{formatWholeNumber(mainCombos.value)}</strong>.
+        Each of those can pair with any of the 24 Mega Balls:
+      </p>
+      <p class="rounded-xl bg-slate-50 px-5 py-4 font-mono text-sm text-slate-800 sm:text-base">
+        {formatWholeNumber(mainCombos.value)} × 24 = {formatWholeNumber(combos.value)}
+      </p>
+      <p>
+        So the jackpot odds are <strong class="text-slate-800">{formatOneInX(combos.value)}</strong>,
+        or about <strong class="text-slate-800">{formatTinyPercent(singleProb)}</strong> per
+        ticket. This derivation uses the same engine as the calculator above — the figure is
+        computed from the rules, not copied from a table.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Mega Millions prize tiers" class="mt-14">
+    <LotteryPrizeTable config={config} />
+    <p class="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600">
+      Overall odds of winning any prize: {formatOdds(config.anyPrizeOdds)}. Tier odds and
+      prizes are the official prize table; the jackpot odds match the derivation above. The
+      multiplier (2X–10X, included in the ticket price) applies to non-jackpot prizes only.
+    </p>
+  </section>
+
+  <section aria-label="Multiple tickets" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      What About Buying More Tickets?
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Buying additional tickets increases the number of combinations covered, but the
+        jackpot probability may remain extremely small. With n tickets covering different
+        combinations, the chance of at least one jackpot win is 1 − (1 − p)<sup>n</sup>:
+      </p>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>10 tickets — about a 0.000003443% chance, costing $50</li>
+        <li>100 tickets — about a 0.0000344% chance, costing $500</li>
+        <li>1,000 tickets — about a 0.000344% chance, costing $5,000</li>
+      </ul>
+      <p>
+        Explore any ticket count on the{" "}
+        <a href="/lottery-probability-calculator/" class="font-semibold text-blue-700 hover:underline">
+          lottery probability calculator
+        </a>.
+      </p>
+    </div>
+  </section>
+
+  <div class="mt-14 max-w-3xl">
+    <Methodology
+      points={[
+        `Jackpot combinations (${formatWholeNumber(combos.value)}) are derived from the verified 5/70 + 1/24 rules via C(70,5) × 24 — matching the official ${formatOneInX(config.jackpotOdds)} figure.`,
+        "Multiple-ticket probability is 1 − (1 − p)ⁿ, assuming tickets cover distinct combinations.",
+        "Expected tickets and expected cost are mathematical averages, not guarantees and never spending advice.",
+        "Prize-tier odds and per-multiplier prizes are the official Mega Millions prize table.",
+      ]}
+    />
+  </div>
+
+  <FAQ items={faqs} />
+
+  <div class="mt-14 max-w-4xl">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Mega Millions Calculator",
+          href: "/mega-millions-calculator/",
+          description: "Estimate Mega Millions winnings and take-home after taxes.",
+        },
+        {
+          label: "Mega Millions Tax Calculator",
+          href: "/mega-millions-tax-calculator/",
+          description: "How federal and state taxes affect a Mega Millions win.",
+        },
+        {
+          label: "Lottery Odds Calculator",
+          href: "/lottery-odds-calculator/",
+          description: "Derive jackpot odds for any lottery's number pools.",
+        },
+        {
+          label: "Lottery Probability Calculator",
+          href: "/lottery-probability-calculator/",
+          description: "Chance of at least one win across ticket counts.",
+        },
+        {
+          label: "Lottery Payout Calculator",
+          href: "/lottery-payout-calculator/",
+          description: "Compare Mega Millions' cash option with its 5%-growing annuity.",
+        },
+        {
+          label: "Powerball Odds Calculator",
+          href: "/powerball-odds-calculator/",
+          description: "Jackpot and prize-tier odds for Powerball.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-14">
+    <SourceList ids={["megamillions-official-rules", "megamillions-prize-tiers"]} />
+  </div>
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

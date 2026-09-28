@@ -72,3 +72,22 @@ export type {
   WithholdingResult,
   LotteryCalculationResult,
 } from "./types.ts";
+export {
+  calculateCombinations,
+  calculateJackpotCombinations,
+  calculateOdds,
+  calculateProbability,
+  calculateAtLeastOneWin,
+  calculateExpectedTickets,
+  calculateExpectedCost,
+  calculateTicketCost,
+  calculateCustomLotteryOdds,
+  validateLotteryOddsConfig,
+  lotteryOddsConfigFromGame,
+  formatOneInX,
+  formatTinyPercent,
+  formatWholeNumber,
+  MAX_NUMBER_POOL,
+  MAX_TICKET_COUNT,
+} from "./odds.ts";
+export type { LotteryOddsConfig, CustomLotteryOddsInput } from "./odds.ts";

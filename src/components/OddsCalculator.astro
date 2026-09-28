@@ -1,0 +1,400 @@
+---
+/**
+ * Lottery odds calculator — generic custom-lottery builder and locked
+ * game variant (Powerball / Mega Millions).
+ *
+ * The math lives in src/lib/calculator/odds.ts; this component only reads
+ * inputs, calls calculateCustomLotteryOdds(), and renders the result.
+ * Game rules come from the centralized LotteryConfig via data attributes —
+ * never hard-coded here. Client script is a plain bundled Astro script
+ * (no define:vars) so Vite bundles its imports.
+ */
+import { getLotteryConfig } from "../data/lotteries/index.ts";
+import { lotteryOddsConfigFromGame } from "../lib/calculator/odds.ts";
+
+interface Props {
+  /** When set, the calculator is locked to this game's verified rules. */
+  lotteryId?: "powerball" | "mega-millions";
+}
+
+const { lotteryId } = Astro.props;
+const gameConfig = lotteryId ? getLotteryConfig(lotteryId) : undefined;
+if (lotteryId && !gameConfig) {
+  throw new Error(`Unknown lotteryId "${lotteryId}" in OddsCalculator.`);
+}
+const oddsConfig = gameConfig ? lotteryOddsConfigFromGame(gameConfig) : undefined;
+const locked = gameConfig !== undefined;
+---
+
+<form
+  id="odds-form"
+  class="card !p-6 sm:!p-8"
+  data-locked={locked ? "true" : "false"}
+  data-game-name={gameConfig?.name ?? "Custom lottery"}
+  data-main-pick={oddsConfig?.mainNumbersToPick ?? ""}
+  data-main-pool={oddsConfig?.mainNumberPool ?? ""}
+  data-bonus-pick={oddsConfig?.bonusNumbersToPick ?? ""}
+  data-bonus-pool={oddsConfig?.bonusNumberPool ?? ""}
+  data-ticket-price={oddsConfig?.ticketPrice ?? ""}
+  data-bonus-name={gameConfig?.bonusNumberName ?? "Bonus ball"}
+  novalidate
+>
+  {
+    locked && gameConfig && oddsConfig ? (
+      <div class="rounded-xl bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-700">
+        <p>
+          <strong class="text-slate-900">{gameConfig.name} rules (verified):</strong> pick{" "}
+          {oddsConfig.mainNumbersToPick} {gameConfig.mainBallName} from 1–
+          {oddsConfig.mainNumberPool} plus {oddsConfig.bonusNumbersToPick}{" "}
+          {gameConfig.bonusNumberName} from 1–{oddsConfig.bonusNumberPool}. Ticket price $
+          {oddsConfig.ticketPrice?.toFixed(2)}.
+        </p>
+      </div>
+    ) : (
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="odds-main-pick" class="form-label">
+            Main numbers per ticket
+          </label>
+          <input
+            id="odds-main-pick"
+            name="mainPick"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            value="5"
+            class="form-input"
+          />
+        </div>
+        <div>
+          <label for="odds-main-pool" class="form-label">
+            Main number pool (1 to …)
+          </label>
+          <input
+            id="odds-main-pool"
+            name="mainPool"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            value="69"
+            class="form-input"
+          />
+          <p class="form-hint">Numbers run from 1 to this value.</p>
+        </div>
+        <div>
+          <label for="odds-bonus-pick" class="form-label">
+            Bonus balls per ticket
+          </label>
+          <input
+            id="odds-bonus-pick"
+            name="bonusPick"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            value="1"
+            class="form-input"
+          />
+          <p class="form-hint">Enter 0 for a lottery with no bonus ball.</p>
+        </div>
+        <div>
+          <label for="odds-bonus-pool" class="form-label">
+            Bonus pool (1 to …)
+          </label>
+          <input
+            id="odds-bonus-pool"
+            name="bonusPool"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            value="26"
+            class="form-input"
+          />
+        </div>
+        <div>
+          <label for="odds-ticket-price" class="form-label">
+            Ticket price ($) <span class="font-normal text-slate-500">(optional)</span>
+          </label>
+          <input
+            id="odds-ticket-price"
+            name="ticketPrice"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.01"
+            placeholder="e.g. 2.00"
+            class="form-input"
+          />
+          <p class="form-hint">Leave blank if the price is unknown.</p>
+        </div>
+        <div>
+          <label for="odds-ticket-count" class="form-label">
+            Number of tickets
+          </label>
+          <input
+            id="odds-ticket-count"
+            name="ticketCount"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            value="1"
+            class="form-input"
+          />
+        </div>
+      </div>
+    )
+  }
+
+  {
+    locked && (
+      <div class="mt-4 max-w-xs">
+        <label for="odds-ticket-count" class="form-label">
+          Number of tickets
+        </label>
+        <input
+          id="odds-ticket-count"
+          name="ticketCount"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          value="1"
+          class="form-input"
+        />
+      </div>
+    )
+  }
+
+  <p id="odds-error" role="alert" class="mt-4 hidden text-sm font-semibold text-red-700"></p>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <button type="submit" class="btn-primary">
+      Calculate Odds
+    </button>
+    <button type="button" id="odds-copy" class="btn-secondary" disabled>
+      Copy Results
+    </button>
+  </div>
+  <p id="odds-copy-status" role="status" class="mt-2 hidden text-sm text-slate-600"></p>
+
+  <div id="odds-results" class="mt-8 hidden" aria-live="polite">
+    <h3 class="text-lg font-bold text-slate-900">Results</h3>
+    <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <dt class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Possible combinations
+        </dt>
+        <dd id="odds-combinations" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <dt class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Jackpot odds
+        </dt>
+        <dd id="odds-one-in-x" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <dt class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Single-ticket probability
+        </dt>
+        <dd id="odds-probability" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <dt class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Chance with <span id="odds-ticket-count-label">1</span> ticket(s)
+        </dt>
+        <dd id="odds-multi" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+      <div
+        id="odds-cost-wrap"
+        class="hidden rounded-xl border border-slate-200 bg-white p-4"
+      >
+        <dt class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Total ticket cost
+        </dt>
+        <dd id="odds-cost" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <dt class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Expected tickets for one win
+        </dt>
+        <dd id="odds-expected-tickets" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+      <div
+        id="odds-expected-cost-wrap"
+        class="hidden rounded-xl border border-slate-200 bg-white p-4"
+      >
+        <dt class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Expected cost for one win
+        </dt>
+        <dd id="odds-expected-cost" class="mt-1 text-2xl font-extrabold text-slate-900"></dd>
+      </div>
+    </dl>
+    <p class="mt-4 text-sm leading-relaxed text-slate-600">
+      Expected tickets and expected cost are mathematical averages over an enormous number
+      of plays — not a guarantee. Buying this many tickets never assures a win.
+    </p>
+  </div>
+</form>
+
+<script>
+  import {
+    calculateCustomLotteryOdds,
+    formatOneInX,
+    formatTinyPercent,
+    formatWholeNumber,
+    type LotteryOddsConfig,
+  } from "../lib/calculator/odds.ts";
+  import { formatCurrency } from "../lib/calculator/formatting.ts";
+
+  const form = document.getElementById("odds-form") as HTMLFormElement | null;
+  if (form) {
+    const locked = form.dataset.locked === "true";
+    const errorEl = document.getElementById("odds-error") as HTMLParagraphElement;
+    const resultsEl = document.getElementById("odds-results") as HTMLDivElement;
+    const copyBtn = document.getElementById("odds-copy") as HTMLButtonElement;
+    const copyStatus = document.getElementById("odds-copy-status") as HTMLParagraphElement;
+
+    let lastPlainText = "";
+
+    function showError(message: string): void {
+      errorEl.textContent = message;
+      errorEl.classList.remove("hidden");
+      resultsEl.classList.add("hidden");
+      copyBtn.disabled = true;
+    }
+
+    function num(id: string): number | undefined {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (!el) return undefined;
+      const raw = el.value.trim();
+      if (raw === "") return undefined;
+      const v = Number(raw);
+      return Number.isFinite(v) ? v : NaN;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      errorEl.classList.add("hidden");
+      copyStatus.classList.add("hidden");
+
+      let config: LotteryOddsConfig;
+      let ticketCount: number | undefined;
+      if (locked) {
+        config = {
+          mainNumbersToPick: Number(form.dataset.mainPick),
+          mainNumberPool: Number(form.dataset.mainPool),
+          bonusNumbersToPick: Number(form.dataset.bonusPick),
+          bonusNumberPool: Number(form.dataset.bonusPool),
+          ticketPrice:
+            form.dataset.ticketPrice === "" ? undefined : Number(form.dataset.ticketPrice),
+        };
+        ticketCount = num("odds-ticket-count");
+      } else {
+        const mainPick = num("odds-main-pick");
+        const mainPool = num("odds-main-pool");
+        const bonusPick = num("odds-bonus-pick");
+        const bonusPool = num("odds-bonus-pool");
+        const ticketPrice = num("odds-ticket-price");
+        ticketCount = num("odds-ticket-count");
+        if (
+          mainPick === undefined || mainPool === undefined ||
+          bonusPick === undefined || bonusPool === undefined
+        ) {
+          showError("Please fill in the main and bonus number fields.");
+          return;
+        }
+        config = {
+          mainNumbersToPick: mainPick,
+          mainNumberPool: mainPool,
+          bonusNumbersToPick: bonusPick,
+          bonusNumberPool: bonusPool,
+          ticketPrice: ticketPrice === undefined ? undefined : ticketPrice,
+        };
+      }
+      if (ticketCount === undefined || Number.isNaN(ticketCount)) {
+        showError("Please enter the number of tickets.");
+        return;
+      }
+
+      const result = calculateCustomLotteryOdds({ config, ticketCount });
+      if (!result.ok) {
+        showError(result.error);
+        return;
+      }
+
+      (document.getElementById("odds-combinations") as HTMLElement).textContent =
+        formatWholeNumber(result.combinations);
+      (document.getElementById("odds-one-in-x") as HTMLElement).textContent = formatOneInX(
+        result.oneInX,
+      );
+      (document.getElementById("odds-probability") as HTMLElement).textContent =
+        formatTinyPercent(result.probability);
+      (document.getElementById("odds-ticket-count-label") as HTMLElement).textContent =
+        formatWholeNumber(result.ticketCount);
+      (document.getElementById("odds-multi") as HTMLElement).textContent = formatTinyPercent(
+        result.atLeastOneWin,
+      );
+      (document.getElementById("odds-expected-tickets") as HTMLElement).textContent =
+        formatWholeNumber(result.expectedTickets);
+
+      const costWrap = document.getElementById("odds-cost-wrap") as HTMLElement;
+      const expCostWrap = document.getElementById("odds-expected-cost-wrap") as HTMLElement;
+      if (result.ticketCost !== null) {
+        (document.getElementById("odds-cost") as HTMLElement).textContent = formatCurrency(
+          result.ticketCost,
+        );
+        costWrap.classList.remove("hidden");
+      } else {
+        costWrap.classList.add("hidden");
+      }
+      if (result.expectedCost !== null) {
+        (document.getElementById("odds-expected-cost") as HTMLElement).textContent =
+          formatCurrency(result.expectedCost);
+        expCostWrap.classList.remove("hidden");
+      } else {
+        expCostWrap.classList.add("hidden");
+      }
+
+      const lines = [
+        `Lottery odds — ${form.dataset.gameName ?? "Custom lottery"}`,
+        `Possible combinations: ${formatWholeNumber(result.combinations)}`,
+        `Jackpot odds: ${formatOneInX(result.oneInX)}`,
+        `Single-ticket probability: ${formatTinyPercent(result.probability)}`,
+        `Chance with ${formatWholeNumber(result.ticketCount)} ticket(s): ${formatTinyPercent(result.atLeastOneWin)}`,
+        `Expected tickets for one win: ${formatWholeNumber(result.expectedTickets)}`,
+      ];
+      if (result.ticketCost !== null) {
+        lines.splice(5, 0, `Total ticket cost: ${formatCurrency(result.ticketCost)}`);
+        lines.push(`Expected cost for one win: ${formatCurrency(result.expectedCost as number)}`);
+      }
+      lastPlainText = lines.join("\n");
+
+      resultsEl.classList.remove("hidden");
+      copyBtn.disabled = false;
+      resultsEl.setAttribute(
+        "aria-label",
+        `Results calculated: jackpot odds ${formatOneInX(result.oneInX)}.`,
+      );
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      if (!lastPlainText) return;
+      try {
+        await navigator.clipboard.writeText(lastPlainText);
+        copyStatus.textContent = "Results copied to clipboard.";
+      } catch {
+        // Clipboard API unavailable (older browsers): select via a temp textarea.
+        const ta = document.createElement("textarea");
+        ta.value = lastPlainText;
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          copyStatus.textContent = "Results copied to clipboard.";
+        } catch {
+          copyStatus.textContent = "Copy failed — please copy the results manually.";
+        }
+        document.body.removeChild(ta);
+      }
+      copyStatus.classList.remove("hidden");
+    });
+  }
+</script>

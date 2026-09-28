@@ -1,0 +1,209 @@
+---
+/**
+ * /powerball-odds-calculator/ — Powerball jackpot + prize-tier odds.
+ * Locked to the centralized verified Powerball configuration; the jackpot
+ * combinations are derived from the rules (5/69 + 1/26) through the shared
+ * odds engine, never hard-coded.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import OddsCalculator from "../../components/OddsCalculator.astro";
+import LotteryPrizeTable from "../../components/LotteryPrizeTable.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { getLotteryConfig, formatOdds } from "../../data/lotteries/index.ts";
+import {
+  lotteryOddsConfigFromGame,
+  calculateJackpotCombinations,
+  calculateCombinations,
+  formatOneInX,
+  formatTinyPercent,
+  formatWholeNumber,
+} from "../../lib/calculator/odds.ts";
+
+const meta = buildPageMeta({
+  title: "Powerball Odds Calculator — Calculate Your Winning Chances",
+  description:
+    "Calculate Powerball jackpot odds, prize-tier odds, and your chance of winning with multiple tickets. Uses the verified 5/69 + 1/26 game rules.",
+  path: "/powerball-odds-calculator/",
+});
+
+const config = getLotteryConfig("powerball");
+if (!config) throw new Error("Powerball config missing.");
+const oddsConfig = lotteryOddsConfigFromGame(config);
+const combos = calculateJackpotCombinations(oddsConfig);
+if (!combos.ok) throw new Error("Could not derive Powerball jackpot combinations.");
+const mainCombos = calculateCombinations(oddsConfig.mainNumberPool, oddsConfig.mainNumbersToPick);
+if (!mainCombos.ok) throw new Error("Could not compute C(69,5).");
+const singleProb = 1 / combos.value;
+
+const faqs = [
+  {
+    question: "What are the odds of winning the Powerball jackpot?",
+    answer: `The odds are ${formatOneInX(combos.value)} — about ${formatTinyPercent(singleProb)} per $2 ticket. You must match all 5 white balls (1–69) plus the Powerball (1–26).`,
+  },
+  {
+    question: "How are the Powerball jackpot odds calculated?",
+    answer: `There are C(69, 5) = ${formatWholeNumber(mainCombos.value)} ways to choose 5 white balls from 69. Each pairs with 26 possible Powerballs, giving ${formatWholeNumber(mainCombos.value)} × 26 = ${formatWholeNumber(combos.value)} possible combinations — hence ${formatOneInX(combos.value)}.`,
+  },
+  {
+    question: "What are the odds of winning any Powerball prize?",
+    answer: `About 1 in 24.87 across all nine prize tiers — from the $4 Powerball-only prize (1 in 38.32) up to the jackpot. The full tier table below lists every tier's odds and prize.`,
+  },
+  {
+    question: "Do more Powerball tickets meaningfully improve my chances?",
+    answer:
+      "Buying additional tickets increases the number of combinations covered, but the jackpot probability may remain extremely small. Ten tickets give about a 0.000003422% chance — ten times a microscopic probability is still microscopic.",
+  },
+  {
+    question: "Does Power Play change the jackpot odds?",
+    answer:
+      "No. Power Play (+$1 per play) multiplies non-jackpot prizes by 2X–10X, but it cannot apply to the jackpot and does not change any odds — only the prize amounts for lower tiers.",
+  },
+  {
+    question: "Can any number-picking strategy beat the odds?",
+    answer:
+      "No. Every one of the 292,201,338 combinations has exactly the same probability in every drawing. Quick Picks, birthdays, and 'hot' numbers all face identical odds; the only thing that changes your chance is covering more distinct combinations.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Powerball Odds Calculator", url: absoluteUrl("/powerball-odds-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Powerball Odds Calculator" }]} />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Powerball Odds Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Calculate your Powerball chances under the verified rules: 5 white balls from 1–69 plus 1
+    Powerball from 1–26, $2 per play. Enter a ticket count to see the jackpot odds, your
+    probability, the total cost, and the expected tickets for one win.
+  </p>
+
+  <section aria-label="Powerball odds calculator" class="mt-8">
+    <OddsCalculator lotteryId="powerball" />
+  </section>
+
+  <section aria-label="How the Powerball jackpot odds are derived" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How the Jackpot Odds Are Derived
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The jackpot requires matching all 5 white balls and the Powerball. The white-ball
+        combinations are C(69, 5) = <strong class="text-slate-800">{formatWholeNumber(mainCombos.value)}</strong>.
+        Each of those can pair with any of the 26 Powerballs:
+      </p>
+      <p class="rounded-xl bg-slate-50 px-5 py-4 font-mono text-sm text-slate-800 sm:text-base">
+        {formatWholeNumber(mainCombos.value)} × 26 = {formatWholeNumber(combos.value)}
+      </p>
+      <p>
+        So the jackpot odds are <strong class="text-slate-800">{formatOneInX(combos.value)}</strong>,
+        or about <strong class="text-slate-800">{formatTinyPercent(singleProb)}</strong> per
+        ticket. This derivation uses the same engine as the calculator above — the figure is
+        computed from the rules, not copied from a table.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Powerball prize tiers" class="mt-14">
+    <LotteryPrizeTable config={config} />
+    <p class="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600">
+      Overall odds of winning any prize: {formatOdds(config.anyPrizeOdds)}. Tier odds and
+      prizes are the official prize table; the jackpot odds match the derivation above.
+    </p>
+  </section>
+
+  <section aria-label="Multiple tickets" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      What About Buying More Tickets?
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Buying additional tickets increases the number of combinations covered, but the
+        jackpot probability may remain extremely small. With n tickets covering different
+        combinations, the chance of at least one jackpot win is 1 − (1 − p)<sup>n</sup>:
+      </p>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>10 tickets — about a 0.000003422% chance, costing $20</li>
+        <li>100 tickets — about a 0.0000342% chance, costing $200</li>
+        <li>1,000 tickets — about a 0.000342% chance, costing $2,000</li>
+      </ul>
+      <p>
+        Explore any ticket count on the{" "}
+        <a href="/lottery-probability-calculator/" class="font-semibold text-blue-700 hover:underline">
+          lottery probability calculator
+        </a>.
+      </p>
+    </div>
+  </section>
+
+  <div class="mt-14 max-w-3xl">
+    <Methodology
+      points={[
+        `Jackpot combinations (${formatWholeNumber(combos.value)}) are derived from the verified 5/69 + 1/26 rules via C(69,5) × 26 — matching the official ${formatOneInX(config.jackpotOdds)} figure.`,
+        "Multiple-ticket probability is 1 − (1 − p)ⁿ, assuming tickets cover distinct combinations.",
+        "Expected tickets and expected cost are mathematical averages, not guarantees and never spending advice.",
+        "Prize-tier odds and amounts are the official Powerball prize table.",
+      ]}
+    />
+  </div>
+
+  <FAQ items={faqs} />
+
+  <div class="mt-14 max-w-4xl">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Powerball Calculator",
+          href: "/powerball-calculator/",
+          description: "Estimate Powerball winnings and take-home after taxes.",
+        },
+        {
+          label: "Powerball Tax Calculator",
+          href: "/powerball-tax-calculator/",
+          description: "How federal and state taxes affect a Powerball win.",
+        },
+        {
+          label: "Lottery Odds Calculator",
+          href: "/lottery-odds-calculator/",
+          description: "Derive jackpot odds for any lottery's number pools.",
+        },
+        {
+          label: "Lottery Probability Calculator",
+          href: "/lottery-probability-calculator/",
+          description: "Chance of at least one win across ticket counts.",
+        },
+        {
+          label: "Lottery Payout Calculator",
+          href: "/lottery-payout-calculator/",
+          description: "Compare Powerball's cash option with its 30-payment annuity.",
+        },
+        {
+          label: "Mega Millions Odds Calculator",
+          href: "/mega-millions-odds-calculator/",
+          description: "Jackpot and prize-tier odds for Mega Millions.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-14">
+    <SourceList ids={["powerball-official-rules", "powerball-prize-tiers"]} />
+  </div>
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

@@ -75,14 +75,19 @@ const liveCalculators = [
     description: "Estimate taxes and take-home on the lump sum.",
     href: "/lottery-cash-option-calculator/",
   },
-];
-
-const upcomingCalculators = [
   {
     name: "Lottery Odds Calculator",
-    description: "Understand the odds behind popular lottery games.",
+    description: "Calculate jackpot odds for any lottery's number pools.",
+    href: "/lottery-odds-calculator/",
+  },
+  {
+    name: "Lottery Probability Calculator",
+    description: "See how the chance of winning changes with ticket count.",
+    href: "/lottery-probability-calculator/",
   },
 ];
+
+const upcomingCalculators: Array<{ name: string; description: string }> = [];
 
 const jsonLd = [websiteJsonLd(), faqJsonLd(faqs)];
 ---

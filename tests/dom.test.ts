@@ -247,9 +247,9 @@ describe("lottery game pages (built HTML)", () => {
     const pbHrefs = [...pb.querySelectorAll("a")].map((a) => a.getAttribute("href") ?? "");
     assert.ok(pbHrefs.includes("/powerball-tax-calculator/"), "Powerball page links to its tax page");
     assert.ok(pbHrefs.includes("/mega-millions-calculator/"), "Powerball page links to Mega Millions");
-    // /lottery-payout-calculator/ now exists (Phase 5); /lottery-odds-calculator/ is still unbuilt.
+    // /lottery-payout-calculator/ exists (Phase 5); /lottery-odds-calculator/ now exists (Phase 6).
     assert.ok(pbHrefs.includes("/lottery-payout-calculator/"), "footer links to the live payout calculator");
-    assert.ok(!pbHrefs.some((h) => h.includes("odds-calculator")), "no link to unbuilt odds calculator");
+    assert.ok(pbHrefs.includes("/powerball-odds-calculator/"), "Powerball page links to its odds page");
   });
 
   it("cash field hint tells users to enter the official cash value", () => {

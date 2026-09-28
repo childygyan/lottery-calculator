@@ -1,0 +1,250 @@
+---
+/**
+ * /lottery-odds-calculator/ — generic lottery odds calculator.
+ * Works independently of Powerball and Mega Millions: the user describes
+ * any lottery (main pool/picks, bonus pool/picks, ticket count, price) and
+ * the shared odds engine derives combinations, odds, probabilities, and costs.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import OddsCalculator from "../../components/OddsCalculator.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { getLotteryConfig } from "../../data/lotteries/index.ts";
+import {
+  lotteryOddsConfigFromGame,
+  calculateJackpotCombinations,
+  calculateCombinations,
+  formatOneInX,
+  formatWholeNumber,
+} from "../../lib/calculator/odds.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Odds Calculator — Calculate Your Chances",
+  description:
+    "Calculate lottery odds, probabilities, combinations, ticket costs, and your chance of at least one win.",
+  path: "/lottery-odds-calculator/",
+});
+
+const pbGame = getLotteryConfig("powerball");
+const mmGame = getLotteryConfig("mega-millions");
+if (!pbGame || !mmGame) throw new Error("Game configs missing.");
+
+const pbCombos = calculateJackpotCombinations(lotteryOddsConfigFromGame(pbGame));
+const mmCombos = calculateJackpotCombinations(lotteryOddsConfigFromGame(mmGame));
+if (!pbCombos.ok || !mmCombos.ok) throw new Error("Could not derive jackpot combinations.");
+// Worked derivation for the explainer, computed with the real engine.
+const pbMain = calculateCombinations(69, 5);
+if (!pbMain.ok) throw new Error("Could not compute C(69,5).");
+
+const faqs = [
+  {
+    question: "What is a lottery number generator?",
+    answer:
+      "A lottery number generator is a random-number utility that picks a valid combination of numbers for a lottery's rules — for example, 5 numbers from 1–69 plus a bonus ball from 1–26. It is a convenience tool, not a prediction tool.",
+  },
+  {
+    question: "Are lottery numbers truly random?",
+    answer:
+      "The numbers this site's generator produces come from your browser's cryptographic random source (crypto.getRandomValues where available), which is suitable for picking unbiased random numbers. But 'random' here means unpredictable picks — it says nothing about which numbers will be drawn.",
+  },
+  {
+    question: "Can random numbers improve my odds?",
+    answer:
+      "No. Every valid combination has exactly the same probability of being drawn — 1 in 292,201,338 for a Powerball jackpot, for example. Randomly generated numbers do not improve the mathematical odds of winning and cannot predict future winning numbers.",
+  },
+  {
+    question: "How many lottery combinations can I generate?",
+    answer:
+      "You can never generate more unique combinations than mathematically exist: for a 'pick r from n' lottery that is C(n,r). The combination generator refuses requests that exceed the possible unique combinations instead of looping forever.",
+  },
+  {
+    question: "Can I generate Powerball numbers?",
+    answer:
+      "Yes — the Powerball number generator uses the verified 5/69 + 1/26 rules to produce sets of 5 sorted white-ball numbers plus a Powerball. The sets are random conveniences with no predictive value.",
+  },
+  {
+    question: "Can I generate Mega Millions numbers?",
+    answer:
+      "Yes — the Mega Millions number generator uses the verified 5/70 + 1/24 rules. Like every generated set, the results are random and carry no advantage over any other valid combination.",
+  },
+  {
+    question: "Can the generator predict winning numbers?",
+    answer:
+      "No, and no generator can. Each drawing is an independent random event: past results do not influence future ones, and there is no 'hot', 'cold', or 'due' number. This site deliberately offers no prediction features — only random generation.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Odds Calculator", url: absoluteUrl("/lottery-odds-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Lottery Odds Calculator" }]} />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Lottery Odds Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Calculate the odds for any lottery. Describe the game's number pools below — main numbers,
+    bonus balls, ticket count, and ticket price — and get the possible combinations, the
+    jackpot odds, the single-ticket probability, your chance with multiple tickets, and the
+    expected tickets and cost for one win.
+  </p>
+
+  <section aria-label="Lottery odds calculator" class="mt-8">
+    <OddsCalculator />
+  </section>
+
+  <section aria-label="How jackpot odds are calculated" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Jackpot Odds Are Calculated
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        A lottery jackpot requires matching every number drawn. The number of possible
+        combinations comes from the combinations formula <strong class="text-slate-800">C(n, r) =
+        n! / (r! × (n−r)!)</strong>, which counts how many ways r numbers can be chosen from a
+        pool of n — order doesn't matter.
+      </p>
+      <p>
+        For example, Powerball asks for 5 white balls from 1–69: C(69, 5) ={" "}
+        {formatWholeNumber(pbMain.value)} possible white-ball combinations. Each of those can
+        pair with any of 26 Powerballs, so {formatWholeNumber(pbMain.value)} × 26 ={" "}
+        <strong class="text-slate-800">{formatOneInX(pbCombos.value)}</strong>. The calculator
+        above performs this same derivation for whatever pools you enter — nothing is
+        hard-coded.
+      </p>
+      <p>
+        The single-ticket probability is simply 1 divided by the combinations. With multiple
+        tickets covering different combinations, the chance of at least one win is{" "}
+        <strong class="text-slate-800">1 − (1 − p)<sup>n</sup></strong>, where p is the
+        single-ticket probability and n is the ticket count. This assumes each ticket covers a
+        different combination.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="What the results mean" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      What the Results Mean
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        <strong class="text-slate-800">Possible combinations</strong> is the total number of
+        distinct tickets the game can produce. <strong class="text-slate-800">Jackpot
+        odds</strong> ("1 in X") is the same number expressed as odds.
+      </p>
+      <p>
+        <strong class="text-slate-800">Single-ticket probability</strong> is shown as a
+        percentage with enough decimal places to stay nonzero — for example, a Powerball
+        jackpot ticket is about 0.000000342%. <strong class="text-slate-800">Expected tickets
+        for one win</strong> is the mathematical average (1 ÷ p) over an enormous number of
+        plays. It is not a guarantee: buying that many tickets never assures a win, and
+        roughly half of all players buying that many would still not have won.
+      </p>
+      <p>
+        Buying additional tickets increases the number of combinations covered, but the
+        jackpot probability may remain extremely small.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Comparison with Powerball and Mega Millions" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Powerball and Mega Millions Jackpot Odds
+    </h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      For reference, here are the jackpot odds for the two national games, derived from
+      their verified rules through the same engine:
+    </p>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+      <div class="card !p-6">
+        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Powerball</p>
+        <p class="mt-2 text-2xl font-extrabold text-slate-900">{formatOneInX(pbCombos.value)}</p>
+        <p class="mt-2 text-sm text-slate-600">5/69 + 1/26 · $2 per play</p>
+        <p class="mt-3">
+          <a href="/powerball-odds-calculator/" class="text-sm font-semibold text-blue-700 hover:underline">
+            Powerball odds calculator →
+          </a>
+        </p>
+      </div>
+      <div class="card !p-6">
+        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Mega Millions</p>
+        <p class="mt-2 text-2xl font-extrabold text-slate-900">{formatOneInX(mmCombos.value)}</p>
+        <p class="mt-2 text-sm text-slate-600">5/70 + 1/24 · $5 per play</p>
+        <p class="mt-3">
+          <a href="/mega-millions-odds-calculator/" class="text-sm font-semibold text-blue-700 hover:underline">
+            Mega Millions odds calculator →
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="mt-14 max-w-3xl">
+    <Methodology
+      points={[
+        "Jackpot combinations are derived from your pools with C(n, r): main-ball combinations × bonus-ball combinations.",
+        "Single-ticket probability is 1 ÷ combinations; multiple-ticket chance is 1 − (1 − p)ⁿ, assuming distinct combinations.",
+        "Expected tickets (1 ÷ p) and expected cost are mathematical averages, not guarantees and never spending advice.",
+        "Powerball and Mega Millions figures come from their centralized verified game configurations.",
+      ]}
+    />
+  </div>
+
+  <FAQ items={faqs} />
+
+  <div class="mt-14 max-w-4xl">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Lottery Probability Calculator",
+          href: "/lottery-probability-calculator/",
+          description: "See how the chance of at least one win changes with the ticket count.",
+        },
+        {
+          label: "Powerball Odds Calculator",
+          href: "/powerball-odds-calculator/",
+          description: "Jackpot and prize-tier odds under the verified Powerball rules.",
+        },
+        {
+          label: "Mega Millions Odds Calculator",
+          href: "/mega-millions-odds-calculator/",
+          description: "Jackpot and prize-tier odds under the verified Mega Millions rules.",
+        },
+        {
+          label: "Lottery Calculator",
+          href: "/lottery-calculator/",
+          description: "Estimate winnings and take-home after taxes.",
+        },
+        {
+          label: "Lottery Payout Calculator",
+          href: "/lottery-payout-calculator/",
+          description: "Compare the cash option with the annuity, side by side.",
+        },
+        {
+          label: "Lottery Tax Calculator",
+          href: "/lottery-tax-calculator/",
+          description: "How federal and state taxes affect lottery winnings.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-14">
+    <SourceList ids={["powerball-official-rules", "megamillions-official-rules"]} />
+  </div>
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

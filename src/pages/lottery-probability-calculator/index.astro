@@ -1,0 +1,179 @@
+---
+/**
+ * /lottery-probability-calculator/ — at-least-one-win probability explorer.
+ * Distinct from the odds calculator: this page starts from jackpot odds
+ * ("1 in X") and shows how the chance of at least one win changes with the
+ * ticket count, for Powerball, Mega Millions, or custom odds.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import ProbabilityExplorer from "../../components/ProbabilityExplorer.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Probability Calculator — Chance of Winning With Multiple Tickets",
+  description:
+    "Calculate the probability of at least one lottery jackpot win with 1, 10, 100, or 1,000+ tickets. Compare Powerball, Mega Millions, or custom odds.",
+  path: "/lottery-probability-calculator/",
+});
+
+const faqs = [
+  {
+    question: "Does buying more tickets make winning likely?",
+    answer:
+      "No. Buying additional tickets increases the number of combinations covered, but the jackpot probability may remain extremely small. One hundred Powerball tickets raise the jackpot chance to about 0.0000342% — still effectively zero for planning purposes.",
+  },
+  {
+    question: "What does 'at least one win' mean?",
+    answer:
+      "It is the probability that one or more of your tickets wins the jackpot: 1 − (1 − p)ⁿ, where p is the single-ticket probability and n is the number of tickets. It assumes every ticket covers a different combination.",
+  },
+  {
+    question: "Can buying every combination guarantee a win?",
+    answer:
+      "Mathematically, covering all 292,201,338 Powerball combinations would guarantee holding the winning one — but it would cost over $584 million at $2 a play, take an enormous logistical effort, and the jackpot is often split with other winners. It is not a practical strategy, and this calculator is not spending advice.",
+  },
+  {
+    question: "Why do duplicate tickets not help?",
+    answer:
+      "Two tickets with the same combination win or lose together — the second adds no new coverage. The at-least-one-win formula assumes distinct combinations; duplicates make the true chance lower than the formula shows.",
+  },
+  {
+    question: "What is the difference between odds and probability?",
+    answer:
+      "Odds of '1 in 292,201,338' and a probability of 0.000000342% describe the same chance in different notation. Odds compare wins to total outcomes; probability is wins divided by total outcomes, a number between 0 and 1.",
+  },
+  {
+    question: "Are expected tickets a guarantee?",
+    answer:
+      "No. 'Expected tickets for one win' (1 ÷ p) is the long-run average over an enormous number of plays. You could win on the first ticket or never win in ten times that many — each drawing is independent, and past results change nothing.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Probability Calculator", url: absoluteUrl("/lottery-probability-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Lottery Probability Calculator" }]} />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Lottery Probability Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    How does the chance of winning change when you buy more tickets? Pick Powerball, Mega
+    Millions, or enter custom "1 in X" odds, then see the probability of at least one jackpot
+    win for 1, 10, 100, 1,000, and 10,000 tickets — plus your own ticket count.
+  </p>
+
+  <section aria-label="Lottery probability calculator" class="mt-8">
+    <ProbabilityExplorer />
+  </section>
+
+  <section aria-label="The multiple-ticket formula" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      The Multiple-Ticket Formula
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        If p is the probability of one ticket winning the jackpot, the probability that at
+        least one of n tickets wins is <strong class="text-slate-800">1 − (1 − p)<sup>n</sup></strong>.
+        The logic: (1 − p)<sup>n</sup> is the chance that <em>every</em> ticket loses, so one
+        minus that is the chance that at least one wins.
+      </p>
+      <p>
+        The formula assumes the tickets are independent and cover different combinations. In
+        practice that means: don't buy two tickets with the same numbers, and remember that
+        drawings don't remember your tickets — every drawing is a fresh, independent event.
+      </p>
+      <p>
+        Buying additional tickets increases the number of combinations covered, but the
+        jackpot probability may remain extremely small. Going from 1 ticket to 1,000 tickets
+        multiplies your chance by roughly 1,000 — and 1,000 times a microscopic probability is
+        still microscopic.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Reading the percentages" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Reading the Percentages
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Lottery probabilities are shown with enough decimal places to stay nonzero — for
+        example, 10 Powerball tickets give about a 0.000003422% chance at the jackpot. These
+        are exact mathematical values, not estimates, but they describe a single drawing:
+        they say nothing about "due" numbers or streaks, which don't exist in independent
+        drawings.
+      </p>
+      <p>
+        To build a lottery's odds from its number pools instead of starting from "1 in X",
+        use the <a href="/lottery-odds-calculator/" class="font-semibold text-blue-700 hover:underline">lottery odds calculator</a>,
+        which derives combinations from any pools you enter.
+      </p>
+    </div>
+  </section>
+
+  <div class="mt-14 max-w-3xl">
+    <Methodology
+      points={[
+        "At-least-one-win probability is 1 − (1 − p)ⁿ, exact while 1 − p is representable in floating point.",
+        "Tickets are assumed to cover distinct combinations; duplicate tickets lower the true chance.",
+        "Expected tickets (1 ÷ p) is a long-run average, never a guarantee or spending advice.",
+        "Powerball and Mega Millions odds come from their centralized verified game configurations.",
+      ]}
+    />
+  </div>
+
+  <FAQ items={faqs} />
+
+  <div class="mt-14 max-w-4xl">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Lottery Odds Calculator",
+          href: "/lottery-odds-calculator/",
+          description: "Derive jackpot odds from any lottery's number pools.",
+        },
+        {
+          label: "Powerball Odds Calculator",
+          href: "/powerball-odds-calculator/",
+          description: "Jackpot and prize-tier odds under the verified Powerball rules.",
+        },
+        {
+          label: "Mega Millions Odds Calculator",
+          href: "/mega-millions-odds-calculator/",
+          description: "Jackpot and prize-tier odds under the verified Mega Millions rules.",
+        },
+        {
+          label: "Lottery Calculator",
+          href: "/lottery-calculator/",
+          description: "Estimate winnings and take-home after taxes.",
+        },
+        {
+          label: "Lottery Payout Calculator",
+          href: "/lottery-payout-calculator/",
+          description: "Compare the cash option with the annuity, side by side.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-14">
+    <SourceList ids={["powerball-official-rules", "megamillions-official-rules"]} />
+  </div>
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>
