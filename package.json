@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/tailwind": "^6.0.0",
+    "astro": "^5.18.0",
+    "tailwindcss": "^3.4.0"
+  },
+  "description": "Lottery Calculator \u2014 estimate lottery winnings, taxes, payouts, and take-home amounts.",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  },
+  "name": "lottery-calculator",
+  "private": true,
+  "scripts": {
+    "build": "astro build",
+    "check": "tsc --noEmit",
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "test": "node --test tests/*.test.ts",
+    "test:dom": "node --test tests/dom.test.ts"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}

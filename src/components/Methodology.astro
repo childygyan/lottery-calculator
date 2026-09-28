@@ -1,0 +1,66 @@
+---
+/**
+ * Reusable methodology explainer. Every calculator page can render this so
+ * users always see how estimates are produced — and that they are estimates.
+ */
+interface Props {
+  headingId?: string;
+}
+
+const { headingId = "methodology-heading" } = Astro.props;
+
+const steps = [
+  {
+    title: "Start with the selected lottery amount.",
+    text: "Enter the advertised jackpot and the cash option (or choose the annuity to estimate one annual payment).",
+  },
+  {
+    title: "Determine the cash or taxable amount.",
+    text: "For a lump sum, the cash option is the taxable amount. For an annuity, each annual payment is taxed in the year it is received.",
+  },
+  {
+    title: "Apply applicable federal tax rules.",
+    text: "Lottery winnings are taxed as ordinary income. The calculator subtracts the standard deduction for your filing status, then applies that year's progressive federal tax brackets.",
+  },
+  {
+    title: "Apply applicable state rules.",
+    text: "The calculator applies the state's configured planning rate. States that do not tax lottery winnings show $0 state tax. Local and city taxes are not included.",
+  },
+  {
+    title: "Calculate estimated total tax.",
+    text: "Estimated federal and state taxes are added together for the total estimated tax liability.",
+  },
+  {
+    title: "Calculate estimated take-home amount.",
+    text: "Estimated total tax is subtracted from the taxable amount. This is an estimate of final liability — withholding shown separately is what may be held back when you are paid, and it is credited against this liability.",
+  },
+];
+---
+
+<section aria-labelledby={headingId} class="mt-14 max-w-3xl">
+  <h2 id={headingId} class="text-2xl font-bold tracking-tight text-slate-900">
+    How We Calculate
+  </h2>
+  <ol class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+    {
+      steps.map((step, i) => (
+        <li class="flex gap-3">
+          <span
+            aria-hidden="true"
+            class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-bold text-blue-800"
+          >
+            {i + 1}
+          </span>
+          <p>
+            <strong class="font-semibold text-slate-800">{step.title}</strong> {step.text}
+          </p>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="mt-4 text-sm leading-relaxed text-slate-500">
+    Results are estimates for informational purposes only — not tax, legal, or financial
+    advice. Your actual tax bill depends on your full tax return, the lottery's rules, and
+    the laws in effect when you claim the prize.
+  </p>
+</section>

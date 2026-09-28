@@ -1,0 +1,274 @@
+---
+/**
+ * Interactive lottery calculator widget.
+ * The form is server-rendered; one small client script (below) wires up
+ * validation and results using the shared engine in src/lib/calculator/.
+ *
+ * Only the default tax year's data is bundled — see src/data/taxes/.
+ */
+import CurrencyInput from "./CurrencyInput.astro";
+import StateSelect from "./StateSelect.astro";
+import ResultCard from "./ResultCard.astro";
+import Disclaimer from "./Disclaimer.astro";
+import { getStateOptions } from "../data/taxes/index.ts";
+import { DEFAULT_TAX_YEAR, SUPPORTED_TAX_YEARS } from "../data/taxes/federal/index.ts";
+import { FILING_STATUSES, FILING_STATUS_LABELS } from "../lib/calculator/index.ts";
+
+const stateOptions = getStateOptions(DEFAULT_TAX_YEAR);
+---
+
+<div class="card">
+  <form id="lottery-form" novalidate>
+    <fieldset>
+      <legend class="label">How will you take the prize?</legend>
+      <div class="mt-2 grid gap-3 sm:grid-cols-2">
+        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 has-checked:border-blue-600 has-checked:bg-blue-50/50">
+          <input
+            type="radio"
+            name="payoutChoice"
+            value="lump_sum"
+            checked
+            class="mt-1 accent-blue-700"
+          />
+          <span>
+            <span class="block text-sm font-semibold text-slate-900">Lump sum (cash)</span>
+            <span class="mt-0.5 block text-xs text-slate-500">
+              One payment now. Taxed in a single year.
+            </span>
+          </span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 has-checked:border-blue-600 has-checked:bg-blue-50/50">
+          <input
+            type="radio"
+            name="payoutChoice"
+            value="annuity"
+            class="mt-1 accent-blue-700"
+          />
+          <span>
+            <span class="block text-sm font-semibold text-slate-900">Annuity</span>
+            <span class="mt-0.5 block text-xs text-slate-500">
+              30 annual payments. Each payment taxed in its year.
+            </span>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="mt-5 grid gap-5 sm:grid-cols-2">
+      <CurrencyInput
+        id="jackpot"
+        name="jackpot"
+        label="Jackpot Amount"
+        placeholder="100,000,000"
+        hint="The advertised annuity jackpot."
+      />
+      <div id="cash-field">
+        <CurrencyInput
+          id="cashValue"
+          name="cashValue"
+          label="Cash Option"
+          placeholder="48,000,000"
+          hint="The lump-sum cash value offered."
+        />
+      </div>
+    </div>
+
+    <div class="mt-5 grid gap-5 sm:grid-cols-3">
+      <div>
+        <label for="taxYear" class="label">Tax Year</label>
+        <select id="taxYear" name="taxYear" class="input" aria-required="true">
+          {
+            SUPPORTED_TAX_YEARS.map((year) => (
+              <option value={String(year)} selected={year === DEFAULT_TAX_YEAR}>
+                {year}
+              </option>
+            ))
+          }
+        </select>
+        <p id="taxYear-error" class="field-error" hidden></p>
+      </div>
+      <div>
+        <label for="filingStatus" class="label">Filing Status</label>
+        <select id="filingStatus" name="filingStatus" class="input" aria-required="true">
+          {
+            FILING_STATUSES.map((status) => (
+              <option value={status} selected={status === "single"}>
+                {FILING_STATUS_LABELS[status]}
+              </option>
+            ))
+          }
+        </select>
+        <p id="filingStatus-error" class="field-error" hidden></p>
+      </div>
+      <StateSelect
+        id="state"
+        name="state"
+        label="State"
+        hint="Used to estimate state tax on the winnings."
+        options={stateOptions.map((o) => ({ code: o.code, state: o.name }))}
+      />
+    </div>
+
+    <div class="mt-6">
+      <button type="submit" class="btn-primary w-full sm:w-auto">
+        Calculate Winnings
+      </button>
+    </div>
+  </form>
+</div>
+
+<ResultCard />
+
+<div class="mt-6">
+  <Disclaimer />
+</div>
+
+<script>
+  // Minimal client logic: validate, calculate, render. All math lives in
+  // src/lib/calculator/ — this script only wires the DOM to the engine.
+  import {
+    validateLotteryForm,
+    calculateLotteryWinnings,
+    formatCurrencyExact,
+    formatPercent,
+    friendlyRuleStatus,
+    FILING_STATUS_LABELS,
+  } from "../lib/calculator/index.ts";
+
+  const form = document.getElementById("lottery-form");
+  const results = document.getElementById("lottery-results");
+  const cashField = document.getElementById("cash-field");
+  const cashInput = document.getElementById("cashValue");
+
+  const fields = ["jackpot", "cashValue", "state", "taxYear", "filingStatus"];
+
+  function setError(fieldId, message) {
+    const input = document.getElementById(fieldId);
+    const errorEl = document.getElementById(fieldId + "-error");
+    if (!input || !errorEl) return;
+    if (message) {
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+      input.setAttribute("aria-invalid", "true");
+    } else {
+      errorEl.textContent = "";
+      errorEl.hidden = true;
+      input.removeAttribute("aria-invalid");
+    }
+  }
+
+  function clearErrors() {
+    fields.forEach((f) => setError(f, ""));
+  }
+
+  function isAnnuity() {
+    const selected = form?.querySelector('input[name="payoutChoice"]:checked');
+    return selected?.value === "annuity";
+  }
+
+  function syncCashField() {
+    const annuity = isAnnuity();
+    if (cashField) cashField.style.display = annuity ? "none" : "";
+    if (cashInput) {
+      cashInput.disabled = annuity;
+      if (annuity) setError("cashValue", "");
+    }
+  }
+
+  form?.querySelectorAll('input[name="payoutChoice"]').forEach((radio) => {
+    radio.addEventListener("change", syncCashField);
+  });
+  syncCashField();
+
+  function renderResults(result) {
+    const set = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    const statusLabel = FILING_STATUS_LABELS[result.filingStatus] ?? result.filingStatus;
+    const stateName =
+      form?.querySelector("#state")?.selectedOptions?.[0]?.textContent?.trim() ??
+      result.state;
+    set(
+      "result-meta",
+      `Tax year ${result.taxYear} · ${statusLabel} · ${stateName} · ${
+        result.payoutChoice === "annuity" ? "Annuity (30 payments)" : "Lump sum"
+      }`
+    );
+
+    const notice = friendlyRuleStatus(result.stateDataStatus);
+    const noticeEl = document.getElementById("result-state-notice");
+    if (noticeEl) {
+      if (notice) {
+        noticeEl.textContent = notice;
+        noticeEl.hidden = false;
+      } else {
+        noticeEl.textContent = "";
+        noticeEl.hidden = true;
+      }
+    }
+
+    const payoutLabel = document.getElementById("result-payout-label");
+    if (payoutLabel) {
+      payoutLabel.textContent =
+        result.payoutChoice === "annuity" ? "Annual Annuity Payment" : "Cash Value";
+    }
+
+    set("result-jackpot", formatCurrencyExact(result.advertisedJackpot));
+    set(
+      "result-payout",
+      formatCurrencyExact(
+        result.payoutChoice === "annuity" ? result.annualAnnuityPayment : result.cashValue
+      )
+    );
+    set("result-federal", formatCurrencyExact(result.federalTax));
+    set("result-state", formatCurrencyExact(result.stateTax));
+    set("result-total", formatCurrencyExact(result.totalEstimatedTax));
+    set("result-takehome", formatCurrencyExact(result.estimatedTakeHome));
+
+    set("detail-fed-withholding", formatCurrencyExact(result.federalWithholding));
+    set(
+      "detail-state-withholding",
+      result.stateWithholding === null ? "Varies" : formatCurrencyExact(result.stateWithholding)
+    );
+    set("detail-liability", formatCurrencyExact(result.totalEstimatedTax));
+    set("detail-rate", formatPercent(result.estimatedEffectiveTaxRate));
+
+    if (results) {
+      results.hidden = false;
+      // scrollIntoView may not exist in every embedding context; never let it
+      // break result rendering.
+      results.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+    }
+  }
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    clearErrors();
+    const data = new FormData(form);
+    const values = {
+      jackpot: String(data.get("jackpot") ?? ""),
+      cashValue: String(data.get("cashValue") ?? ""),
+      payoutChoice: String(data.get("payoutChoice") ?? "lump_sum"),
+      state: String(data.get("state") ?? ""),
+      taxYear: String(data.get("taxYear") ?? ""),
+      filingStatus: String(data.get("filingStatus") ?? ""),
+    };
+    const validation = validateLotteryForm(values);
+    if (!validation.valid || !validation.parsed) {
+      const errors = validation.errors;
+      if (errors.jackpot) setError("jackpot", errors.jackpot);
+      if (errors.cashValue) setError("cashValue", errors.cashValue);
+      if (errors.state) setError("state", errors.state);
+      if (errors.taxYear) setError("taxYear", errors.taxYear);
+      if (errors.filingStatus) setError("filingStatus", errors.filingStatus);
+      if (results) results.hidden = true;
+      // Move focus to the first field with an error.
+      const firstInvalid = document.querySelector("[aria-invalid='true']");
+      if (firstInvalid instanceof HTMLElement) firstInvalid.focus();
+      return;
+    }
+    renderResults(calculateLotteryWinnings(validation.parsed));
+  });
+</script>

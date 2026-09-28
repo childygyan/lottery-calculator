@@ -1,0 +1,234 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FAQ from "../components/FAQ.astro";
+import Disclaimer from "../components/Disclaimer.astro";
+import { buildPageMeta, websiteJsonLd, faqJsonLd } from "../lib/seo/metadata.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Calculator — Estimate Winnings, Taxes & Take-Home",
+  description:
+    "Calculate estimated lottery winnings, taxes, payouts, and take-home amounts with easy-to-use lottery calculators.",
+  path: "/",
+});
+
+const faqs = [
+  {
+    question: "How does a lottery calculator work?",
+    answer:
+      "You enter the advertised jackpot, the cash option amount, and your state. The calculator estimates federal tax using single-filer tax brackets and state tax using a top-marginal-rate planning estimate, subtracts both from the cash option, and shows an estimated take-home amount and effective tax rate.",
+  },
+  {
+    question: "Are lottery winnings taxable?",
+    answer:
+      "Yes. In the United States, lottery winnings are generally treated as ordinary income for federal tax purposes. Most states tax lottery winnings as well, though a few states do not tax them at the state level. Federal tax still applies in every state.",
+  },
+  {
+    question: "What is the cash option?",
+    answer:
+      "The cash option (also called the lump sum) is a one-time payment offered instead of receiving the jackpot as annual payments over many years. It is typically much lower than the advertised jackpot.",
+  },
+  {
+    question: "What is an annuity option?",
+    answer:
+      "The annuity option pays the advertised jackpot as a series of annual payments, usually over 29 or 30 years. Each annual payment is taxable income in the year you receive it.",
+  },
+  {
+    question: "Why is the cash value lower than the advertised jackpot?",
+    answer:
+      "The advertised jackpot is the total of all annuity payments added together over decades. The cash option is roughly the present value of that payment stream — the amount the lottery can invest today to fund those future payments.",
+  },
+  {
+    question: "Does the lottery calculator show my exact tax bill?",
+    answer:
+      "No. The calculator shows planning estimates only. Your actual tax bill depends on your filing status, deductions, other income, state and local rules, and the tax year. For decisions involving a real win, consult a qualified tax professional.",
+  },
+];
+
+const upcomingCalculators = [
+  {
+    name: "Lottery Tax Calculator",
+    description: "See how federal and state taxes affect lottery winnings.",
+  },
+  {
+    name: "Lottery Payout Calculator",
+    description: "Compare lump-sum and annuity payout scenarios side by side.",
+  },
+  {
+    name: "Lottery Annuity Calculator",
+    description: "Break down annual payments across a 30-year annuity.",
+  },
+  {
+    name: "Lottery Odds Calculator",
+    description: "Understand the odds behind popular lottery games.",
+  },
+  {
+    name: "Powerball Calculator",
+    description: "Winnings estimates tailored to Powerball rules.",
+  },
+  {
+    name: "Mega Millions Calculator",
+    description: "Winnings estimates tailored to Mega Millions rules.",
+  },
+];
+
+const jsonLd = [websiteJsonLd(), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  {/* Hero */}
+  <section class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+          Lottery Calculator
+        </h1>
+        <p class="mt-5 text-lg leading-relaxed text-slate-600 sm:text-xl">
+          Calculate estimated lottery winnings, taxes, payouts, and take-home amounts with
+          easy-to-use lottery calculators.
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="/lottery-calculator/" class="btn-primary">Calculate Lottery Winnings</a>
+          <a href="/#calculators" class="btn-secondary">Lottery Tax Calculator</a>
+        </div>
+        <p class="mt-6 text-sm text-slate-500">
+          Estimates for all 50 states and the District of Columbia. No sign-up, no fees.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    {/* What is a lottery calculator? */}
+    <section aria-labelledby="what-is" class="max-w-3xl">
+      <h2 id="what-is" class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        What Is a Lottery Calculator?
+      </h2>
+      <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+        <p>
+          A lottery calculator helps you understand what a lottery win might actually be worth
+          after taxes. The advertised jackpot is not the amount a winner takes home: winners
+          choose between a reduced lump-sum cash payment and an annuity paid over decades, and
+          both options are subject to federal — and usually state — income tax.
+        </p>
+        <p>
+          Our calculator takes the advertised jackpot, the cash option, and your state, then
+          estimates federal and state taxes to show an approximate take-home amount and the
+          effective tax rate. Every figure is clearly labeled as an estimate.
+        </p>
+      </div>
+    </section>
+
+    {/* How winnings are calculated */}
+    <section aria-labelledby="how-calculated" class="mt-14 max-w-4xl">
+      <h2 id="how-calculated" class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        How Lottery Winnings Are Calculated
+      </h2>
+      <div class="mt-6 grid gap-5 sm:grid-cols-2">
+        <div class="card !p-6">
+          <h3 class="text-lg font-bold text-slate-900">1. Advertised jackpot</h3>
+          <p class="mt-2 text-base leading-relaxed text-slate-600">
+            The headline number is the total value of the annuity option — the sum of annual
+            payments over roughly 30 years, not cash in hand today.
+          </p>
+        </div>
+        <div class="card !p-6">
+          <h3 class="text-lg font-bold text-slate-900">2. Cash value</h3>
+          <p class="mt-2 text-base leading-relaxed text-slate-600">
+            The cash option is the lump sum paid immediately. It is typically 45–55% of the
+            advertised jackpot, depending on interest rates and the lottery's rules.
+          </p>
+        </div>
+        <div class="card !p-6">
+          <h3 class="text-lg font-bold text-slate-900">3. Taxes</h3>
+          <p class="mt-2 text-base leading-relaxed text-slate-600">
+            Winnings are taxed as ordinary income. The calculator estimates federal tax with
+            progressive brackets and state tax with a top-marginal-rate planning estimate.
+          </p>
+        </div>
+        <div class="card !p-6">
+          <h3 class="text-lg font-bold text-slate-900">4. Estimated take-home</h3>
+          <p class="mt-2 text-base leading-relaxed text-slate-600">
+            Subtracting estimated federal and state taxes from the cash option gives the
+            approximate amount a winner would keep — along with the effective tax rate.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* Cash vs annuity */}
+    <section aria-labelledby="cash-vs-annuity" class="mt-14 max-w-4xl">
+      <h2 id="cash-vs-annuity" class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        Cash Option vs Annuity
+      </h2>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-slate-600">
+        Winners generally choose between two ways of receiving a jackpot. Neither is
+        universally better — the right choice depends on personal circumstances, which is why
+        large winners often consult financial and tax professionals.
+      </p>
+      <div class="mt-6 grid gap-5 sm:grid-cols-2">
+        <div class="card !p-6">
+          <h3 class="text-lg font-bold text-slate-900">Cash option (lump sum)</h3>
+          <p class="mt-2 text-base leading-relaxed text-slate-600">
+            One immediate payment, smaller than the advertised jackpot. The full amount is
+            taxable in the year it is received, which usually pushes the winner into the top
+            federal bracket for that year.
+          </p>
+        </div>
+        <div class="card !p-6">
+          <h3 class="text-lg font-bold text-slate-900">Annuity</h3>
+          <p class="mt-2 text-base leading-relaxed text-slate-600">
+            Annual payments over about 30 years that add up to the advertised jackpot. Each
+            payment is taxed in the year received, which can spread the tax burden across many
+            years.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* Popular calculators */}
+    <section aria-labelledby="calculators" id="calculators" class="mt-14 scroll-mt-20">
+      <h2 id="calculators-heading" class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        Popular Lottery Calculators
+      </h2>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-slate-600">
+        Start with the core calculator today — more specialized tools are on the way.
+      </p>
+      <ul class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <li class="card !p-6 ring-2 ring-blue-700/20">
+          <h3 class="text-lg font-bold text-slate-900">
+            <a href="/lottery-calculator/" class="hover:text-blue-700 hover:underline">
+              Lottery Winnings Calculator
+            </a>
+          </h3>
+          <p class="mt-2 text-base text-slate-600">
+            Estimate taxes and take-home amounts from any jackpot.
+          </p>
+          <p class="mt-4">
+            <a href="/lottery-calculator/" class="text-sm font-semibold text-blue-700 hover:underline">
+              Use the calculator →
+            </a>
+          </p>
+        </li>
+        {
+          upcomingCalculators.map((calc) => (
+            <li class="card !p-6 opacity-90">
+              <h3 class="text-lg font-bold text-slate-900">{calc.name}</h3>
+              <p class="mt-2 text-base text-slate-600">{calc.description}</p>
+              <p class="mt-4">
+                <span class="inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                  Coming soon
+                </span>
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <FAQ items={faqs} />
+
+    <div class="mt-12 max-w-4xl">
+      <Disclaimer />
+    </div>
+  </div>
+</Layout>

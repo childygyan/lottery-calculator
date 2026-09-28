@@ -1,0 +1,56 @@
+---
+/**
+ * Generic labeled numeric/text input with hint + error slots.
+ * Specialized inputs (e.g. CurrencyInput) compose this component.
+ */
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  type?: string;
+  inputmode?: "decimal" | "numeric" | "text";
+  placeholder?: string;
+  hint?: string;
+  value?: string;
+}
+
+const {
+  id,
+  name,
+  label,
+  type = "text",
+  inputmode = "decimal",
+  placeholder,
+  hint,
+  value = "",
+} = Astro.props;
+
+const hintId = hint ? `${id}-hint` : undefined;
+const errorId = `${id}-error`;
+const hasPrefix = Astro.slots.has("prefix");
+---
+
+<div>
+  <label for={id} class="label">
+    {label}
+  </label>
+  <div class="relative">
+    <slot name="prefix" />
+    <input
+      id={id}
+      name={name}
+      type={type}
+      inputmode={inputmode}
+      autocomplete="off"
+      spellcheck="false"
+      class:list={["input", hasPrefix && "pl-8"]}
+      placeholder={placeholder}
+      value={value}
+      aria-required="true"
+      aria-describedby={[hintId, errorId].filter(Boolean).join(" ")}
+    />
+    <slot name="suffix" />
+  </div>
+  {hint && <p id={hintId} class="field-hint">{hint}</p>}
+  <p id={errorId} class="field-error" hidden></p>
+</div>

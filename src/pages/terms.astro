@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { buildPageMeta } from "../lib/seo/metadata.ts";
+import { siteName } from "../data/site.ts";
+
+const meta = buildPageMeta({
+  title: `Terms of Use — ${siteName}`,
+  description: `The terms of use for ${siteName}: our calculators provide estimates for informational purposes only.`,
+  path: "/terms/",
+});
+---
+
+<Layout meta={meta}>
+  <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Terms of Use" }]} />
+    <article class="max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Terms of Use</h1>
+      <p class="mt-2 text-sm text-slate-500">Last updated: September 2026</p>
+      <div class="mt-6 space-y-5 text-base leading-relaxed text-slate-600">
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Estimates only</h2>
+        <p>
+          All calculators on {siteName} produce estimates for informational purposes only.
+          Results are not tax, legal, or financial advice, and should not be relied on for
+          decisions about actual winnings. Consult a qualified professional for advice about
+          your situation.
+        </p>
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Acceptable use</h2>
+        <p>
+          You agree not to misuse the site, attempt to disrupt it, or misrepresent its
+          outputs as official tax calculations.
+        </p>
+        <h2 class="pt-2 text-xl font-bold text-slate-900">No warranties</h2>
+        <p>
+          The site is provided "as is" without warranties of any kind. Tax rules change, and
+          while we aim to keep our planning estimates current, we cannot guarantee any
+          figure is complete or up to date.
+        </p>
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Limitation of liability</h2>
+        <p>
+          To the maximum extent permitted by law, {siteName} is not liable for any decisions
+          made based on calculator estimates.
+        </p>
+      </div>
+    </article>
+  </div>
+</Layout>

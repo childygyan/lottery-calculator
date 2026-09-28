@@ -1,0 +1,35 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  hint?: string;
+  options: Array<{ code: string; state: string }>;
+}
+
+const { id, name, label, hint, options } = Astro.props;
+const hintId = hint ? `${id}-hint` : undefined;
+const errorId = `${id}-error`;
+---
+
+<div>
+  <label for={id} class="label">
+    {label}
+  </label>
+  <select
+    id={id}
+    name={name}
+    class="input"
+    aria-required="true"
+    aria-describedby={[hintId, errorId].filter(Boolean).join(" ")}
+  >
+    <option value="">Select a state</option>
+    {
+      options.map((opt) => (
+        <option value={opt.code}>{opt.state}</option>
+      ))
+    }
+  </select>
+  {hint && <p id={hintId} class="field-hint">{hint}</p>}
+  <p id={errorId} class="field-error" hidden></p>
+</div>

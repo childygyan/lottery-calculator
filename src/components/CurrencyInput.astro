@@ -1,0 +1,36 @@
+---
+/**
+ * Currency input: NumberInput with a "$" prefix adornment.
+ * Accepts values like "100,000,000" or "$48,000,000".
+ */
+import NumberInput from "./NumberInput.astro";
+
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  placeholder?: string;
+  hint?: string;
+  value?: string;
+}
+
+const { id, name, label, placeholder, hint, value = "" } = Astro.props;
+---
+
+<NumberInput
+  id={id}
+  name={name}
+  label={label}
+  placeholder={placeholder}
+  hint={hint}
+  value={value}
+  inputmode="decimal"
+>
+  <span
+    slot="prefix"
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"
+  >
+    $
+  </span>
+</NumberInput>

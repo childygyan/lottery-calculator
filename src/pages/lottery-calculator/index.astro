@@ -1,0 +1,145 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import LotteryCalculator from "../../components/LotteryCalculator.astro";
+import Methodology from "../../components/Methodology.astro";
+import FAQ from "../../components/FAQ.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Winnings Calculator — Estimate Taxes & Take-Home Pay",
+  description:
+    "Estimate federal and state taxes on lottery winnings. Enter the jackpot, cash option, tax year, filing status, and your state to see estimated take-home amounts.",
+  path: "/lottery-calculator/",
+});
+
+const breadcrumbs = [
+  { name: "Home", href: absoluteUrl("/") },
+  { name: "Lottery Calculator", url: absoluteUrl("/lottery-calculator/") },
+];
+
+const faqs = [
+  {
+    question: "How are the tax estimates calculated?",
+    answer:
+      "The calculator subtracts the standard deduction for your filing status from the taxable amount, then applies that tax year's progressive federal income tax brackets. State tax is estimated using the state's configured planning rate. Both are planning estimates, not a prediction of your actual tax bill.",
+  },
+  {
+    question: "Is the cash option or the annuity used for the tax estimate?",
+    answer:
+      "You choose. With the lump sum, the calculator estimates tax on the cash option as income received in a single year. With the annuity, it estimates tax on one annual payment — each yearly payment is taxed separately in the year you receive it, usually at lower rates than a lump sum.",
+  },
+  {
+    question: "What is the difference between withholding and my final tax bill?",
+    answer:
+      "Withholding is what the lottery holds back when you are paid — generally 24% for federal taxes on large winnings. It is credited against your final tax liability, not added to it. Your actual tax may be higher or lower than what was withheld, and the difference is settled when you file your return.",
+  },
+  {
+    question: "Why do some states show $0 state tax?",
+    answer:
+      "A few states do not tax lottery winnings at the state level — for example, states with no individual income tax, and California, which exempts lottery winnings from state income tax. Federal tax still applies everywhere. If a state's data needs verification, the results will say so.",
+  },
+  {
+    question: "Why might my actual winnings differ from this estimate?",
+    answer:
+      "Your real tax bill depends on your complete tax return: other income, deductions, credits, your actual filing situation, and the tax laws in effect when you claim the prize. State estimates use a top-marginal-rate planning figure and exclude local and city taxes. Treat every number here as a starting point for planning, not a final answer.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLd(breadcrumbs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <Breadcrumbs
+      items={[
+        { name: "Home", href: "/" },
+        { name: "Lottery Calculator" },
+      ]}
+    />
+
+    <div class="max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        Lottery Winnings Calculator
+      </h1>
+      <p class="mt-4 text-lg leading-relaxed text-slate-600">
+        Enter the advertised jackpot, the cash option, your tax year, filing status, and
+        state to estimate federal and state taxes — and see approximately how much of a
+        win you would take home.
+      </p>
+    </div>
+
+    <div class="mt-8 max-w-3xl">
+      <LotteryCalculator />
+    </div>
+
+    <Methodology />
+
+    <section aria-labelledby="understanding" class="mt-14 max-w-3xl">
+      <h2 id="understanding" class="text-2xl font-bold tracking-tight text-slate-900">
+        Understanding your estimate
+      </h2>
+      <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+        <p>
+          <strong class="font-semibold text-slate-800">Advertised jackpot vs. cash value.</strong>
+          {" "}The advertised jackpot is the total paid out over an annuity — usually 30
+          annual payments. The cash option is the lump sum you can take instead, and it is
+          almost always much smaller. Taxes are estimated on the amount you actually
+          receive: the cash option for a lump sum, or one annual payment for an annuity.
+        </p>
+        <p>
+          <strong class="font-semibold text-slate-800">Federal tax.</strong> Lottery
+          winnings are taxed as ordinary income at progressive rates — only the slice of
+          income inside each bracket is taxed at that bracket's rate. The calculator first
+          subtracts the standard deduction for your filing status, then applies the
+          brackets for the selected tax year.
+        </p>
+        <p>
+          <strong class="font-semibold text-slate-800">State tax.</strong> Each state sets
+          its own rules. Some have no income tax, California exempts lottery winnings,
+          and the rest tax winnings at their own rates. The calculator uses a
+          top-marginal-rate planning estimate per state and flags any state whose data
+          still needs verification.
+        </p>
+        <p>
+          <strong class="font-semibold text-slate-800">Withholding vs. tax liability.</strong>
+          {" "}When you claim a large prize, the lottery typically withholds 24% for
+          federal taxes before you see a dollar. That withholding is an advance payment —
+          it is credited against your final tax bill when you file. If your actual tax is
+          higher, you pay the difference; if it is lower, you get a refund.
+        </p>
+        <p>
+          <strong class="font-semibold text-slate-800">Why results are estimates.</strong>
+          {" "}No calculator knows your full tax picture: other income, deductions,
+          credits, local taxes, or how tax law changes before you claim. These numbers
+          are a planning starting point — for a prize this size, a tax professional is
+          worth every penny.
+        </p>
+      </div>
+    </section>
+
+    <div class="mt-12 grid gap-8 lg:grid-cols-[1fr_320px]">
+      <div>
+        <FAQ items={faqs} heading="Lottery Calculator FAQs" headingId="calc-faq-heading" />
+      </div>
+      <aside class="mt-14 lg:mt-0">
+        <RelatedLinks
+          title="Related"
+          links={[
+            {
+              label: "Lottery Calculator",
+              href: "/",
+              description: "Learn how lottery winnings, taxes, and payouts work.",
+            },
+            {
+              label: "About",
+              href: "/about/",
+              description: "What this site is and how our estimates work.",
+            },
+          ]}
+        />
+      </aside>
+    </div>
+  </div>
+</Layout>

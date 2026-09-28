@@ -1,0 +1,56 @@
+---
+/**
+ * Base layout: head metadata, header, footer.
+ * Every page passes a PageMeta built with buildPageMeta().
+ */
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import type { PageMeta } from "../lib/seo/metadata.ts";
+
+interface Props {
+  meta: PageMeta;
+  /** JSON-LD strings rendered as application/ld+json scripts. */
+  jsonLd?: string[];
+}
+
+const { meta, jsonLd = [] } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <link rel="canonical" href={meta.canonical} />
+    <meta name="robots" content={meta.robots} />
+    <meta property="og:type" content={meta.ogType} />
+    <meta property="og:site_name" content={meta.siteName} />
+    <meta property="og:title" content={meta.title} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:url" content={meta.canonical} />
+    <meta property="og:image" content={meta.ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={meta.title} />
+    <meta name="twitter:description" content={meta.description} />
+    <meta name="twitter:image" content={meta.ogImage} />
+    <meta name="theme-color" content="#1d4ed8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {jsonLd.map((json) => <script type="application/ld+json" set:html={json} />)}
+  </head>
+  <body>
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-blue-800 focus:shadow"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

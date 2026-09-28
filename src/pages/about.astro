@@ -1,0 +1,50 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { buildPageMeta } from "../lib/seo/metadata.ts";
+import { siteName } from "../data/site.ts";
+
+const meta = buildPageMeta({
+  title: `About — ${siteName}`,
+  description:
+    "Learn what Lottery Calculator is, how its estimates work, and why every figure is clearly labeled as an estimate.",
+  path: "/about/",
+});
+---
+
+<Layout meta={meta}>
+  <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "About" }]} />
+    <article class="max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">About</h1>
+      <div class="mt-6 space-y-5 text-base leading-relaxed text-slate-600">
+        <p>
+          {siteName} is a free, easy-to-use set of lottery calculators. Our goal is simple:
+          help you understand what a lottery win might actually be worth after taxes — before
+          anyone tries to sell you something.
+        </p>
+        <h2 class="pt-2 text-xl font-bold text-slate-900">How our estimates work</h2>
+        <p>
+          The core calculator takes three inputs — the advertised jackpot, the cash option,
+          and your state — and estimates federal income tax using single-filer tax brackets
+          plus state tax using a top-marginal-rate planning estimate. Subtracting both from
+          the cash option gives an estimated take-home amount and effective tax rate.
+        </p>
+        <p>
+          Every result is labeled as an estimate. We do not promise exact figures, and we do
+          not provide tax or financial advice. For decisions involving real winnings, consult
+          a qualified tax professional.
+        </p>
+        <h2 class="pt-2 text-xl font-bold text-slate-900">What we don't do</h2>
+        <ul class="list-disc space-y-2 pl-6">
+          <li>We don't claim anyone can improve their chances of winning.</li>
+          <li>We don't present estimates as exact tax bills.</li>
+          <li>We don't collect your personal information to show a calculation.</li>
+        </ul>
+        <p>
+          Questions? Visit our <a href="/contact/" class="font-semibold text-blue-700 hover:underline">contact page</a>.
+        </p>
+      </div>
+    </article>
+  </div>
+</Layout>

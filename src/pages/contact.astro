@@ -1,0 +1,38 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { buildPageMeta } from "../lib/seo/metadata.ts";
+import { siteName, contactEmail } from "../data/site.ts";
+
+const meta = buildPageMeta({
+  title: `Contact — ${siteName}`,
+  description: `Contact the ${siteName} team with questions, corrections, or feedback about our lottery calculators.`,
+  path: "/contact/",
+});
+---
+
+<Layout meta={meta}>
+  <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Contact" }]} />
+    <article class="max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Contact</h1>
+      <div class="mt-6 space-y-5 text-base leading-relaxed text-slate-600">
+        <p>
+          Questions about the calculators, a tax rate that looks out of date, or feedback on
+          the site? We'd like to hear from you.
+        </p>
+        <p>
+          Email us at{" "}
+          <a href={`mailto:${contactEmail}`} class="font-semibold text-blue-700 hover:underline">
+            {contactEmail}
+          </a>
+          .
+        </p>
+        <p>
+          Please note: we can't provide personal tax or financial advice. For guidance about
+          an actual win, consult a qualified tax professional in your state.
+        </p>
+      </div>
+    </article>
+  </div>
+</Layout>

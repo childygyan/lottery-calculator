@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { buildPageMeta } from "../lib/seo/metadata.ts";
+import { siteName } from "../data/site.ts";
+
+const meta = buildPageMeta({
+  title: `Disclaimer — ${siteName}`,
+  description: `Calculator results are estimates for informational purposes only. ${siteName} does not provide tax or financial advice.`,
+  path: "/disclaimer/",
+});
+---
+
+<Layout meta={meta}>
+  <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Disclaimer" }]} />
+    <article class="max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Disclaimer</h1>
+      <div class="mt-6 space-y-5 text-base leading-relaxed text-slate-600">
+        <p>
+          <strong class="font-semibold text-slate-800">Estimates only.</strong> Calculator
+          results are estimates for informational purposes only. Actual lottery payouts,
+          withholding, taxes, and take-home amounts may vary based on the lottery,
+          jurisdiction, individual tax circumstances, and applicable laws.
+        </p>
+        <p>
+          {siteName} does not provide tax, legal, or financial advice. Nothing on this site
+          should be interpreted as a recommendation about claiming a prize, choosing between
+          the cash option and the annuity, or filing taxes.
+        </p>
+        <p>
+          Tax laws and rates change over time. While we work to keep our planning estimates
+          reasonable and current, we cannot guarantee that any figure reflects the latest
+          rules. For decisions involving real winnings, consult a qualified tax professional
+          licensed in your state.
+        </p>
+      </div>
+    </article>
+  </div>
+</Layout>

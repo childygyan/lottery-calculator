@@ -1,0 +1,101 @@
+---
+/**
+ * Results card. Rendered once with empty values; the calculator script
+ * fills it in and reveals it. The aria-live region announces updates
+ * to screen readers.
+ *
+ * Two sections keep the distinction clear:
+ *  - "Estimated Results": what you may owe and take home (final liability).
+ *  - "Tax Details": withholding vs. liability, so users see that withholding
+ *    is credited against the final bill — not added to it.
+ */
+const resultRows = [
+  { id: "result-jackpot", label: "Advertised Jackpot" },
+  { id: "result-payout", label: "Cash Value", labelId: "result-payout-label" },
+  { id: "result-federal", label: "Estimated Federal Tax" },
+  { id: "result-state", label: "Estimated State Tax" },
+  { id: "result-total", label: "Estimated Total Tax" },
+  { id: "result-takehome", label: "Estimated Take-Home Amount", highlight: true },
+];
+
+const detailRows = [
+  { id: "detail-fed-withholding", label: "Federal Withholding", hint: "Held back when you are paid; credited against your final tax bill." },
+  { id: "detail-state-withholding", label: "State Withholding", hint: "Held back when you are paid; credited against your final tax bill." },
+  { id: "detail-liability", label: "Estimated Final Tax Liability", hint: "Your estimated total tax bill — withholding counts toward this, it is not extra." },
+  { id: "detail-rate", label: "Effective Tax Rate", hint: "Estimated total tax divided by the taxable amount." },
+];
+---
+
+<section
+  id="lottery-results"
+  aria-labelledby="results-heading"
+  aria-live="polite"
+  class="card mt-8"
+  hidden
+>
+  <div class="flex items-center justify-between gap-3">
+    <h2 id="results-heading" class="text-xl font-bold tracking-tight text-slate-900">
+      Estimated Results
+    </h2>
+    <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">
+      Estimated
+    </span>
+  </div>
+  <p id="result-meta" class="mt-2 text-sm text-slate-500"></p>
+  <p
+    id="result-state-notice"
+    class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900"
+    hidden
+  ></p>
+  <dl class="mt-4 divide-y divide-slate-100">
+    {
+      resultRows.map((row) => (
+        <div class="flex items-baseline justify-between gap-4 py-3">
+          <dt
+            id={row.labelId}
+            class:list={["text-sm sm:text-base", row.highlight ? "font-bold text-slate-900" : "text-slate-600"]}
+          >
+            {row.label}
+          </dt>
+          <dd
+            id={row.id}
+            class:list={[
+              "text-right tabular-nums",
+              row.highlight ? "text-xl font-bold text-emerald-700 sm:text-2xl" : "text-base font-semibold text-slate-900 sm:text-lg",
+            ]}
+          >
+            —
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+
+  <h3 class="mt-8 border-t border-slate-200 pt-6 text-lg font-bold tracking-tight text-slate-900">
+    Tax Details
+  </h3>
+  <p class="mt-1 text-sm text-slate-500">
+    Withholding is not your final tax — it is an advance payment credited against the
+    estimated final liability below.
+  </p>
+  <dl class="mt-2 divide-y divide-slate-100">
+    {
+      detailRows.map((row) => (
+        <div class="flex items-baseline justify-between gap-4 py-3">
+          <dt class="text-sm text-slate-600 sm:text-base">
+            {row.label}
+            <span class="mt-0.5 block text-xs font-normal text-slate-400">{row.hint}</span>
+          </dt>
+          <dd id={row.id} class="shrink-0 text-right text-base font-semibold tabular-nums text-slate-900 sm:text-lg">
+            —
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+  <p class="mt-4 text-xs leading-relaxed text-slate-500">
+    Estimates based on the amounts you entered and the selected tax year, filing status,
+    and state. Federal tax is estimated using progressive brackets after the standard
+    deduction; state tax uses a planning-rate estimate. Your actual tax bill will differ.
+  </p>
+</section>
