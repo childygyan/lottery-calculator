@@ -85,7 +85,10 @@
 
 ## Deliverables
 
-- Local commit: `2d1a56c` (lottery-calculator, branch `master`)
-- GitHub: `childygyan/lottery-calculator`, remote `main` → `<commit>`
-- Archive: `lottery-calculator-phase7-20260928.zip` → Drive folder "Lottery Calculator"
+- Local commit: `902dddf` (lottery-calculator, branch `master`)
+- GitHub: `childygyan/lottery-calculator`, remote `main` →
+  `2b5b778771d50575ebfc0a031c88de6b341ad04b` (pushed via gh_datapush.py)
+- Archive: `lottery-calculator-phase7-20260928.zip` (327,729 bytes, 167 files,
+  no `.git`/`node_modules`/`dist`) → Drive folder "Lottery Calculator"
+  (file id `1Vequ6a7S60mKefbdIJEMki4eYAPjqkC5`)
 - This report: `docs/PHASE7-REPORT.md`
