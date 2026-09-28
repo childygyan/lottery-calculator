@@ -1,0 +1,242 @@
+---
+/**
+ * /mega-millions-calculator/ — dedicated Mega Millions calculator page.
+ * Game rules come from the centralized Mega Millions config; all tax math
+ * uses the shared calculation engine (no duplicated logic).
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import LotteryCalculator from "../../components/LotteryCalculator.astro";
+import LotteryGameHeader from "../../components/LotteryGameHeader.astro";
+import LotteryPrizeTable from "../../components/LotteryPrizeTable.astro";
+import LotteryOddsCard from "../../components/LotteryOddsCard.astro";
+import LotteryGameSwitcher from "../../components/LotteryGameSwitcher.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { MEGA_MILLIONS_CONFIG } from "../../data/lotteries/index.ts";
+import { formatOdds } from "../../data/lotteries/index.ts";
+
+const config = MEGA_MILLIONS_CONFIG;
+
+const meta = buildPageMeta({
+  title: "Mega Millions Calculator — Estimate Taxes & Take-Home Winnings",
+  description:
+    "Estimate Mega Millions taxes and take-home winnings for any jackpot. Enter the advertised jackpot and cash value for federal and state tax estimates using 2026 rates.",
+  path: "/mega-millions-calculator/",
+});
+
+const faqs = [
+  {
+    question: "How does the Mega Millions calculator work?",
+    answer:
+      "Type in the advertised jackpot and the cash option from the official announcement, choose your state, tax year, and filing status, and the calculator estimates your federal tax with that year's brackets and standard deduction, your state tax with the state's planning rate, and your take-home for either a lump sum or the annuity.",
+  },
+  {
+    question: "Why does a Mega Millions ticket cost $5?",
+    answer:
+      "Since the April 2025 game update, a Mega Millions play costs $5 and the multiplier is built in at no extra charge — every ticket is automatically assigned a 2X to 10X multiplier that boosts non-jackpot prizes. The starting jackpot also rose to $50 million under the new game.",
+  },
+  {
+    question: "What is the Mega Millions cash option?",
+    answer:
+      "The advertised jackpot assumes the annuity: one immediate payment followed by 29 annual payments, each 5% larger than the last. The cash option is the single lump-sum payment equal to all the cash in the jackpot prize pool — always less than the advertised figure. Enter the official cash value above for an accurate estimate.",
+  },
+  {
+    question: "Are Mega Millions winnings taxed differently than other lottery wins?",
+    answer:
+      "No. Mega Millions prizes are ordinary income just like any lottery winnings. Federal brackets apply the same way, and state treatment follows the same rules — most states tax winnings as ordinary income, nine states have no income tax to apply, and California exempts lottery winnings from state tax.",
+  },
+  {
+    question: "Does my state tax Mega Millions winnings?",
+    answer:
+      "In most states, yes. Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming levy no broad individual income tax, and California exempts lottery winnings from state tax — in those states the state-tax line of the estimate is $0. Everywhere else, the state's planning rate applies. Federal tax applies no matter where you live.",
+  },
+  {
+    question: "Is the 24% withholding the final tax on a Mega Millions jackpot?",
+    answer:
+      "No — it's a down payment. Federal rules require 24% withholding on winnings over $5,000, and your state may withhold as well. That money is credited against your final tax liability, which on a jackpot is usually higher. The calculator keeps withholding and estimated final tax in separate sections so the difference is clear.",
+  },
+  {
+    question: "Should a winner take the annuity or the cash?",
+    answer:
+      "The annuity pays the full advertised jackpot across 30 payments, with each year's payment taxed in that year — spreading the tax burden. The cash option pays less overall but everything arrives now and is taxed in a single year, typically at the top bracket. Run both in the calculator above and compare the estimated take-home figures.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Mega Millions Calculator", url: absoluteUrl("/mega-millions-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[{ name: "Home", href: "/" }, { name: "Mega Millions Calculator" }]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Mega Millions Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Calculate estimated Mega Millions winnings, taxes, cash value, and potential
+    take-home amount.
+  </p>
+
+  <div class="mt-8">
+    <LotteryGameHeader
+      config={config}
+      tagline="Mega Millions pairs huge jackpots with a built-in multiplier on every ticket. Enter a jackpot below to estimate what you'd actually keep after federal and state taxes."
+    />
+  </div>
+
+  <section aria-label="Mega Millions winnings calculator" class="mt-8">
+    <LotteryCalculator cashHint="Enter the current cash value to calculate an estimate." />
+  </section>
+
+  <section aria-label="How Mega Millions works" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Mega Millions Works
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        A Mega Millions play costs {`$${config.ticketPrice.toFixed(2)}`} — multiplier
+        included. You pick {config.mainNumbers} {config.mainBallName} numbered{" "}
+        {config.mainNumberRange.min} to {config.mainNumberRange.max}, plus one gold{" "}
+        {config.bonusNumberName} numbered {config.bonusNumberRange.min} to{" "}
+        {config.bonusNumberRange.max}. Match all six to win the jackpot.
+      </p>
+      <p>
+        Drawings are held every {config.drawDays} at {config.drawTime}. Jackpots start
+        at $50 million and roll over until someone matches all six numbers. Nine prize
+        tiers pay from the jackpot down to $10, and the overall odds of winning any
+        prize are {formatOdds(config.anyPrizeOdds)} per play.
+      </p>
+      <p>
+        The built-in multiplier is what sets the current game apart: each ticket is
+        randomly assigned a 2X, 3X, 4X, 5X, or 10X multiplier at purchase, and it
+        applies to every non-jackpot prize. Match all five white balls and the prize
+        ranges from $2 million to $10 million depending on your multiplier.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Mega Millions jackpot versus cash option" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Mega Millions Jackpot vs Cash Option
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The advertised jackpot is the annuity value: {config.annuityDescription}{" "}
+        That structure is designed so each payment is 5% larger than the previous one,
+        partly offsetting inflation over the payout period.
+      </p>
+      <p>
+        The <strong class="font-semibold text-slate-900">cash option</strong> is the
+        lump sum actually available in the jackpot prize pool — one payment, always
+        smaller than the advertised jackpot. The gap between the two moves with
+        interest rates, so there is no reliable rule of thumb: use the official cash
+        value from the prize announcement.
+      </p>
+      <p>
+        For taxes, the choice is timing. The cash option lands entirely in one tax
+        year — on a big jackpot, almost all of it falls in the top federal bracket.
+        The annuity's yearly payments are each taxed in the year received, which can
+        keep more of the winnings in lower brackets over time.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Mega Millions taxes" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Mega Millions Taxes
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        A Mega Millions win is taxed like any lottery win: the IRS treats it as
+        ordinary income, and so do the states that tax it. The game you won doesn't
+        change the brackets — only the amount, your filing status, and your state do.
+      </p>
+      <p>
+        This calculator applies the same verified {`2026`} federal brackets and state
+        planning rates as the rest of the site. That means $0 estimated state tax in
+        the nine no-income-tax states and in California (which exempts lottery
+        winnings from state tax), and the state's planning rate everywhere else.
+        One California quirk worth knowing: non-jackpot Mega Millions prizes there
+        are paid on a pari-mutuel basis, so they can differ from the fixed amounts
+        in the prize table below.
+      </p>
+      <p>
+        Expect withholding when you claim: 24% federal on prizes over $5,000, plus
+        state withholding where applicable. It is credited against your final tax —
+        the results below show withholding and estimated final liability separately.
+      </p>
+    </div>
+  </section>
+
+  <LotteryPrizeTable config={config} />
+  <LotteryOddsCard config={config} />
+
+  <section aria-label="How we calculate" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How We Calculate
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        This page shares its calculation engine with every calculator on the site —
+        there is no separate Mega Millions tax formula. The Mega Millions
+        configuration supplies the verified game facts you see above (pools, price,
+        tiers, odds); the shared engine turns your jackpot, cash value, state, tax
+        year, and filing status into estimated federal tax, state tax, total tax, and
+        take-home. Same math, same honesty constraints, game-specific context.
+      </p>
+    </div>
+  </section>
+
+  <Methodology />
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "megamillions-official-rules",
+      "megamillions-prize-tiers",
+      "irs-rev-proc-2025-32",
+      "irs-gambling-withholding",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <div class="mt-14 grid gap-8 lg:grid-cols-[1fr_320px]">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Mega Millions Tax Calculator",
+          href: "/mega-millions-tax-calculator/",
+          description: "A tax-focused walkthrough of Mega Millions winnings.",
+        },
+        {
+          label: "Lottery Tax Calculator",
+          href: "/lottery-tax-calculator/",
+          description: "Federal and state estimates for any lottery win, all 51 jurisdictions.",
+        },
+        {
+          label: "Lottery Calculator",
+          href: "/lottery-calculator/",
+          description: "The general jackpot and take-home estimator.",
+        },
+      ]}
+    />
+  </div>
+
+  <LotteryGameSwitcher currentId="mega-millions" />
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

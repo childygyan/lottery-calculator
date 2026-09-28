@@ -1,0 +1,47 @@
+---
+/**
+ * Jackpot + any-prize odds display card for a lottery game.
+ * Odds come from the verified game config — never from UI strings.
+ */
+import { formatOdds, type LotteryConfig } from "../data/lotteries/index.ts";
+
+interface Props {
+  config: LotteryConfig;
+  headingId?: string;
+}
+
+const { config, headingId = "odds-heading" } = Astro.props;
+---
+
+<section aria-labelledby={headingId} class="mt-14">
+  <h2 id={headingId} class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+    {config.name} Odds
+  </h2>
+  <div class="mt-6 grid gap-4 sm:grid-cols-2">
+    <div class="card !p-6">
+      <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Odds of winning the jackpot
+      </p>
+      <p class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900">
+        {formatOdds(config.jackpotOdds)}
+      </p>
+      <p class="mt-2 text-sm leading-relaxed text-slate-600">
+        Match {config.mainNumbers} {config.mainBallName} ({config.mainNumberRange.min}–
+        {config.mainNumberRange.max}) plus the {config.bonusNumberName} (
+        {config.bonusNumberRange.min}–{config.bonusNumberRange.max}).
+      </p>
+    </div>
+    <div class="card !p-6">
+      <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Odds of winning any prize
+      </p>
+      <p class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900">
+        {formatOdds(config.anyPrizeOdds)}
+      </p>
+      <p class="mt-2 text-sm leading-relaxed text-slate-600">
+        Across all {config.prizeTiers.length} prize tiers, per play.
+        Every combination has the same probability of being drawn.
+      </p>
+    </div>
+  </div>
+</section>

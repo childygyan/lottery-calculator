@@ -1,0 +1,38 @@
+---
+/**
+ * Lottery game header: name, tagline, and the key verified facts
+ * (ticket price, jackpot odds, draw schedule) for a lottery game page.
+ */
+import { formatOdds, type LotteryConfig } from "../data/lotteries/index.ts";
+
+interface Props {
+  config: LotteryConfig;
+  tagline: string;
+}
+
+const { config, tagline } = Astro.props;
+
+const facts = [
+  { label: "Ticket price", value: `$${config.ticketPrice.toFixed(2)} per play` },
+  { label: "Jackpot odds", value: formatOdds(config.jackpotOdds) },
+  { label: "Drawings", value: `${config.drawDays} · ${config.drawTime}` },
+  { label: "Odds of any prize", value: formatOdds(config.anyPrizeOdds) },
+];
+---
+
+<div class="card !p-6 sm:!p-8">
+  <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
+    {config.name} · Rules verified {config.lastVerified}
+  </p>
+  <p class="mt-2 text-lg leading-relaxed text-slate-600">{tagline}</p>
+  <dl class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    {facts.map((fact) => (
+      <div class="rounded-xl bg-slate-50 p-4">
+        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {fact.label}
+        </dt>
+        <dd class="mt-1 text-base font-bold text-slate-900">{fact.value}</dd>
+      </div>
+    ))}
+  </dl>
+</div>

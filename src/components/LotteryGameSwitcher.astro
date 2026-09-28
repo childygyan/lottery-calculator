@@ -1,0 +1,50 @@
+---
+/**
+ * "Other Lottery Calculators" switcher — subtle contextual navigation
+ * between the lottery game pages. Only links to routes that exist.
+ */
+import { getAllLotteryConfigs } from "../data/lotteries/index.ts";
+
+interface Props {
+  /** Id of the game whose page is currently shown (excluded from the list). */
+  currentId?: string;
+}
+
+const { currentId } = Astro.props;
+const games = getAllLotteryConfigs().filter((g) => g.id !== currentId);
+
+const links = [
+  ...games.map((g) => ({
+    label: `${g.name} Calculator`,
+    href: `/${g.slug}/`,
+    description: `Estimate ${g.name} winnings, taxes, and take-home.`,
+  })),
+  {
+    label: "Lottery Tax Calculator",
+    href: "/lottery-tax-calculator/",
+    description: "Federal and state tax estimates for any lottery win, all 51 jurisdictions.",
+  },
+  {
+    label: "Lottery Calculator",
+    href: "/lottery-calculator/",
+    description: "The general jackpot, cash value, and take-home estimator.",
+  },
+];
+---
+
+<nav aria-label="Other lottery calculators" class="card mt-14 !p-6">
+  <h2 class="text-lg font-bold text-slate-900">Other Lottery Calculators</h2>
+  <ul class="mt-4 grid gap-3 sm:grid-cols-3">
+    {links.map((link) => (
+      <li>
+        <a
+          href={link.href}
+          class="block h-full rounded-xl border border-slate-200 p-4 transition-colors hover:border-blue-300 hover:bg-blue-50/50"
+        >
+          <span class="font-semibold text-blue-700">{link.label}</span>
+          <span class="mt-1 block text-sm text-slate-600">{link.description}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

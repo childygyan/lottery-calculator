@@ -1,0 +1,242 @@
+---
+/**
+ * /powerball-calculator/ — dedicated Powerball calculator page.
+ * Game rules come from the centralized Powerball config; all tax math uses
+ * the shared calculation engine (no duplicated logic).
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import LotteryCalculator from "../../components/LotteryCalculator.astro";
+import LotteryGameHeader from "../../components/LotteryGameHeader.astro";
+import LotteryPrizeTable from "../../components/LotteryPrizeTable.astro";
+import LotteryOddsCard from "../../components/LotteryOddsCard.astro";
+import LotteryGameSwitcher from "../../components/LotteryGameSwitcher.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { POWERBALL_CONFIG } from "../../data/lotteries/index.ts";
+import { formatOdds } from "../../data/lotteries/index.ts";
+
+const config = POWERBALL_CONFIG;
+
+const meta = buildPageMeta({
+  title: "Powerball Calculator — Estimate Taxes & Take-Home Winnings",
+  description:
+    "Estimate Powerball taxes and take-home winnings for any jackpot. Enter the advertised jackpot and cash value to see federal and state tax estimates with 2026 rates.",
+  path: "/powerball-calculator/",
+});
+
+const faqs = [
+  {
+    question: "How does the Powerball calculator work?",
+    answer:
+      "Enter the advertised jackpot and the cash option from the official prize announcement, then pick your state, tax year, and filing status. The calculator estimates federal tax with that year's progressive brackets and standard deduction, estimates state tax with the state's planning rate, and shows your take-home for a lump sum or a 30-year annuity.",
+  },
+  {
+    question: "How much tax is taken from Powerball winnings?",
+    answer:
+      "It depends on the prize size, your state, and your filing status. Federal tax treats winnings as ordinary income — on a large jackpot the top 37% bracket usually applies to most of it. State tax ranges from $0 in states with no income tax (and in California, which exempts lottery winnings) up to double-digit planning rates elsewhere. Enter your numbers above for an estimate.",
+  },
+  {
+    question: "What is the Powerball cash option?",
+    answer:
+      "Every Powerball jackpot is advertised as an annuity value — 30 graduated payments over 29 years. The cash option is the smaller lump sum actually sitting in the prize pool, paid all at once. The advertised jackpot and the cash value are different numbers; the cash option is the amount taxed in a single year if you take the lump sum.",
+  },
+  {
+    question: "Are Powerball winnings taxable?",
+    answer:
+      "Yes. The IRS taxes Powerball winnings as ordinary income in the year you receive them, and most states tax them too. California is the notable exception — it exempts California Lottery winnings from state income tax, though federal tax still applies.",
+  },
+  {
+    question: "Does my state tax Powerball winnings?",
+    answer:
+      "Most states do. Nine states — Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming — have no broad individual income tax, so there's no state tax on winnings there, and California exempts lottery winnings. Everywhere else, winnings are generally taxed as ordinary income at the state's rates.",
+  },
+  {
+    question: "Is Powerball withholding the same as final tax?",
+    answer:
+      "No. Federal law requires 24% withholding on lottery winnings over $5,000, and many states withhold too. Withholding is a prepayment credited against your final tax bill — on a jackpot, your actual combined rate is usually higher, and you settle the difference when you file.",
+  },
+  {
+    question: "Can I choose cash instead of annuity?",
+    answer:
+      "Yes — jackpot winners choose between the lump-sum cash option and the 30-payment annuity. The annuity pays the full advertised jackpot over 29 years with each payment taxed in its year; the lump sum is smaller but paid now and taxed all at once. The calculator above estimates both.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Powerball Calculator", url: absoluteUrl("/powerball-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[{ name: "Home", href: "/" }, { name: "Powerball Calculator" }]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Powerball Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Calculate estimated Powerball winnings, taxes, cash value, and potential
+    take-home amount.
+  </p>
+
+  <div class="mt-8">
+    <LotteryGameHeader
+      config={config}
+      tagline="Powerball is America's best-known jackpot game: five white balls plus the red Powerball, drawn three nights a week. Use the calculator below to see what a jackpot is really worth after federal and state taxes."
+    />
+  </div>
+
+  <section aria-label="Powerball winnings calculator" class="mt-8">
+    <LotteryCalculator cashHint="Enter the current cash value to calculate an estimate." />
+  </section>
+
+  <section aria-label="How Powerball works" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Powerball Works
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        A Powerball play costs {`$${config.ticketPrice}`} and covers six numbers drawn
+        from two pools: {config.mainNumbers} {config.mainBallName} numbered{" "}
+        {config.mainNumberRange.min} to {config.mainNumberRange.max}, and one red{" "}
+        {config.bonusNumberName} numbered {config.bonusNumberRange.min} to{" "}
+        {config.bonusNumberRange.max}. Match all six and you win the jackpot.
+      </p>
+      <p>
+        Drawings are held every {config.drawDays} at {config.drawTime}. The jackpot
+        starts at $20 million and grows with every drawing that has no jackpot
+        winner. There are {config.prizeTiers.length} ways to win in total, with
+        overall odds of {formatOdds(config.anyPrizeOdds)} per play.
+      </p>
+      <p>
+        For an extra $1 per play, Power Play multiplies non-jackpot prizes by 2X,
+        3X, 4X, 5X, or 10X — the Match 5 prize with Power Play is always $2 million,
+        and the 10X multiplier is only available when the advertised jackpot is
+        $150 million or less. Double Play is a separate $1 add-on: a second drawing
+        with the same numbers and a top cash prize of $10 million.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Powerball jackpot versus cash option" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Powerball Jackpot vs Cash Option
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The giant number on billboards is the <strong class="font-semibold text-slate-900">advertised jackpot</strong> —
+        the total paid out if you take the annuity: {config.annuityDescription}
+      </p>
+      <p>
+        The <strong class="font-semibold text-slate-900">cash option</strong> is the
+        one-time lump sum actually in the prize pool. It is always smaller than the
+        advertised jackpot — often roughly half, though the exact ratio moves with
+        interest rates. There is no fixed formula: if you know the official cash value
+        from the prize announcement, enter it in the calculator above.
+      </p>
+      <p>
+        Tax-wise the distinction matters enormously. The lump sum is taxed all in one
+        year, usually at the top federal bracket. The annuity spreads the income — and
+        the tax — across 30 tax years.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Powerball taxes" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Powerball Taxes
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Powerball winnings are taxed exactly like any other lottery winnings: as
+        ordinary income, federally and in most states. Nothing about the Powerball
+        brand changes the tax math — a $100 million Powerball jackpot and a
+        $100 million prize from any other game are taxed identically.
+      </p>
+      <p>
+        Federal tax applies the year's progressive brackets to the taxable amount
+        after your standard deduction. State tax follows the same state planning
+        rates used by the general lottery tax calculator — including $0 in the nine
+        states without an income tax and in California, which exempts lottery
+        winnings from state tax.
+      </p>
+      <p>
+        When you claim a large prize, 24% is typically withheld for federal taxes
+        (plus any state withholding). That withholding is credited against your final
+        bill — it is not the final tax. The calculator shows both, side by side, so
+        you can see the difference.
+      </p>
+    </div>
+  </section>
+
+  <LotteryPrizeTable config={config} />
+  <LotteryOddsCard config={config} />
+
+  <section aria-label="How we calculate" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How We Calculate
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The Powerball calculator runs on the same shared engine as every other
+        calculator on this site. Your jackpot, cash value, state, tax year, and
+        filing status go in; the engine applies the verified federal brackets and
+        state planning rates and returns the estimated federal tax, state tax,
+        total tax, and take-home — plus withholding shown separately from final
+        liability. Game-specific rules (ticket price, prize tiers, odds) drive the
+        information on this page; they never change the tax math.
+      </p>
+    </div>
+  </section>
+
+  <Methodology />
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "powerball-official-rules",
+      "powerball-prize-tiers",
+      "irs-rev-proc-2025-32",
+      "irs-gambling-withholding",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <div class="mt-14 grid gap-8 lg:grid-cols-[1fr_320px]">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Powerball Tax Calculator",
+          href: "/powerball-tax-calculator/",
+          description: "A tax-focused walkthrough of Powerball winnings.",
+        },
+        {
+          label: "Lottery Tax Calculator",
+          href: "/lottery-tax-calculator/",
+          description: "Federal and state estimates for any lottery win, all 51 jurisdictions.",
+        },
+        {
+          label: "Lottery Calculator",
+          href: "/lottery-calculator/",
+          description: "The general jackpot and take-home estimator.",
+        },
+      ]}
+    />
+  </div>
+
+  <LotteryGameSwitcher currentId="powerball" />
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

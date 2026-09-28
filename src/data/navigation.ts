@@ -14,6 +14,10 @@ export const mainNav: NavItem[] = [
 export const footerNav: NavItem[] = [
   { label: "Lottery Calculator", href: "/lottery-calculator/" },
   { label: "Lottery Tax Calculator", href: "/lottery-tax-calculator/" },
+  { label: "Powerball Calculator", href: "/powerball-calculator/" },
+  { label: "Powerball Tax Calculator", href: "/powerball-tax-calculator/" },
+  { label: "Mega Millions Calculator", href: "/mega-millions-calculator/" },
+  { label: "Mega Millions Tax Calculator", href: "/mega-millions-tax-calculator/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
   { label: "Privacy Policy", href: "/privacy/" },

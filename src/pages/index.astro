@@ -44,11 +44,25 @@ const faqs = [
   },
 ];
 
-const upcomingCalculators = [
+const liveCalculators = [
+  {
+    name: "Powerball Calculator",
+    description: "Winnings estimates tailored to Powerball rules.",
+    href: "/powerball-calculator/",
+  },
+  {
+    name: "Mega Millions Calculator",
+    description: "Winnings estimates tailored to Mega Millions rules.",
+    href: "/mega-millions-calculator/",
+  },
   {
     name: "Lottery Tax Calculator",
     description: "See how federal and state taxes affect lottery winnings.",
+    href: "/lottery-tax-calculator/",
   },
+];
+
+const upcomingCalculators = [
   {
     name: "Lottery Payout Calculator",
     description: "Compare lump-sum and annuity payout scenarios side by side.",
@@ -60,14 +74,6 @@ const upcomingCalculators = [
   {
     name: "Lottery Odds Calculator",
     description: "Understand the odds behind popular lottery games.",
-  },
-  {
-    name: "Powerball Calculator",
-    description: "Winnings estimates tailored to Powerball rules.",
-  },
-  {
-    name: "Mega Millions Calculator",
-    description: "Winnings estimates tailored to Mega Millions rules.",
   },
 ];
 
@@ -209,6 +215,23 @@ const jsonLd = [websiteJsonLd(), faqJsonLd(faqs)];
             </a>
           </p>
         </li>
+        {
+          liveCalculators.map((calc) => (
+            <li class="card !p-6">
+              <h3 class="text-lg font-bold text-slate-900">
+                <a href={calc.href} class="hover:text-blue-700 hover:underline">
+                  {calc.name}
+                </a>
+              </h3>
+              <p class="mt-2 text-base text-slate-600">{calc.description}</p>
+              <p class="mt-4">
+                <a href={calc.href} class="text-sm font-semibold text-blue-700 hover:underline">
+                  Use the calculator →
+                </a>
+              </p>
+            </li>
+          ))
+        }
         {
           upcomingCalculators.map((calc) => (
             <li class="card !p-6 opacity-90">

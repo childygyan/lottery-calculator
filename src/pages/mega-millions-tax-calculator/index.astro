@@ -1,0 +1,252 @@
+---
+/**
+ * /mega-millions-tax-calculator/ — tax-focused Mega Millions page.
+ * Interactive calculator plus explainers: federal taxes, state taxes, cash
+ * option, withholding, and take-home calculation.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import LotteryCalculator from "../../components/LotteryCalculator.astro";
+import LotteryTaxSummary from "../../components/LotteryTaxSummary.astro";
+import LotteryGameSwitcher from "../../components/LotteryGameSwitcher.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { MEGA_MILLIONS_CONFIG } from "../../data/lotteries/index.ts";
+
+const config = MEGA_MILLIONS_CONFIG;
+
+const meta = buildPageMeta({
+  title: "Mega Millions Tax Calculator — Federal & State Tax on Winnings",
+  description:
+    "How are Mega Millions winnings taxed? Estimate federal and state taxes on a Mega Millions jackpot, compare withholding vs. final tax, and see take-home for lump sum or annuity.",
+  path: "/mega-millions-tax-calculator/",
+});
+
+const faqs = [
+  {
+    question: "How are Mega Millions winnings taxed?",
+    answer:
+      "Like all lottery winnings: as ordinary income. Federal tax applies the year's progressive brackets after the standard deduction, and most states tax winnings as ordinary income too. The game itself doesn't create special tax rules.",
+  },
+  {
+    question: "What federal tax will I owe on a Mega Millions jackpot?",
+    answer:
+      "It follows the ordinary income brackets — 10% to 37% for 2026. On a jackpot, the standard deduction barely dents the total and nearly all of it is taxed at 37%. The 24% withheld at claim time is a prepayment, not the final bill.",
+  },
+  {
+    question: "Do all states tax Mega Millions winnings?",
+    answer:
+      "No. Nine states have no broad individual income tax — Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming — and California exempts lottery winnings from state tax. In those states the state-tax estimate is $0; elsewhere the state's planning rate applies.",
+  },
+  {
+    question: "Does the $5 ticket's built-in multiplier affect taxes?",
+    answer:
+      "Only through the prize amount. The multiplier boosts non-jackpot prizes (2X to 10X), and you pay tax on whatever you actually receive. It doesn't change the tax rates or create a separate tax category.",
+  },
+  {
+    question: "How does withholding work on a Mega Millions win?",
+    answer:
+      "Prizes over $5,000 trigger 24% federal withholding when you claim, plus state withholding in many states. That withheld amount is credited against your final tax liability on your return — on a jackpot, the final liability is typically higher, and you pay the difference.",
+  },
+  {
+    question: "Lump sum or annuity — which is better for taxes?",
+    answer:
+      "The annuity spreads the advertised jackpot over 30 payments (one immediate, then 29 annual payments growing 5% each year), with each payment taxed in its year — often at lower effective rates. The lump sum is taxed all at once, usually at the top bracket. The calculator above estimates both so you can compare the take-home.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Mega Millions Tax Calculator", url: absoluteUrl("/mega-millions-tax-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[{ name: "Home", href: "/" }, { name: "Mega Millions Tax Calculator" }]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Mega Millions Tax Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Estimate federal and state taxes on Mega Millions winnings — and see the
+    difference between what's withheld when you claim and what you finally owe.
+  </p>
+
+  <section aria-label="Mega Millions tax calculator" class="mt-8">
+    <LotteryCalculator cashHint="Enter the current cash value to calculate an estimate." />
+  </section>
+
+  <LotteryTaxSummary config={config} />
+
+  <section aria-label="How Mega Millions taxes work" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Mega Millions Taxes Work
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        A Mega Millions win is taxed in two layers. The federal layer is the same
+        for every winner: the prize counts as ordinary income for the year it's
+        received, taxed at the progressive rates for your filing status. The state
+        layer depends on where the winnings are taxed — from zero in some states
+        to a significant second bill in others.
+      </p>
+      <p>
+        What moves the needle most is how you take the money. The $5 ticket, the
+        built-in multiplier, the gold Mega Ball — none of that changes the tax
+        code. The payout choice does.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Federal taxes on Mega Millions winnings" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Federal Taxes
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The IRS taxes Mega Millions winnings as ordinary income. The calculator
+        applies the 2026 brackets for your filing status to the taxable amount
+        after the standard deduction: 10%, 12%, 22%, 24%, 32%, 35%, and 37%. A
+        jackpot blows through the lower brackets almost immediately, so the
+        effective federal rate on a large lump sum lands in the mid-30s.
+      </p>
+      <p>
+        Under the annuity, the math repeats yearly: each of the 30 payments is
+        taxed in the year it arrives, each with that year's standard deduction
+        and brackets. Smaller annual amounts mean lower brackets do more work.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="State taxes on Mega Millions winnings" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      State Taxes
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        State treatment splits three ways. In Alaska, Florida, Nevada, New
+        Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming there
+        is no broad individual income tax, so Mega Millions winnings face no
+        state tax. California exempts lottery winnings from its income tax. In
+        the remaining states, winnings are generally taxed as ordinary income.
+      </p>
+      <p>
+        The calculator estimates state tax with each state's 2026 top-marginal
+        planning rate — the conservative choice for a jackpot-sized win — and
+        shows $0 where the rules say $0. It doesn't include local taxes, and it
+        flags states whose data is still being verified rather than guessing.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Mega Millions cash option and taxes" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Cash Option
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The advertised Mega Millions jackpot assumes the annuity: one immediate
+        payment followed by 29 annual payments, each 5% larger than the last. The
+        cash option is the one-time lump sum equal to all the cash in the jackpot
+        prize pool. It is always the smaller number, and the exact gap shifts
+        with interest rates — which is why the calculator asks you to enter the
+        official cash value instead of estimating one.
+      </p>
+      <p>
+        Taking the cash means the entire taxable amount lands on a single
+        return. Taking the annuity means thirty smaller returns. Run both above
+        and compare the estimated take-home lines before deciding which story
+        you prefer.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Withholding on Mega Millions winnings" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Withholding
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Claim a Mega Millions prize over $5,000 and 24% is withheld for federal
+        taxes on the spot; most states with an income tax withhold their portion
+        too. Think of it as a deposit on the final bill, not the bill itself.
+      </p>
+      <p>
+        The results above keep the two apart on purpose: one section shows the
+        estimated final tax liability, another shows what was withheld. On a
+        jackpot the liability section is almost always the bigger number — the
+        difference is what you'd still owe at filing time.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Mega Millions take-home calculation" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Take-Home Calculation
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Take-home is the taxable amount minus estimated total tax. For a lump
+        sum, that's the cash option minus the single-year tax estimate. For the
+        annuity, the calculator shows one representative annual payment minus
+        that year's tax — it doesn't pretend to forecast thirty years of future
+        tax law.
+      </p>
+      <p>
+        Treat every figure as a planning estimate. Real returns include other
+        income, deductions, and credits this calculator can't see, so jackpot
+        winners typically settle the details with a tax professional before
+        claiming.
+      </p>
+    </div>
+  </section>
+
+  <Methodology />
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "megamillions-official-rules",
+      "irs-rev-proc-2025-32",
+      "irs-gambling-withholding",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <div class="mt-14 grid gap-8 lg:grid-cols-[1fr_320px]">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Mega Millions Calculator",
+          href: "/mega-millions-calculator/",
+          description: "Game rules, prize tiers, odds, and the winnings estimator.",
+        },
+        {
+          label: "Lottery Tax Calculator",
+          href: "/lottery-tax-calculator/",
+          description: "Federal and state estimates for any lottery win.",
+        },
+        {
+          label: "State Lottery Tax Calculators",
+          href: "/lottery-tax-calculator/",
+          description: "All 51 jurisdiction pages with state-specific tax details.",
+        },
+      ]}
+    />
+  </div>
+
+  <LotteryGameSwitcher currentId="mega-millions" />
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

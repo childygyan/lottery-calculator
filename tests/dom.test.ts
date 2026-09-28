@@ -228,3 +228,80 @@ describe("state pages (built HTML)", () => {
     }
   });
 });
+
+describe("lottery game pages (built HTML)", () => {
+  const pages = [
+    { slug: "powerball-calculator", h1: "Powerball Calculator", game: "Powerball" },
+    { slug: "mega-millions-calculator", h1: "Mega Millions Calculator", game: "Mega Millions" },
+    { slug: "powerball-tax-calculator", h1: "Powerball Tax Calculator", game: "Powerball" },
+    { slug: "mega-millions-tax-calculator", h1: "Mega Millions Tax Calculator", game: "Mega Millions" },
+  ] as const;
+
+  function pageHtml(slug: string): string {
+    return readFileSync(join(DIST, slug, "index.html"), "utf8");
+  }
+
+  it("all four pages build with the correct H1", () => {
+    for (const page of pages) {
+      const doc = new JSDOM(pageHtml(page.slug)).window.document;
+      const h1 = doc.querySelector("h1");
+      assert.ok(h1, `${page.slug}: has an h1`);
+      assert.equal(h1.textContent?.trim(), page.h1, `${page.slug}: h1 text`);
+    }
+  });
+
+  it("each page embeds the working calculator form", () => {
+    for (const page of pages) {
+      const doc = new JSDOM(pageHtml(page.slug)).window.document;
+      assert.ok(doc.getElementById("lottery-form"), `${page.slug}: calculator form present`);
+      assert.ok(doc.getElementById("lottery-results"), `${page.slug}: results region present`);
+    }
+  });
+
+  it("game pages render verified prize tiers and odds from the config", () => {
+    const pb = new JSDOM(pageHtml("powerball-calculator")).window.document;
+    assert.ok(pb.body.textContent?.includes("1 in 292,201,338"), "Powerball jackpot odds shown");
+    assert.ok(pb.body.textContent?.includes("$1,000,000"), "Powerball Match 5 prize shown");
+
+    const mm = new JSDOM(pageHtml("mega-millions-calculator")).window.document;
+    assert.ok(mm.body.textContent?.includes("1 in 290,472,336"), "Mega Millions jackpot odds shown");
+    assert.ok(mm.body.textContent?.includes("$10,000,000"), "Mega Millions 10X Match 5 prize shown");
+  });
+
+  it("pages carry breadcrumb + FAQ structured data", () => {
+    for (const page of pages) {
+      const doc = new JSDOM(pageHtml(page.slug)).window.document;
+      const scripts = [...doc.querySelectorAll('script[type="application/ld+json"]')].map(
+        (s) => s.textContent ?? "",
+      );
+      assert.ok(scripts.some((s) => s.includes("BreadcrumbList")), `${page.slug}: BreadcrumbList JSON-LD`);
+      assert.ok(scripts.some((s) => s.includes("FAQPage")), `${page.slug}: FAQPage JSON-LD`);
+    }
+  });
+
+  it("pages link to their sibling calculators, never to unbuilt routes", () => {
+    const pb = new JSDOM(pageHtml("powerball-calculator")).window.document;
+    const pbHrefs = [...pb.querySelectorAll("a")].map((a) => a.getAttribute("href") ?? "");
+    assert.ok(pbHrefs.includes("/powerball-tax-calculator/"), "Powerball page links to its tax page");
+    assert.ok(pbHrefs.includes("/mega-millions-calculator/"), "Powerball page links to Mega Millions");
+    assert.ok(!pbHrefs.some((h) => h.includes("odds-calculator")), "no link to unbuilt odds calculator");
+    assert.ok(!pbHrefs.some((h) => h.includes("payout-calculator")), "no link to unbuilt payout calculator");
+  });
+
+  it("cash field hint tells users to enter the official cash value", () => {
+    const doc = new JSDOM(pageHtml("powerball-calculator")).window.document;
+    assert.ok(
+      doc.body.textContent?.includes("Enter the current cash value to calculate an estimate."),
+      "lottery pages show the no-invention cash hint",
+    );
+  });
+
+  it("game switcher lists the other calculators", () => {
+    const doc = new JSDOM(pageHtml("mega-millions-calculator")).window.document;
+    const nav = doc.querySelector('nav[aria-label="Other lottery calculators"]');
+    assert.ok(nav, "switcher nav exists");
+    const labels = [...nav.querySelectorAll("a")].map((a) => a.textContent ?? "");
+    assert.ok(labels.some((t) => t.includes("Powerball Calculator")), "switcher links Powerball");
+    assert.ok(labels.some((t) => t.includes("Lottery Tax Calculator")), "switcher links Lottery Tax");
+  });
+});

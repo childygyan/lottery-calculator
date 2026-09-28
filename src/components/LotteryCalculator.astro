@@ -20,9 +20,14 @@ interface Props {
    * Two-letter code, e.g. "CA". Empty = no preselection.
    */
   defaultState?: string;
+  /**
+   * Override the cash-option field hint (used by lottery game pages, which
+   * must tell users to enter the current cash value instead of inventing one).
+   */
+  cashHint?: string;
 }
 
-const { defaultState = "" } = Astro.props;
+const { defaultState = "", cashHint = "The lump-sum cash value offered." } = Astro.props;
 
 const stateOptions = getStateOptions(DEFAULT_TAX_YEAR);
 ---
@@ -78,7 +83,7 @@ const stateOptions = getStateOptions(DEFAULT_TAX_YEAR);
           name="cashValue"
           label="Cash Option"
           placeholder="48,000,000"
-          hint="The lump-sum cash value offered."
+          hint={cashHint}
         />
       </div>
     </div>

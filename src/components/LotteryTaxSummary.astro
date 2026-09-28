@@ -1,0 +1,37 @@
+---
+/**
+ * Lottery tax summary for the per-game tax pages: which game, which tax
+ * year the estimates use, and the honest scope of the calculation.
+ */
+import type { LotteryConfig } from "../data/lotteries/index.ts";
+import { DEFAULT_TAX_YEAR } from "../data/taxes/federal/index.ts";
+
+interface Props {
+  config: LotteryConfig;
+}
+
+const { config } = Astro.props;
+---
+
+<div class="card mt-8 !p-6">
+  <h2 class="text-lg font-bold text-slate-900">
+    How {config.name} winnings are taxed
+  </h2>
+  <ul class="mt-4 space-y-3 text-base leading-relaxed text-slate-600">
+    <li>
+      <strong class="font-semibold text-slate-900">Federal:</strong> {config.name}{" "}
+      winnings are ordinary income. The calculator applies {DEFAULT_TAX_YEAR} federal
+      brackets for your filing status after the standard deduction.
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-900">State:</strong> state tax uses the
+      same {DEFAULT_TAX_YEAR} state planning rates as the general lottery tax
+      calculator — there is no separate {config.name}-specific state tax logic.
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-900">Withholding vs. final tax:</strong>{" "}
+      federal withholding (24% over $5,000) is taken when you are paid and credited
+      against your final liability — it is not the final tax.
+    </li>
+  </ul>
+</div>
