@@ -1,0 +1,228 @@
+---
+/**
+ * /lottery-tax-calculator/ — hub for all 51 state lottery tax calculators.
+ * Interactive calculator, explainer sections, filterable state directory,
+ * FAQs, methodology, and disclaimer.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import LotteryCalculator from "../../components/LotteryCalculator.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { getStateTaxRules } from "../../data/taxes/states/index.ts";
+import { formatPercent } from "../../lib/calculator/formatting.ts";
+import { DEFAULT_TAX_YEAR } from "../../data/taxes/federal/index.ts";
+import type { StateTaxRule } from "../../lib/calculator/types.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Tax Calculator — Estimate Federal & State Tax on Winnings",
+  description:
+    "Estimate federal and state taxes on lottery winnings for all 50 states plus DC. See take-home amounts for lump sum or annuity payouts with 2026 rates.",
+  path: "/lottery-tax-calculator/",
+});
+
+const rules = [...getStateTaxRules(DEFAULT_TAX_YEAR)].sort((a, b) =>
+  a.name.localeCompare(b.name),
+);
+
+function treatmentSummary(rule: StateTaxRule): string {
+  if (rule.status === "needs_verification") return "State tax treatment under review";
+  switch (rule.taxTreatment) {
+    case "no_state_individual_income_tax":
+      return "No state income tax";
+    case "special_exemption":
+      return "Lottery winnings exempt from state tax";
+    case "ordinary_income":
+      return rule.taxRate !== null
+        ? `State planning rate ${formatPercent(rule.taxRate)}`
+        : "State tax applies";
+    default:
+      return "See state details";
+  }
+}
+
+const faqs = [
+  {
+    question: "How does the lottery tax calculator work?",
+    answer:
+      "Enter the advertised jackpot, the cash option, your tax year, filing status, and state. The calculator estimates your federal tax using that year's progressive brackets and standard deduction, estimates state tax using the state's planning rate, and shows your take-home for a lump sum or a 30-year annuity.",
+  },
+  {
+    question: "What's the difference between federal and state lottery taxes?",
+    answer:
+      "Federal tax applies to lottery winnings everywhere in the US — winnings are ordinary income, taxed at 10% to 37% for 2026. State tax depends on where the winnings are taxed: nine states have no individual income tax, California exempts lottery winnings, and the rest tax winnings as ordinary income at their own rates.",
+  },
+  {
+    question: "Should I take the cash option or the annuity?",
+    answer:
+      "The annuity pays the full advertised jackpot as 30 annual payments, each taxed in the year you receive it — which can mean lower tax brackets each year. The lump sum is a smaller amount taxed all at once, but you get the money now. The calculator estimates both so you can compare.",
+  },
+  {
+    question: "Which states don't tax lottery winnings?",
+    answer:
+      "Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming have no broad individual income tax, so there's no state tax on winnings. California exempts California Lottery winnings from state tax. Federal tax still applies in every state.",
+  },
+  {
+    question: "Is the 24% withholding my final tax bill?",
+    answer:
+      "No. Federal law requires 24% withholding on lottery winnings over $5,000, but that's a prepayment credited against your final tax liability. On a large jackpot your actual federal rate is usually higher, and you settle the difference when you file.",
+  },
+  {
+    question: "Are these tax estimates exact?",
+    answer:
+      "No — they're planning estimates. Your actual tax depends on your full return: other income, deductions, credits, and the laws in effect when you claim the prize. State figures use a top-marginal planning rate and exclude local taxes. Where a state's data needs verification, the page says so instead of showing a figure.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Tax Calculator", url: absoluteUrl("/lottery-tax-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[{ name: "Home", href: "/" }, { name: "Lottery Tax Calculator" }]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Lottery Tax Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Estimate federal and state taxes on lottery winnings — and see what you'd
+    actually take home. Pick any of the 50 states or DC below, or use the
+    calculator right now with 2026 rates.
+  </p>
+
+  <section aria-label="Lottery tax calculator" class="mt-8">
+    <LotteryCalculator />
+  </section>
+
+  <section aria-label="How lottery taxes work" class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How lottery taxes work
+    </h2>
+    <p class="mt-4 max-w-3xl text-slate-600">
+      Lottery winnings are ordinary income. The moment you claim a prize, two
+      tax systems want a share: the federal government, which taxes winnings
+      everywhere in the country, and your state, whose rules range from "no tax
+      at all" to double-digit rates. What you actually receive is the prize
+      minus both — minus what's already been withheld.
+    </p>
+    <p class="mt-4 max-w-3xl text-slate-600">
+      The advertised jackpot is almost never what you can take home. First,
+      it's the annuity value — 30 payments over 29 years — not cash in hand.
+      Second, taxes apply to whichever payout you choose. The calculator above
+      walks through all of it: jackpot, cash value, federal tax, state tax,
+      withholding, and take-home.
+    </p>
+  </section>
+
+  <section aria-label="Federal vs state taxes" class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Federal vs. state taxes
+    </h2>
+    <p class="mt-4 max-w-3xl text-slate-600">
+      <strong class="font-semibold text-slate-900">Federal tax</strong> is the
+      constant: winnings are taxed at progressive rates from 10% to 37% (2026),
+      after the standard deduction for your filing status. On a jackpot-sized
+      win, nearly all of it lands in the top brackets.
+    </p>
+    <p class="mt-4 max-w-3xl text-slate-600">
+      <strong class="font-semibold text-slate-900">State tax</strong> is the
+      variable. Nine states levy no individual income tax at all. California
+      exempts lottery winnings specifically. Everywhere else, winnings are
+      generally taxed as ordinary income — we estimate using each state's
+      planning rate, shown on its page with the source and verification date.
+    </p>
+  </section>
+
+  <section aria-label="Cash option vs annuity" class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Cash option vs. annuity
+    </h2>
+    <p class="mt-4 max-w-3xl text-slate-600">
+      The <strong class="font-semibold text-slate-900">cash option</strong> is
+      a single lump sum — smaller than the advertised jackpot, taxed once, in
+      one year. The <strong class="font-semibold text-slate-900">annuity</strong>
+      pays the full advertised amount as 30 yearly checks, each taxed in the
+      year you receive it, which can keep you in lower brackets.
+    </p>
+    <p class="mt-4 max-w-3xl text-slate-600">
+      Neither is automatically better: the annuity's tax spreading competes
+      with the time value of having the cash now. Toggle between them in the
+      calculator to compare the after-tax outcome side by side.
+    </p>
+  </section>
+
+  <section aria-label="State lottery tax calculators" class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      State lottery tax calculators
+    </h2>
+    <p class="mt-4 max-w-3xl text-slate-600">
+      Every state page has its own calculator (pre-set to that state), worked
+      examples, and the sources behind the figures. Start typing to filter.
+    </p>
+    <div class="mt-6 max-w-md">
+      <label for="state-filter" class="label">Filter states</label>
+      <input
+        id="state-filter"
+        type="search"
+        class="input"
+        placeholder="Type a state name…"
+        autocomplete="off"
+      />
+    </div>
+    <ul id="state-directory" class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {rules.map((rule) => (
+        <li
+          data-name={rule.name.toLowerCase()}
+          class="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4"
+        >
+          <div>
+            <p class="font-semibold text-slate-900">{rule.name}</p>
+            <p class="mt-0.5 text-sm text-slate-500">{treatmentSummary(rule)}</p>
+          </div>
+          <a
+            href={`/lottery-tax-calculator/${rule.slug}/`}
+            class="shrink-0 rounded-lg bg-blue-700 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-800"
+          >
+            Calculate
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p id="no-states-match" class="mt-4 hidden text-slate-500">
+      No states match that filter.
+    </p>
+  </section>
+
+  <script>
+    const filter = document.getElementById("state-filter");
+    const items = Array.from(
+      document.querySelectorAll("#state-directory > li"),
+    );
+    const empty = document.getElementById("no-states-match");
+    filter?.addEventListener("input", () => {
+      const query = (filter.value ?? "").toLowerCase().trim();
+      let visible = 0;
+      for (const item of items) {
+        const match = item.dataset.name?.includes(query) ?? false;
+        item.classList.toggle("hidden", !match);
+        if (match) visible++;
+      }
+      empty?.classList.toggle("hidden", visible > 0);
+    });
+  </script>
+
+  <Methodology />
+
+  <FAQ items={faqs} heading="Lottery tax FAQs" />
+
+  <div class="mt-14">
+    <Disclaimer />
+  </div>
+</Layout>

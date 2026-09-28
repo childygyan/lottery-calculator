@@ -1,0 +1,242 @@
+---
+/**
+ * /lottery-tax-calculator/[state]/ — one static page per jurisdiction.
+ * Paths come from centralized state data via getStaticPaths(); the
+ * calculator, engine, examples, content, and SEO metadata are all reused.
+ * Invalid slugs fall through to Astro's normal 404.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import LotteryCalculator from "../../components/LotteryCalculator.astro";
+import StateTaxSummary from "../../components/StateTaxSummary.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import SourceList from "../../components/SourceList.astro";
+import {
+  buildPageMeta,
+  breadcrumbJsonLd,
+  faqJsonLd,
+  absoluteUrl,
+} from "../../lib/seo/metadata.ts";
+import {
+  getStatePageContexts,
+  getStateTaxRules,
+} from "../../data/taxes/states/index.ts";
+import {
+  getStatePageContent,
+  getRelatedSlugs,
+  FEDERAL_TAX_SECTION,
+  EXAMPLE_JACKPOTS,
+  EXAMPLE_CASH_VALUE_RATIO,
+} from "../../data/states/index.ts";
+import { calculateLotteryWinnings } from "../../lib/calculator/index.ts";
+import { formatCurrency } from "../../lib/calculator/formatting.ts";
+import { formatPercent } from "../../lib/calculator/formatting.ts";
+import { DEFAULT_TAX_YEAR } from "../../data/taxes/federal/index.ts";
+import type { StateTaxRule } from "../../lib/calculator/types.ts";
+
+export function getStaticPaths() {
+  return getStatePageContexts(DEFAULT_TAX_YEAR).map(({ rule, slug }) => ({
+    params: { state: slug },
+    props: { rule },
+  }));
+}
+
+interface Props {
+  rule: StateTaxRule;
+}
+
+const { rule } = Astro.props;
+const allRules = getStateTaxRules(DEFAULT_TAX_YEAR);
+const content = getStatePageContent(rule, allRules);
+if (!content) {
+  throw new Error(`No state page content template for ${rule.code}`);
+}
+
+// --- Related states (central mapping, neighbors only) ---
+const relatedLinks = getRelatedSlugs(rule.slug).map((slug) => {
+  const related = allRules.find((r) => r.slug === slug);
+  if (!related) throw new Error(`Unknown related slug: ${slug}`);
+  return {
+    label: `${related.name} Lottery Tax Calculator`,
+    href: `/lottery-tax-calculator/${related.slug}/`,
+    description:
+      related.status === "needs_verification"
+        ? "State tax treatment under review"
+        : !related.lotteryTaxApplicable
+          ? "No state tax on lottery winnings"
+          : related.taxRate !== null
+            ? `State planning rate ${formatPercent(related.taxRate)}`
+            : "State tax details",
+  };
+});
+
+// --- Worked examples through the real engine (single filer, lump sum) ---
+// "not_applicable" (no-tax states, CA exemption) is a verified fact — only
+// needs_verification suppresses the state figures.
+const stateFiguresAvailable = rule.status !== "needs_verification";
+const examples = EXAMPLE_JACKPOTS.map((jackpot) => {
+  const cashValue = Math.round(jackpot * EXAMPLE_CASH_VALUE_RATIO);
+  const result = calculateLotteryWinnings({
+    advertisedJackpot: jackpot,
+    cashValue,
+    payoutChoice: "lump_sum",
+    state: rule.code,
+    taxYear: DEFAULT_TAX_YEAR,
+    filingStatus: "single",
+  });
+  return { jackpot, cashValue, result };
+});
+
+// --- SEO ---
+const pageTitle = `${rule.name} Lottery Tax Calculator — Estimate Your Take-Home Winnings`;
+const pagePath = `/lottery-tax-calculator/${rule.slug}/`;
+const meta = buildPageMeta({
+  title: pageTitle,
+  description: content.metaDescription,
+  path: pagePath,
+});
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Tax Calculator", url: absoluteUrl("/lottery-tax-calculator/") },
+  { name: rule.name, url: absoluteUrl(pagePath) },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(content.faqs)];
+
+const UNAVAILABLE = "Calculation unavailable with current verified data.";
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[
+      { name: "Home", href: "/" },
+      { name: "Lottery Tax Calculator", href: "/lottery-tax-calculator/" },
+      { name: rule.name },
+    ]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{rule.name} Lottery Tax Calculator</h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">{content.intro}</p>
+
+  <div class="mt-8">
+    <StateTaxSummary rule={rule} />
+  </div>
+
+  <section aria-label={`${rule.name} lottery tax calculator`} class="mt-10">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Estimate your {rule.name} lottery winnings</h2>
+    <div class="mt-6">
+      <LotteryCalculator defaultState={rule.code} />
+    </div>
+  </section>
+
+  <section aria-label={`${rule.name} lottery tax examples`} class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{rule.name} lottery tax examples</h2>
+    <p class="mt-4 max-w-3xl text-slate-600">
+      Worked examples for a single filer taking the lump sum in {
+        DEFAULT_TAX_YEAR
+      }, calculated with the same engine as the calculator above. Cash value
+      is assumed at {Math.round(EXAMPLE_CASH_VALUE_RATIO * 100)}% of the
+      advertised jackpot for illustration — actual cash values vary by lottery
+      and drawing.
+    </p>
+    <div class="mt-6 overflow-x-auto">
+      <table class="min-w-full border-collapse text-left text-sm">
+        <caption class="sr-only">
+          Estimated {rule.name} lottery taxes for three jackpot sizes, {
+            DEFAULT_TAX_YEAR
+          }
+        </caption>
+        <thead>
+          <tr class="border-b-2 border-slate-200 text-slate-500">
+            <th scope="col" class="py-3 pr-4 font-semibold">Jackpot</th>
+            <th scope="col" class="py-3 pr-4 font-semibold">Cash Value</th>
+            <th scope="col" class="py-3 pr-4 font-semibold">Estimated Federal Tax</th>
+            <th scope="col" class="py-3 pr-4 font-semibold">Estimated State Tax</th>
+            <th scope="col" class="py-3 font-semibold">Estimated Take-Home</th>
+          </tr>
+        </thead>
+        <tbody>
+          {examples.map(({ jackpot, cashValue, result }) => (
+            <tr class="border-b border-slate-100">
+              <th scope="row" class="py-3 pr-4 font-semibold text-slate-900">
+                {formatCurrency(jackpot)}
+              </th>
+              <td class="py-3 pr-4 text-slate-700">{formatCurrency(cashValue)}</td>
+              <td class="py-3 pr-4 text-slate-700">
+                {formatCurrency(result.federalTax)}
+              </td>
+              <td class="py-3 pr-4 text-slate-700">
+                {stateFiguresAvailable ? formatCurrency(result.stateTax) : UNAVAILABLE}
+              </td>
+              <td class="py-3 font-semibold text-slate-900">
+                {stateFiguresAvailable ? formatCurrency(result.estimatedTakeHome) : UNAVAILABLE}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-label={`How ${rule.name} taxes lottery winnings`} class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">How {rule.name} taxes lottery winnings</h2>
+    {content.taxExplanation.map((paragraph) => (
+      <p class="mt-4 max-w-3xl text-slate-600">{paragraph}</p>
+    ))}
+  </section>
+
+  <section aria-label="Federal taxes on lottery winnings" class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Federal taxes on lottery winnings</h2>
+    {FEDERAL_TAX_SECTION.map((paragraph) => (
+      <p class="mt-4 max-w-3xl text-slate-600">{paragraph}</p>
+    ))}
+  </section>
+
+  <section aria-label="Withholding vs final tax" class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Withholding vs. your final tax bill</h2>
+    {content.withholdingExplanation.map((paragraph) => (
+      <p class="mt-4 max-w-3xl text-slate-600">{paragraph}</p>
+    ))}
+  </section>
+
+  <section aria-label="Cash option vs annuity" class="mt-14">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Cash option vs. annuity</h2>
+    {content.annuityNotes.map((paragraph) => (
+      <p class="mt-4 max-w-3xl text-slate-600">{paragraph}</p>
+    ))}
+  </section>
+
+  <Methodology />
+
+  <FAQ items={content.faqs} heading={`${rule.name} lottery tax FAQs`} />
+
+  <RelatedLinks title={`Lottery tax calculators near ${rule.name}`} links={relatedLinks} />
+
+  <div class="mt-10">
+    <RelatedLinks
+      title="More calculators"
+      links={[
+        {
+          label: "Lottery Tax Calculator",
+          href: "/lottery-tax-calculator/",
+          description: "Compare all 50 states plus DC, with the full interactive calculator.",
+        },
+        {
+          label: "Lottery Calculator",
+          href: "/lottery-calculator/",
+          description: "Estimate winnings, taxes, and take-home for any jackpot.",
+        },
+      ]}
+    />
+  </div>
+
+  <SourceList
+    ids={[rule.sourceId, "irs-rev-proc-2025-32", "irs-gambling-withholding"]}
+  />
+
+  <div class="mt-14">
+    <Disclaimer />
+  </div>
+</Layout>

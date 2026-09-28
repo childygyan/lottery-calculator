@@ -45,6 +45,6 @@ export interface StatePageContext {
 export function getStatePageContexts(taxYear: TaxYear): StatePageContext[] {
   return getStateTaxRules(taxYear).map((rule) => ({
     rule,
-    slug: rule.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    slug: rule.slug,
   }));
 }

@@ -29,10 +29,11 @@ export function calculateStateTaxLiability(
   if (
     rule.taxTreatment === "no_state_individual_income_tax" ||
     rule.taxTreatment === "special_exemption" ||
-    rule.rate === null ||
-    rule.rate <= 0
+    !rule.lotteryTaxApplicable ||
+    rule.taxRate === null ||
+    rule.taxRate <= 0
   ) {
     return { tax: 0, rule };
   }
-  return { tax: roundToCents(taxableAmount * rule.rate), rule };
+  return { tax: roundToCents(taxableAmount * rule.taxRate), rule };
 }

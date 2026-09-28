@@ -14,6 +14,16 @@ import { getStateOptions } from "../data/taxes/index.ts";
 import { DEFAULT_TAX_YEAR, SUPPORTED_TAX_YEARS } from "../data/taxes/federal/index.ts";
 import { FILING_STATUSES, FILING_STATUS_LABELS } from "../lib/calculator/index.ts";
 
+interface Props {
+  /**
+   * Preselect a state in the dropdown (used by /lottery-tax-calculator/[state]/).
+   * Two-letter code, e.g. "CA". Empty = no preselection.
+   */
+  defaultState?: string;
+}
+
+const { defaultState = "" } = Astro.props;
+
 const stateOptions = getStateOptions(DEFAULT_TAX_YEAR);
 ---
 
@@ -106,6 +116,7 @@ const stateOptions = getStateOptions(DEFAULT_TAX_YEAR);
         label="State"
         hint="Used to estimate state tax on the winnings."
         options={stateOptions.map((o) => ({ code: o.code, state: o.name }))}
+        selected={defaultState}
       />
     </div>
 

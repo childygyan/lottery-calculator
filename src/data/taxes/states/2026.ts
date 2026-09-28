@@ -41,24 +41,34 @@ interface RuleSpec {
   name: string;
   code: string;
   taxTreatment: StateTaxTreatment;
-  hasIndividualIncomeTax: boolean;
+  incomeTaxApplicable: boolean;
+  lotteryTaxApplicable: boolean;
+  withholdingApplicable: boolean;
   taxCalculationType: StateTaxCalculationType;
-  rate: number | null;
+  taxRate: number | null;
   withholdingRate?: number | null;
   sourceId?: string;
   status?: RuleStatus;
   notes?: string;
 }
 
+/** Central slug derivation — one rule, used by routes and sitemaps. */
+export function stateSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
 function buildRule(spec: RuleSpec): StateTaxRule {
   return {
     name: spec.name,
     code: spec.code,
+    slug: stateSlug(spec.name),
     taxYear: TAX_YEAR,
     taxTreatment: spec.taxTreatment,
-    hasIndividualIncomeTax: spec.hasIndividualIncomeTax,
+    incomeTaxApplicable: spec.incomeTaxApplicable,
+    lotteryTaxApplicable: spec.lotteryTaxApplicable,
+    withholdingApplicable: spec.withholdingApplicable,
     taxCalculationType: spec.taxCalculationType,
-    rate: spec.rate,
+    taxRate: spec.taxRate,
     withholdingRate: spec.withholdingRate ?? null,
     effectiveDate: EFFECTIVE_DATE,
     expirationDate: null,
@@ -70,27 +80,31 @@ function buildRule(spec: RuleSpec): StateTaxRule {
 }
 
 /** Graduated-rate state: top marginal rate used as a flat planning estimate. */
-function graduated(name: string, code: string, rate: number, notes?: string): StateTaxRule {
+function graduated(name: string, code: string, taxRate: number, notes?: string): StateTaxRule {
   return buildRule({
     name,
     code,
     taxTreatment: "ordinary_income",
-    hasIndividualIncomeTax: true,
+    incomeTaxApplicable: true,
+    lotteryTaxApplicable: true,
+    withholdingApplicable: false,
     taxCalculationType: "top_marginal_estimate",
-    rate,
+    taxRate,
     notes,
   });
 }
 
 /** Flat-rate state. */
-function flat(name: string, code: string, rate: number, notes?: string): StateTaxRule {
+function flat(name: string, code: string, taxRate: number, notes?: string): StateTaxRule {
   return buildRule({
     name,
     code,
     taxTreatment: "ordinary_income",
-    hasIndividualIncomeTax: true,
+    incomeTaxApplicable: true,
+    lotteryTaxApplicable: true,
+    withholdingApplicable: false,
     taxCalculationType: "flat_rate_estimate",
-    rate,
+    taxRate,
     notes: notes ?? FLAT_NOTES,
   });
 }
@@ -101,9 +115,11 @@ function noTax(name: string, code: string, sourceId?: string, notes?: string): S
     name,
     code,
     taxTreatment: "no_state_individual_income_tax",
-    hasIndividualIncomeTax: false,
+    incomeTaxApplicable: false,
+    lotteryTaxApplicable: false,
+    withholdingApplicable: false,
     taxCalculationType: "flat_rate_estimate",
-    rate: null,
+    taxRate: null,
     sourceId,
     status: "not_applicable",
     notes: notes ?? NO_TAX_NOTES,
@@ -119,9 +135,11 @@ export const stateTaxRules2026: StateTaxRule[] = [
     name: "California",
     code: "CA",
     taxTreatment: "special_exemption",
-    hasIndividualIncomeTax: true,
+    incomeTaxApplicable: true,
+    lotteryTaxApplicable: false,
+    withholdingApplicable: false,
     taxCalculationType: "flat_rate_estimate",
-    rate: null,
+    taxRate: null,
     sourceId: "ca-lottery-exemption",
     status: "not_applicable",
     notes:
@@ -193,9 +211,11 @@ export const stateTaxRules2026: StateTaxRule[] = [
     name: "West Virginia",
     code: "WV",
     taxTreatment: "ordinary_income",
-    hasIndividualIncomeTax: true,
+    incomeTaxApplicable: true,
+    lotteryTaxApplicable: true,
+    withholdingApplicable: false,
     taxCalculationType: "top_marginal_estimate",
-    rate: 0.0482,
+    taxRate: 0.0482,
     sourceId: "wv-sb392-unverified",
     status: "needs_verification",
     notes:

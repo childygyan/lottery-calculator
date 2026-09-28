@@ -39,16 +39,16 @@ describe("state rule coverage (2026)", () => {
       assert.ok(rule.notes.length > 0, `${rule.code}: missing notes`);
       assert.equal(rule.taxYear, 2026);
       if (rule.status === "verified") {
-        assert.ok(rule.rate !== null && rule.rate > 0, `${rule.code}: verified rule needs a rate`);
+        assert.ok(rule.taxRate !== null && rule.taxRate > 0, `${rule.code}: verified rule needs a rate`);
       }
     }
   });
 
   it("verified rates match the Tax Foundation 2026 table", () => {
-    for (const [code, rate] of Object.entries(VERIFIED_RATES)) {
+    for (const [code, taxRate] of Object.entries(VERIFIED_RATES)) {
       const rule = getStateTaxRule(2026, code)!;
       assert.equal(rule.status, "verified", `${code} should be verified`);
-      assert.equal(rule.rate, rate, `${code}: rate mismatch`);
+      assert.equal(rule.taxRate, taxRate, `${code}: rate mismatch`);
     }
   });
 
@@ -56,7 +56,7 @@ describe("state rule coverage (2026)", () => {
     for (const code of NO_TAX_STATES) {
       const rule = getStateTaxRule(2026, code)!;
       assert.equal(rule.taxTreatment, "no_state_individual_income_tax", code);
-      assert.equal(rule.hasIndividualIncomeTax, false, code);
+      assert.equal(rule.incomeTaxApplicable, false, code);
       assert.equal(rule.status, "not_applicable", code);
     }
   });

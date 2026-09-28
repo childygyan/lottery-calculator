@@ -186,3 +186,45 @@ describe("site chrome (built HTML)", () => {
     }
   });
 });
+
+describe("state pages (built HTML)", () => {
+  function stateHtml(slug: string): string {
+    return readFileSync(join(DIST, "lottery-tax-calculator", slug, "index.html"), "utf8");
+  }
+
+  it("preselects the page's state in the calculator and keeps all 51 options", () => {
+    for (const [slug, code] of [["california", "CA"], ["texas", "TX"], ["new-york", "NY"]] as const) {
+      const html = stateHtml(slug);
+      const doc = new JSDOM(html).window.document;
+      const options = [...doc.querySelectorAll("select#state option")];
+      assert.equal(options.length, 52, `${slug}: 51 states + placeholder option`);
+      const selected = options.filter((o) => o.hasAttribute("selected"));
+      assert.equal(selected.length, 1, `${slug}: exactly one preselected option`);
+      assert.equal(selected[0].getAttribute("value"), code, `${slug}: preselects ${code}`);
+    }
+  });
+
+  it("West Virginia shows unavailable instead of a fabricated state tax", () => {
+    const html = stateHtml("west-virginia");
+    assert.ok(
+      html.includes("Calculation unavailable with current verified data."),
+      "WV page shows the unavailable notice",
+    );
+    assert.ok(
+      html.includes("State-specific tax information is currently marked for verification."),
+      "WV page shows the verification notice",
+    );
+  });
+
+  it("hub has a working filter and links all 51 state pages", () => {
+    const html = readFileSync(join(DIST, "lottery-tax-calculator", "index.html"), "utf8");
+    const doc = new JSDOM(html).window.document;
+    assert.ok(doc.getElementById("state-filter"), "filter input exists");
+    const items = doc.querySelectorAll("#state-directory > li");
+    assert.equal(items.length, 51, "directory lists 51 states");
+    for (const item of items) {
+      assert.ok(item.getAttribute("data-name"), "directory item has data-name");
+      assert.ok(item.querySelector('a[href^="/lottery-tax-calculator/"]'), "directory item links to a state page");
+    }
+  });
+});

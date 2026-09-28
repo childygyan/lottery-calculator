@@ -102,10 +102,19 @@ export interface StateTaxRule {
   name: string;
   /** Two-letter postal code, e.g. "CA". "DC" for the District of Columbia. */
   code: string;
+  /** URL slug, e.g. "california", "new-york", "district-of-columbia". */
+  slug: string;
   taxYear: TaxYear;
   taxTreatment: StateTaxTreatment;
   /** Whether the state levies a broad individual income tax at all. */
-  hasIndividualIncomeTax: boolean;
+  incomeTaxApplicable: boolean;
+  /** Whether the state's tax applies to lottery winnings in our estimate. */
+  lotteryTaxApplicable: boolean;
+  /**
+   * Whether the estimate models a state withholding figure.
+   * False everywhere until a single verified per-state withholding rate exists.
+   */
+  withholdingApplicable: boolean;
   taxCalculationType: StateTaxCalculationType;
   /**
    * Estimated rate applied to lottery winnings, as a decimal (0.109 = 10.9%).
@@ -113,7 +122,7 @@ export interface StateTaxRule {
    * planning estimate. Null when no rate applies (exempt / no income tax /
    * unverified).
    */
-  rate: number | null;
+  taxRate: number | null;
   /**
    * Common state withholding rate on lottery winnings, as a decimal,
    * or null when it varies too much to state a single verified figure.

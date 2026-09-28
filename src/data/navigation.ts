@@ -7,11 +7,13 @@ export interface NavItem {
 
 export const mainNav: NavItem[] = [
   { label: "Lottery Calculator", href: "/lottery-calculator/" },
+  { label: "Lottery Tax Calculator", href: "/lottery-tax-calculator/" },
   { label: "About", href: "/about/" },
 ];
 
 export const footerNav: NavItem[] = [
   { label: "Lottery Calculator", href: "/lottery-calculator/" },
+  { label: "Lottery Tax Calculator", href: "/lottery-tax-calculator/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
   { label: "Privacy Policy", href: "/privacy/" },

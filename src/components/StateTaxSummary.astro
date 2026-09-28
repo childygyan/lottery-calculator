@@ -1,0 +1,89 @@
+---
+/**
+ * State tax summary card for /lottery-tax-calculator/[state]/.
+ * Shows treatment, applicable tax, withholding (only where verified),
+ * and last-verified date. Unverified rules never show a fabricated figure.
+ */
+import type { StateTaxRule } from "../lib/calculator/types.ts";
+import { formatPercent } from "../lib/calculator/formatting.ts";
+
+interface Props {
+  rule: StateTaxRule;
+}
+
+const { rule } = Astro.props;
+
+const TREATMENT_LABELS: Record<StateTaxRule["taxTreatment"], string> = {
+  ordinary_income: "Taxed as ordinary income",
+  lottery_specific_tax: "Lottery-specific tax",
+  no_state_individual_income_tax: "No state individual income tax",
+  withholding_only: "State withholding only",
+  special_exemption: "Exempt from state tax",
+  unknown: "Under review",
+};
+
+function applicableTaxText(r: StateTaxRule): string {
+  if (r.status === "needs_verification") return "Pending verification";
+  if (!r.lotteryTaxApplicable || r.taxRate === null) {
+    return r.taxTreatment === "special_exemption"
+      ? "Exempt — $0 state tax on California Lottery winnings"
+      : "No state tax on lottery winnings";
+  }
+  const kind =
+    r.taxCalculationType === "flat_rate_estimate"
+      ? "flat planning rate"
+      : "top-marginal planning rate";
+  return `${formatPercent(r.taxRate)} (${kind})`;
+}
+---
+
+<section aria-label={`${rule.name} tax summary`} class="card">
+  <dl class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <dt class="text-sm font-medium text-slate-500">State</dt>
+      <dd class="mt-1 text-lg font-bold text-slate-900">{rule.name}</dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-slate-500">Tax year</dt>
+      <dd class="mt-1 text-lg font-bold text-slate-900">{rule.taxYear}</dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-slate-500">State tax treatment</dt>
+      <dd class="mt-1 font-semibold text-slate-900">
+        {TREATMENT_LABELS[rule.taxTreatment]}
+      </dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-slate-500">Applicable state tax</dt>
+      <dd class="mt-1 font-semibold text-slate-900">{applicableTaxText(rule)}</dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-slate-500">State withholding</dt>
+      <dd class="mt-1 font-semibold text-slate-900">
+        {rule.withholdingApplicable && rule.withholdingRate !== null
+          ? `${formatPercent(rule.withholdingRate)} on lottery payouts`
+          : "Not shown — varies by lottery; no single verified figure"}
+      </dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-slate-500">Last verified</dt>
+      <dd class="mt-1 font-semibold text-slate-900">
+        {rule.status === "needs_verification"
+          ? "Tax information is pending verification."
+          : `Tax information last verified: ${rule.lastVerified}`}
+      </dd>
+    </div>
+  </dl>
+  {rule.status === "needs_verification" && (
+    <p class="mt-4 rounded-xl bg-amber-50 p-4 text-sm text-amber-900" role="note">
+      State-specific tax information is currently marked for verification. See
+      the cited source information before relying on the estimate.
+    </p>
+  )}
+  {rule.taxRate !== null && rule.status === "verified" && (
+    <p class="mt-4 text-xs text-slate-500">
+      Planning estimate only. Actual {rule.name} tax depends on brackets,
+      deductions, exemptions, credits, and local taxes.
+    </p>
+  )}
+</section>

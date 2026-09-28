@@ -1,0 +1,49 @@
+---
+/**
+ * Source / reference list. Renders registry entries with name, publisher,
+ * description, and last-verified date. Links only render for verified URLs —
+ * a source without a confirmed address is named, never given a fake link.
+ */
+import { SOURCES } from "../data/sources.ts";
+
+interface Props {
+  /** Source registry ids, in display order. */
+  ids: string[];
+  heading?: string;
+}
+
+const { ids, heading = "Sources & References" } = Astro.props;
+const sources = ids
+  .map((id) => SOURCES[id])
+  .filter((s) => s !== undefined);
+---
+
+<section aria-label={heading} class="mt-14">
+  <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+    {heading}
+  </h2>
+  <ul class="mt-6 space-y-4">
+    {sources.map((source) => (
+      <li class="card !p-5">
+        <p class="font-semibold text-slate-900">
+          {source.url ? (
+            <a
+              href={source.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-blue-700 hover:underline"
+            >
+              {source.name}
+            </a>
+          ) : (
+            source.name
+          )}
+        </p>
+        <p class="mt-1 text-sm text-slate-600">
+          {source.publisher} · Last verified {source.lastChecked}
+        </p>
+        <p class="mt-2 text-sm text-slate-600">{source.description}</p>
+      </li>
+    ))}
+  </ul>
+</section>

@@ -5,9 +5,11 @@ interface Props {
   label: string;
   hint?: string;
   options: Array<{ code: string; state: string }>;
+  /** Preselected option value (two-letter code). */
+  selected?: string;
 }
 
-const { id, name, label, hint, options } = Astro.props;
+const { id, name, label, hint, options, selected = "" } = Astro.props;
 const hintId = hint ? `${id}-hint` : undefined;
 const errorId = `${id}-error`;
 ---
@@ -26,7 +28,9 @@ const errorId = `${id}-error`;
     <option value="">Select a state</option>
     {
       options.map((opt) => (
-        <option value={opt.code}>{opt.state}</option>
+        <option value={opt.code} selected={opt.code === selected}>
+          {opt.state}
+        </option>
       ))
     }
   </select>
