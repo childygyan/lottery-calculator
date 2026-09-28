@@ -92,9 +92,10 @@ no duplicated calculator logic, no invented values.
 
 ## Delivery
 
-- GitHub `childygyan/lottery-calculator`, branch `main`: commit `<sha>`
-- Archive `lottery-calculator-phase5-20260928.zip` → Google Drive folder
-  `Lottery Calculator` (file id `<id>`)
+- GitHub `childygyan/lottery-calculator`, branch `main`: commit `2bef18f740651d42b1a93eab7783f288994be5d0`
+- Archive `lottery-calculator-phase5-20260928.zip` (250,378 bytes, 138 files, no
+  node_modules/dist) → Google Drive folder `Lottery Calculator` (file id
+  `1q-GjbdJF-LOnNigxaudXdlnEp5ZbrSoE`)
 
 ## Standing notes for future phases
 
