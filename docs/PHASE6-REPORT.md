@@ -83,6 +83,8 @@ existing architecture — no rebuilds, no duplicated calculator logic, no invent
 
 ## Handoff
 
-- GitHub: `childygyan/lottery-calculator`, remote branch `main` → commit `<TBD>`
-- Archive: `lottery-calculator-phase6-20260928.zip` → Google Drive folder
-  "Lottery Calculator" (file id `<TBD>`)
+- GitHub: `childygyan/lottery-calculator`, remote branch `main` →
+  `b9e14ce34db92264ae77338a04b2b2a018f1922f`
+- Archive: `lottery-calculator-phase6-20260928.zip` (287,547 bytes, 153 files,
+  no node_modules/dist/.git) → Google Drive folder "Lottery Calculator"
+  (file id `1cGg3k8k8Rwe6WOCeJzizBjlgB0m8PNr5`)
