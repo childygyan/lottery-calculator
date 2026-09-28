@@ -4,6 +4,11 @@
 **Scope:** Powerball + Mega Millions calculators (§1–§32 of the Phase 4 spec)
 **Status:** Complete. Hard STOP — Phase 5 starts only on Firoz's next spec.
 
+**GitHub:** https://github.com/childygyan/lottery-calculator (`main` → `90256aa7`)
+**Archive:** https://drive.google.com/file/d/1DbAgasvpD2-DBL-4xV9_7nOPKRGtSmEt/view?usp=drivesdk
+(`lottery-calculator-phase4-20260928.zip`, 191,383 bytes, 118 files, in the
+"Lottery Calculator" Drive folder; no node_modules/dist)
+
 ## What was built
 
 **4 new routes** (all static, all working calculators — no mockups):
