@@ -1,0 +1,227 @@
+---
+/**
+ * /lottery-payout-calculator/ — cash option vs annuity comparison hub.
+ * Interactive payout calculator plus explainers: jackpot vs cash vs annuity,
+ * how the annuity is taxed per payment, withholding, and methodology.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PayoutCalculator from "../../components/PayoutCalculator.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import { getAllJackpotAmounts } from "../../data/jackpots.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Payout Calculator — Cash vs Annuity Comparison",
+  description:
+    "Compare the lottery cash option vs annuity payments. Enter the advertised jackpot and cash value to estimate federal and state taxes, payment schedules, and take-home for both.",
+  path: "/lottery-payout-calculator/",
+});
+
+const faqs = [
+  {
+    question: "What is the cash option for a lottery jackpot?",
+    answer:
+      "The cash option is the lump sum actually available in the prize pool when you choose to take your winnings all at once instead of as an annuity. It is always smaller than the advertised jackpot, which is the nominal total of 30 annual payments. The exact cash value is published in the official prize announcement for each drawing — enter it in the calculator above rather than guessing.",
+  },
+  {
+    question: "How does a lottery annuity work?",
+    answer:
+      "A lottery annuity pays the advertised jackpot as a series of annual payments — typically 30 payments. Powerball's annuity is 30 graduated payments over 29 years; Mega Millions pays one immediate payment followed by 29 annual payments, each 5% larger than the last. Each payment is taxed as ordinary income in the year you receive it.",
+  },
+  {
+    question: "Why is the cash option smaller than the advertised jackpot?",
+    answer:
+      "The advertised jackpot is the nominal sum of all annuity payments spread over decades. The cash option is the present value of that payment stream — the amount actually sitting in the prize pool today. The gap reflects the time value of money, and it moves with interest rates, so no fixed percentage applies to every jackpot.",
+  },
+  {
+    question: "Are lottery annuity payments taxable?",
+    answer:
+      "Yes. Every annuity payment is taxed as ordinary income in the year you receive it — federally always, and by most states. California exempts lottery winnings from state tax, and nine states have no broad individual income tax. The calculator above taxes each payment in its year using the same engine as the lump-sum estimate.",
+  },
+  {
+    question: "Is lottery withholding the same as final tax?",
+    answer:
+      "No. Federal law requires 24% withholding on lottery winnings over $5,000, and many states withhold too. Withholding is a prepayment credited against your final tax bill — on a jackpot, the actual combined rate is usually much higher, and you settle the difference when you file. The calculator shows withholding separately from estimated final liability.",
+  },
+  {
+    question: "Can I calculate lottery winnings for my state?",
+    answer:
+      "Yes — select your state in the calculator. It estimates state tax with your state's configured planning rate (or $0 where lottery winnings are exempt or there is no income tax) and shows federal and state estimates side by side for both the cash option and the annuity.",
+  },
+  {
+    question: "Does the calculator tell me whether cash or annuity is better?",
+    answer:
+      "No. The comparison presents gross amounts, estimated taxes, timing, payment structure, and estimated net for both options without ranking them. Choosing between a lump sum now and payments over decades involves personal factors — investment returns, spending discipline, estate planning — that no tax calculator can decide for you.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Payout Calculator", url: absoluteUrl("/lottery-payout-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+
+const amounts = getAllJackpotAmounts();
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[{ name: "Home", href: "/" }, { name: "Lottery Payout Calculator" }]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Lottery Payout Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Compare the cash option against the annuity for any lottery jackpot. Enter the
+    advertised jackpot and the official cash value to see estimated taxes, the
+    year-by-year payment schedule, and the take-home for both — side by side.
+  </p>
+
+  <section aria-label="Lottery payout calculator" class="mt-8">
+    <PayoutCalculator />
+  </section>
+
+  <section aria-label="Jackpot, cash option, and annuity explained" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Advertised Jackpot vs Cash Option vs Annuity
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Every big lottery jackpot is three numbers, not one. The{" "}
+        <strong class="font-semibold text-slate-800">advertised jackpot</strong> is the
+        annuity total — the nominal sum of 30 annual payments. The{" "}
+        <strong class="font-semibold text-slate-800">cash option</strong> is the lump sum
+        actually in the prize pool, paid once and taxed in a single year. The{" "}
+        <strong class="font-semibold text-slate-800">annuity total</strong> equals the
+        advertised jackpot, paid over decades with each payment taxed in its year.
+      </p>
+      <p>
+        The cash option is never a fixed percentage of the jackpot. It is set per
+        drawing from the prize pool and published in the official prize announcement.
+        Always enter the current cash value — the calculator refuses to invent one.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="How annuity taxes work" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Annuity Payments Are Taxed
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        Each annuity payment is taxed as ordinary income in the year you receive it.
+        The calculator taxes every payment with the same federal brackets and state
+        planning rate as the cash option — it never applies the lump-sum tax bill to
+        the whole annuity total. On large jackpots each payment still lands in the top
+        brackets, so the per-payment rate looks similar to the lump-sum rate; on
+        smaller jackpots, spreading income across years can lower the effective rate
+        on each payment.
+      </p>
+      <p>
+        Withholding applies to each payment as it is made (24% federal on amounts over
+        $5,000), credited against that year's final liability — not added on top.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Jackpot amount guides" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Payout Guides by Jackpot Size
+    </h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      Worked examples with real calculated figures for common jackpot sizes —
+      each with its own cash-vs-annuity walkthrough, tax explainer, and FAQs.
+    </p>
+    <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+      {
+        amounts.map((a) => (
+          <li>
+            <a
+              href={`/lottery-payout-calculator/${a.slug}/`}
+              class="block rounded-xl border border-slate-200 bg-white p-4 font-semibold text-blue-700 hover:border-blue-400"
+            >
+              {a.label} Payout Calculator
+              <span class="mt-1 block text-sm font-normal text-slate-500">
+                Cash vs annuity, taxes, and take-home for {a.shortLabel}.
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section aria-label="How we calculate" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How We Calculate
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The payout calculator runs on the shared site engine. The cash side uses the
+        standard lottery calculation on your entered cash value. The annuity side
+        builds the payment schedule from your jackpot, years, and annual increase,
+        then taxes each payment individually with the same federal and state functions.
+        Results show gross, estimated federal and state tax, total tax, take-home, and
+        the effective rate for both options — plus the full payment schedule with the
+        first five years visible and the rest expandable.
+      </p>
+    </div>
+  </section>
+
+  <Methodology />
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "powerball-official-rules",
+      "megamillions-official-rules",
+      "irs-rev-proc-2025-32",
+      "irs-gambling-withholding",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <div class="mt-14 grid gap-8 lg:grid-cols-[1fr_320px]">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Lottery Annuity Calculator",
+          href: "/lottery-annuity-calculator/",
+          description: "Build an illustrative annuity payment schedule.",
+        },
+        {
+          label: "Lottery Cash Option Calculator",
+          href: "/lottery-cash-option-calculator/",
+          description: "Estimate taxes and take-home on the lump sum.",
+        },
+        {
+          label: "Powerball Calculator",
+          href: "/powerball-calculator/",
+          description: "Powerball rules, prize tiers, odds, and tax estimates.",
+        },
+        {
+          label: "Mega Millions Calculator",
+          href: "/mega-millions-calculator/",
+          description: "Mega Millions rules, prize tiers, odds, and tax estimates.",
+        },
+        {
+          label: "Lottery Tax Calculator",
+          href: "/lottery-tax-calculator/",
+          description: "Federal and state estimates for any lottery win, all 51 jurisdictions.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

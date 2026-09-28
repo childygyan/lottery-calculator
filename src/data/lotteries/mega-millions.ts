@@ -38,6 +38,15 @@ export const MEGA_MILLIONS_CONFIG: LotteryConfig = {
   annuityDescription:
     "The Mega Millions annuity is paid as one immediate payment followed by 29 annual payments, each 5% bigger than the previous one.",
 
+  annuity: {
+    numberOfPayments: 30,
+    paymentFrequency: "annual",
+    growthRate: 0.05,
+    firstPaymentDescription: "One immediate payment",
+    notes:
+      "One immediate payment followed by 29 annual payments, each 5% larger than the previous one. The nominal total of all 30 payments equals the advertised jackpot.",
+  },
+
   prizeTiers: [
     {
       matchPattern: "5 + Mega Ball",

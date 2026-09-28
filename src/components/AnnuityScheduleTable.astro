@@ -1,0 +1,140 @@
+---
+/**
+ * Server-rendered annuity payment schedule.
+ * Shows the first `visibleRows` payments; the rest sit in a hidden tbody
+ * revealed by the toggle button (and always revealed in print via CSS).
+ * Keeps generated HTML small for long schedules — no giant static tables.
+ */
+import { formatCurrencyExact } from "../lib/calculator/index.ts";
+
+export interface ScheduleRow {
+  paymentNumber: number;
+  paymentAmount: number;
+  cumulativeAmount: number;
+  federalTax?: number;
+  stateTax?: number;
+  netPayment?: number;
+  effectiveTaxRate?: number;
+}
+
+interface Props {
+  /** Unique id prefix (used by the show-all toggle). */
+  id: string;
+  payments: ScheduleRow[];
+  /** Table caption for screen readers. */
+  caption?: string;
+  /** Render per-payment tax columns (default true). */
+  showTaxColumns?: boolean;
+  /** Rows shown before the "show all" toggle (default 5). */
+  visibleRows?: number;
+}
+
+const {
+  id,
+  payments,
+  caption = "Annuity payment schedule",
+  showTaxColumns = true,
+  visibleRows = 5,
+} = Astro.props;
+
+const head = payments.slice(0, visibleRows);
+const rest = payments.slice(visibleRows);
+const restId = `${id}-rest`;
+const toggleId = `${id}-toggle`;
+---
+
+<div class="overflow-x-auto">
+  <table class="w-full min-w-[560px] border-collapse text-sm">
+    <caption class="sr-only">{caption}</caption>
+    <thead>
+      <tr class="border-b-2 border-slate-200 text-left">
+        <th scope="col" class="py-2 pr-3 font-semibold text-slate-700">Payment</th>
+        <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Gross Payment</th>
+        {
+          showTaxColumns && (
+            <>
+              <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Est. Federal Tax</th>
+              <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Est. State Tax</th>
+              <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Est. Net</th>
+            </>
+          )
+        }
+        <th scope="col" class="py-2 text-right font-semibold text-slate-700">Cumulative</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        head.map((p) => (
+          <tr class="border-b border-slate-100">
+            <th scope="row" class="py-2 pr-3 font-medium text-slate-600">{p.paymentNumber}</th>
+            <td class="py-2 pr-3 text-right tabular-nums text-slate-900">{formatCurrencyExact(p.paymentAmount)}</td>
+            {showTaxColumns && (
+              <>
+                <td class="py-2 pr-3 text-right tabular-nums text-slate-600">{p.federalTax !== undefined ? formatCurrencyExact(p.federalTax) : "—"}</td>
+                <td class="py-2 pr-3 text-right tabular-nums text-slate-600">{p.stateTax !== undefined ? formatCurrencyExact(p.stateTax) : "—"}</td>
+                <td class="py-2 pr-3 text-right tabular-nums font-medium text-emerald-700">{p.netPayment !== undefined ? formatCurrencyExact(p.netPayment) : "—"}</td>
+              </>
+            )}
+            <td class="py-2 text-right tabular-nums text-slate-600">{formatCurrencyExact(p.cumulativeAmount)}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+    {
+      rest.length > 0 && (
+        <tbody id={restId} class="schedule-rest" hidden>
+          {rest.map((p) => (
+            <tr class="border-b border-slate-100">
+              <th scope="row" class="py-2 pr-3 font-medium text-slate-600">{p.paymentNumber}</th>
+              <td class="py-2 pr-3 text-right tabular-nums text-slate-900">{formatCurrencyExact(p.paymentAmount)}</td>
+              {showTaxColumns && (
+                <>
+                  <td class="py-2 pr-3 text-right tabular-nums text-slate-600">{p.federalTax !== undefined ? formatCurrencyExact(p.federalTax) : "—"}</td>
+                  <td class="py-2 pr-3 text-right tabular-nums text-slate-600">{p.stateTax !== undefined ? formatCurrencyExact(p.stateTax) : "—"}</td>
+                  <td class="py-2 pr-3 text-right tabular-nums font-medium text-emerald-700">{p.netPayment !== undefined ? formatCurrencyExact(p.netPayment) : "—"}</td>
+                </>
+              )}
+              <td class="py-2 text-right tabular-nums text-slate-600">{formatCurrencyExact(p.cumulativeAmount)}</td>
+            </tr>
+          ))}
+        </tbody>
+      )
+    }
+  </table>
+</div>
+{
+  rest.length > 0 && (
+    <button
+      type="button"
+      id={toggleId}
+      class="no-print mt-3 text-sm font-semibold text-blue-700 underline-offset-2 hover:underline"
+      aria-expanded="false"
+      aria-controls={restId}
+      data-schedule-toggle={restId}
+      data-schedule-total={payments.length}
+    >
+      Show all {payments.length} payments
+    </button>
+  )
+}
+<script>
+  // Progressive disclosure for schedule tables: one tiny handler per page.
+  document.querySelectorAll("[data-schedule-toggle]").forEach((button) => {
+    const targetId = button.getAttribute("data-schedule-toggle");
+    const target = targetId ? document.getElementById(targetId) : null;
+    const total = button.getAttribute("data-schedule-total") ?? "";
+    button.addEventListener("click", () => {
+      if (!(button instanceof HTMLElement) || !target) return;
+      const isHidden = target.hasAttribute("hidden");
+      if (isHidden) {
+        target.removeAttribute("hidden");
+        button.setAttribute("aria-expanded", "true");
+        button.textContent = "Show fewer payments";
+      } else {
+        target.setAttribute("hidden", "");
+        button.setAttribute("aria-expanded", "false");
+        button.textContent = `Show all ${total} payments`;
+      }
+    });
+  });
+</script>

@@ -64,6 +64,17 @@ export const POWERBALL_CONFIG: LotteryConfig = {
       "Power Play multiplies non-jackpot prizes by 2X, 3X, 4X, 5X, or 10X. The Match 5 prize with Power Play is always $2 million. The 10X multiplier is available only when the advertised jackpot is $150 million or less.",
   },
 
+  annuity: {
+    numberOfPayments: 30,
+    paymentFrequency: "annual",
+    // The official rules describe "30 graduated payments over 29 years" but
+    // publish no fixed graduation rate, so no rate is invented here. The
+    // calculator lets the user enter the annual increase themselves.
+    growthRate: null,
+    notes:
+      "The official Powerball rules describe the annuity as 30 graduated payments over 29 years. Because no fixed graduation rate is published, the payout calculator asks you to enter the annual increase (use 0% for fixed equal payments).",
+  },
+
   officialSource: {
     sourceId: "powerball-official-rules",
     sourceName: "Powerball — official game rules (powerball.com)",

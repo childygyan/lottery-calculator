@@ -2,6 +2,7 @@
 export {
   calculateLotteryWinnings,
   validateLotteryForm,
+  parseAmountField,
   MAX_JACKPOT_USD,
   ANNUITY_YEARS,
   DEFAULT_TAX_YEAR,
@@ -16,6 +17,35 @@ export { calculateProgressiveTax, calculateTaxableIncome, calculateFederalTaxLia
 export { calculateStateTaxLiability } from "./state-tax.ts";
 export { calculateWithholding } from "./withholding.ts";
 export { annualAnnuityPayment, annuitySchedule } from "./annuity.ts";
+export {
+  buildAnnuitySchedule,
+  calculateAnnuityTaxes,
+  validateAnnuityScheduleInput,
+  MAX_ANNUITY_PAYMENTS,
+} from "./annuities.ts";
+export type {
+  AnnuityScheduleInput,
+  AnnuityPayment,
+  ValidAnnuitySchedule,
+  AnnuityTaxInput,
+  AnnuityPaymentTax,
+  AnnuityTaxResult,
+} from "./annuities.ts";
+export {
+  calculatePayoutComparison,
+  validatePayoutForm,
+  parseShareableAmount,
+  DEFAULT_ANNUITY_YEARS,
+  MAX_PAYOUT_ANNUITY_YEARS,
+} from "./payout.ts";
+export type {
+  PayoutFormValues,
+  PayoutFieldErrors,
+  PayoutValidation,
+  ParsedPayoutInput,
+  PayoutSideResult,
+  PayoutComparison,
+} from "./payout.ts";
 export {
   roundToCents,
   formatCurrency,

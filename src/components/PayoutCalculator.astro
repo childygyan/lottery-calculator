@@ -1,0 +1,637 @@
+---
+/**
+ * Interactive payout calculator: cash option vs annuity comparison.
+ *
+ * Server-rendered form; one client script validates, calculates with the
+ * shared payout engine, and renders results. Props:
+ * - defaultJackpot: preset the jackpot field (amount pages).
+ * - gameId: preselect a verified game annuity structure.
+ * - mode: "comparison" (cash vs annuity) or "cash" (cash option only).
+ *
+ * Never invents a cash value: the cash option field is always required and
+ * user-entered. Never recommends one payout option over the other.
+ */
+import CurrencyInput from "./CurrencyInput.astro";
+import NumberInput from "./NumberInput.astro";
+import StateSelect from "./StateSelect.astro";
+import Disclaimer from "./Disclaimer.astro";
+import { getStateOptions } from "../data/taxes/index.ts";
+import { DEFAULT_TAX_YEAR, SUPPORTED_TAX_YEARS } from "../data/taxes/federal/index.ts";
+import { FILING_STATUSES, FILING_STATUS_LABELS } from "../lib/calculator/index.ts";
+import { PAYOUT_PRESETS } from "../data/jackpots.ts";
+import { getLotteryConfig } from "../data/lotteries/index.ts";
+
+interface Props {
+  defaultJackpot?: number;
+  gameId?: "powerball" | "mega-millions";
+  mode?: "comparison" | "cash";
+  idPrefix?: string;
+}
+
+const {
+  defaultJackpot,
+  gameId,
+  mode = "comparison",
+  idPrefix = "payout",
+} = Astro.props;
+
+const cashOnly = mode === "cash";
+const stateOptions = getStateOptions(DEFAULT_TAX_YEAR);
+const selectedGame = gameId ?? "custom";
+
+const gameOptions = [
+  { value: "custom", label: "Custom annuity" },
+  { value: "powerball", label: "Powerball (30 graduated payments)" },
+  { value: "mega-millions", label: "Mega Millions (30 payments, +5%/yr)" },
+];
+
+const f = (id: string) => `${idPrefix}-${id}`;
+const jackpotValue = defaultJackpot ? defaultJackpot.toLocaleString("en-US") : "";
+---
+
+<div class="card">
+  <form
+    id={f("form")}
+    novalidate
+    data-payout-calculator
+    data-prefix={idPrefix}
+    data-cash-only={cashOnly ? "true" : "false"}
+  >
+    {
+      !cashOnly && (
+        <div>
+          <label for={f("game")} class="label">Annuity structure</label>
+          <select id={f("game")} name="game" class="input" data-game>
+            {gameOptions.map((g) => (
+              <option value={g.value} selected={g.value === selectedGame}>{g.label}</option>
+            ))}
+          </select>
+          <p id={f("game-hint")} class="field-hint" data-game-hint></p>
+        </div>
+      )
+    }
+
+    <div class="no-print mt-5" aria-label="Jackpot presets">
+      <span class="label" id={f("presets-label")}>Quick amounts</span>
+      <div class="mt-2 flex flex-wrap gap-2" role="group" aria-labelledby={f("presets-label")}>
+        {
+          PAYOUT_PRESETS.map((p) => (
+            <button
+              type="button"
+              class="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-blue-500 hover:text-blue-700"
+              data-preset={p.amount}
+            >
+              {p.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-5 grid gap-5 sm:grid-cols-2">
+      <CurrencyInput
+        id={f("jackpot")}
+        name="jackpot"
+        label="Advertised Jackpot"
+        placeholder="100,000,000"
+        hint="The advertised annuity jackpot."
+        value={jackpotValue}
+      />
+      <CurrencyInput
+        id={f("cashValue")}
+        name="cashValue"
+        label="Cash Option"
+        placeholder="48,000,000"
+        hint="Enter the current cash value to calculate an estimate."
+      />
+    </div>
+
+    {
+      !cashOnly && (
+        <div class="mt-5 grid gap-5 sm:grid-cols-2">
+          <NumberInput
+            id={f("years")}
+            name="annuityYears"
+            label="Annuity Years"
+            placeholder="30"
+            hint="Number of annual payments."
+            inputmode="numeric"
+          />
+          <NumberInput
+            id={f("increase")}
+            name="annualIncrease"
+            label="Annual Increase (%)"
+            placeholder="0"
+            hint="How much each payment grows per year. 0 = equal payments."
+            inputmode="decimal"
+          />
+        </div>
+      )
+    }
+
+    <div class="mt-5 grid gap-5 sm:grid-cols-3">
+      <div>
+        <label for={f("taxYear")} class="label">Tax Year</label>
+        <select id={f("taxYear")} name="taxYear" class="input" aria-required="true">
+          {
+            SUPPORTED_TAX_YEARS.map((year) => (
+              <option value={String(year)} selected={year === DEFAULT_TAX_YEAR}>
+                {year}
+              </option>
+            ))
+          }
+        </select>
+        <p id={f("taxYear") + "-error"} class="field-error" hidden></p>
+      </div>
+      <div>
+        <label for={f("filingStatus")} class="label">Filing Status</label>
+        <select id={f("filingStatus")} name="filingStatus" class="input" aria-required="true">
+          {
+            FILING_STATUSES.map((status) => (
+              <option value={status} selected={status === "single"}>
+                {FILING_STATUS_LABELS[status]}
+              </option>
+            ))
+          }
+        </select>
+        <p id={f("filingStatus") + "-error"} class="field-error" hidden></p>
+      </div>
+      <StateSelect
+        id={f("state")}
+        name="state"
+        label="State"
+        hint="Used to estimate state tax on the winnings."
+        options={stateOptions.map((o) => ({ code: o.code, state: o.name }))}
+        selected=""
+      />
+    </div>
+
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <button type="submit" class="btn-primary">
+        {cashOnly ? "Calculate Cash Option" : "Compare Cash vs Annuity"}
+      </button>
+      <button
+        type="button"
+        id={f("copy")}
+        class="no-print rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-blue-500 hover:text-blue-700"
+        hidden
+      >
+        Copy Results
+      </button>
+    </div>
+    <p id={f("copy-note")} class="no-print mt-2 text-sm text-slate-500" hidden></p>
+  </form>
+</div>
+
+<section
+  id={f("results")}
+  aria-labelledby={f("results-heading")}
+  aria-live="polite"
+  class="card mt-8"
+  hidden
+>
+  <div class="flex items-center justify-between gap-3">
+    <h2 id={f("results-heading")} class="text-xl font-bold tracking-tight text-slate-900">
+      Estimated Results
+    </h2>
+    <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">
+      Estimated
+    </span>
+  </div>
+  <p id={f("meta")} class="mt-2 text-sm text-slate-500"></p>
+  <p
+    id={f("state-notice")}
+    class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900"
+    hidden
+  ></p>
+
+  <div id={f("comparison")} class="mt-6"></div>
+
+  {!cashOnly && (
+  <div id={f("summary-wrap")} class="mt-8" hidden>
+    <h3 class="text-lg font-bold tracking-tight text-slate-900">Annuity Payment Summary</h3>
+    <dl id={f("summary")} class="mt-4 divide-y divide-slate-100"></dl>
+  </div>
+
+  <div id={f("schedule-wrap")} class="mt-8" hidden>
+    <h3 class="text-lg font-bold tracking-tight text-slate-900">Annuity Payment Schedule</h3>
+    <p class="mt-1 text-sm text-slate-500">
+      Each payment is taxed as income in the year it is received. Figures are estimates.
+    </p>
+    <div id={f("schedule")} class="mt-4 overflow-x-auto"></div>
+  </div>
+  )}
+
+  <div id={f("tax-details")} class="mt-8 border-t border-slate-200 pt-6" hidden>
+    <h3 class="text-lg font-bold tracking-tight text-slate-900">Tax Details</h3>
+    <p class="mt-1 text-sm text-slate-500">
+      Withholding is not your final tax — it is an advance payment credited against the
+      estimated final liability.
+    </p>
+    <dl id={f("tax-details-list")} class="mt-4 divide-y divide-slate-100"></dl>
+  </div>
+
+  <div class="mt-8 border-t border-slate-200 pt-6">
+    <h3 class="text-lg font-bold tracking-tight text-slate-900">Assumptions</h3>
+    <ul id={f("assumptions")} class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600"></ul>
+    <p class="mt-3 text-sm text-slate-500">
+      This comparison presents estimated figures only. It does not recommend one payout
+      option over the other.
+    </p>
+  </div>
+</section>
+
+<div class="mt-6">
+  <Disclaimer />
+</div>
+
+<script>
+  // Payout calculator client logic: validate, calculate, render.
+  // All math lives in src/lib/calculator/ — this script wires the DOM.
+  // Config (prefix, mode) is read from the form's data attributes so the
+  // script stays a plain bundleable module script (no define:vars).
+  import {
+    validatePayoutForm,
+    calculatePayoutComparison,
+    parseShareableAmount,
+    formatCurrencyExact,
+    formatPercent,
+    friendlyRuleStatus,
+    FILING_STATUS_LABELS,
+  } from "../lib/calculator/index.ts";
+  import { getLotteryConfig } from "../data/lotteries/index.ts";
+
+  const form = document.querySelector("[data-payout-calculator]");
+  const prefix = (form instanceof HTMLElement && form.dataset.prefix) || "payout";
+  const cashOnly = form instanceof HTMLElement && form.dataset.cashOnly === "true";
+
+  const $ = (id) => document.getElementById(`${prefix}-${id}`);
+  const results = $("results");
+
+  const fields = ["jackpot", "cashValue", "years", "increase", "state", "taxYear", "filingStatus"];
+
+  function setError(fieldId, message) {
+    const input = $(fieldId);
+    const errorEl = document.getElementById(`${prefix}-${fieldId}-error`);
+    if (!input || !errorEl) return;
+    if (message) {
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+      input.setAttribute("aria-invalid", "true");
+    } else {
+      errorEl.textContent = "";
+      errorEl.hidden = true;
+      input.removeAttribute("aria-invalid");
+    }
+  }
+
+  function clearErrors() {
+    fields.forEach((fld) => setError(fld, ""));
+  }
+
+  /* ---------- game structure ---------- */
+  const gameSelect = form?.querySelector("[data-game]");
+  const gameHint = form?.querySelector("[data-game-hint]");
+  const yearsInput = $("years");
+  const increaseInput = $("increase");
+
+  function syncGame() {
+    const game = gameSelect?.value ?? "custom";
+    const config = game === "custom" ? null : getLotteryConfig(game);
+    // NOTE: readOnly (not disabled) so the values are still submitted with
+    // the form — disabled fields are dropped from FormData, which would lose
+    // Mega Millions' locked 30 payments / 5% growth.
+    if (yearsInput instanceof HTMLInputElement) {
+      if (config?.annuity) {
+        yearsInput.value = String(config.annuity.numberOfPayments);
+        yearsInput.readOnly = true;
+        yearsInput.setAttribute("aria-readonly", "true");
+      } else {
+        yearsInput.readOnly = false;
+        yearsInput.removeAttribute("aria-readonly");
+        if (!yearsInput.value) yearsInput.value = "30";
+      }
+    }
+    if (increaseInput instanceof HTMLInputElement) {
+      const rate = config?.annuity?.growthRate;
+      if (rate !== null && rate !== undefined) {
+        increaseInput.value = String(Math.round(rate * 100));
+        increaseInput.readOnly = true;
+        increaseInput.setAttribute("aria-readonly", "true");
+      } else {
+        increaseInput.readOnly = false;
+        increaseInput.removeAttribute("aria-readonly");
+        if (increaseInput.value === "") increaseInput.value = "0";
+      }
+    }
+    if (gameHint) {
+      if (!config) {
+        gameHint.textContent = "Enter your own annuity length and annual increase.";
+      } else if (config.annuity?.growthRate === null) {
+        gameHint.textContent =
+          `${config.name}: 30 payments over 29 years (verified). The official rules publish no fixed graduation rate, so enter the annual increase yourself — 0% means equal payments.`;
+      } else {
+        gameHint.textContent =
+          `${config.name}: ${config.annuity?.notes ?? "verified annuity structure applied."}`;
+      }
+    }
+  }
+  gameSelect?.addEventListener("change", syncGame);
+  syncGame();
+
+  /* ---------- presets ---------- */
+  form?.querySelectorAll("[data-preset]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const amount = button.getAttribute("data-preset");
+      const jackpot = $("jackpot");
+      if (jackpot && amount) {
+        jackpot.value = Number(amount).toLocaleString("en-US");
+        jackpot.focus();
+      }
+    });
+  });
+
+  /* ---------- ?amount= share links ---------- */
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const shared = parseShareableAmount(params.get("amount"));
+    const jackpot = $("jackpot");
+    if (shared !== null && jackpot && !jackpot.value) {
+      jackpot.value = shared.toLocaleString("en-US");
+    }
+  } catch {
+    // URL parsing must never break the calculator.
+  }
+
+  /* ---------- rendering ---------- */
+  function row(label, value, highlight) {
+    return `<div class="flex items-baseline justify-between gap-4 py-3">
+      <dt class="text-sm sm:text-base ${highlight ? "font-bold text-slate-900" : "text-slate-600"}">${label}</dt>
+      <dd class="text-right tabular-nums ${highlight ? "text-xl font-bold text-emerald-700 sm:text-2xl" : "text-base font-semibold text-slate-900 sm:text-lg"}">${value}</dd>
+    </div>`;
+  }
+
+  function renderComparison(comparison) {
+    const container = $("comparison");
+    if (!container) return;
+    const { cash, annuity } = comparison;
+    const cell = (v, hl) =>
+      `<td class="py-3 text-right tabular-nums ${hl ? "font-bold text-emerald-700" : "text-slate-900"}">${v}</td>`;
+    const rows = [
+      ["Gross Value", formatCurrencyExact(cash.gross), formatCurrencyExact(annuity.gross), false],
+      ["Payment Structure", cash.paymentStructure, annuity.paymentStructure, false],
+      ["Estimated Federal Tax", formatCurrencyExact(cash.federalTax), formatCurrencyExact(annuity.federalTax), false],
+      ["Estimated State Tax", formatCurrencyExact(cash.stateTax), formatCurrencyExact(annuity.stateTax), false],
+      ["Estimated Total Tax", formatCurrencyExact(cash.totalTax), formatCurrencyExact(annuity.totalTax), false],
+      ["Estimated Net", formatCurrencyExact(cash.net), formatCurrencyExact(annuity.net), true],
+      ["Effective Tax Rate", formatPercent(cash.effectiveRate), formatPercent(annuity.effectiveRate), false],
+    ];
+    container.innerHTML = `
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[520px] border-collapse">
+          <caption class="sr-only">Cash option versus annuity comparison (estimated)</caption>
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th scope="col" class="py-3 pr-4 text-left text-sm font-semibold text-slate-700"><span class="sr-only">Detail</span></th>
+              <th scope="col" class="py-3 pr-4 text-right text-sm font-semibold text-slate-900">Cash Option</th>
+              <th scope="col" class="py-3 text-right text-sm font-semibold text-slate-900">Annuity</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(([label, c, a, hl]) => `
+              <tr class="border-b border-slate-100">
+                <th scope="row" class="py-3 pr-4 text-left text-sm ${hl ? "font-bold text-slate-900" : "font-medium text-slate-600"}">${label}</th>
+                ${cell(c, hl)}${cell(a, hl)}
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  function renderSummary(comparison) {
+    const wrap = $("summary-wrap");
+    const list = $("summary");
+    if (!wrap || !list) return;
+    const a = comparison.annuity;
+    list.innerHTML =
+      row("Total Gross Annuity", formatCurrencyExact(a.gross), false) +
+      row("Estimated Total Federal Tax", formatCurrencyExact(a.federalTax), false) +
+      row("Estimated Total State Tax", formatCurrencyExact(a.stateTax), false) +
+      row("Estimated Total Tax", formatCurrencyExact(a.totalTax), false) +
+      row("Estimated Total Net", formatCurrencyExact(a.net), true) +
+      row("Average Annual Gross", formatCurrencyExact(a.schedule.averageGross), false) +
+      row("Average Annual Estimated Tax", formatCurrencyExact(a.schedule.averageTax), false) +
+      row("Average Annual Estimated Net", formatCurrencyExact(a.schedule.averageNet), false);
+    wrap.hidden = false;
+  }
+
+  function renderSchedule(comparison) {
+    const wrap = $("schedule-wrap");
+    const container = $("schedule");
+    if (!wrap || !container) return;
+    const payments = comparison.annuity.schedule.payments;
+    const VISIBLE = 5;
+    const rowHtml = (p) => `
+      <tr class="border-b border-slate-100">
+        <th scope="row" class="py-2 pr-3 text-left font-medium text-slate-600">${p.paymentNumber}</th>
+        <td class="py-2 pr-3 text-right tabular-nums text-slate-900">${formatCurrencyExact(p.grossPayment)}</td>
+        <td class="py-2 pr-3 text-right tabular-nums text-slate-600">${formatCurrencyExact(p.federalTax)}</td>
+        <td class="py-2 pr-3 text-right tabular-nums text-slate-600">${formatCurrencyExact(p.stateTax)}</td>
+        <td class="py-2 pr-3 text-right tabular-nums font-medium text-emerald-700">${formatCurrencyExact(p.netPayment)}</td>
+        <td class="py-2 text-right tabular-nums text-slate-600">${formatCurrencyExact(p.cumulativeNet)}</td>
+      </tr>`;
+    container.innerHTML = `
+      <table class="w-full min-w-[640px] border-collapse text-sm">
+        <caption class="sr-only">Annuity payment schedule with per-payment tax estimates</caption>
+        <thead>
+          <tr class="border-b-2 border-slate-200 text-left">
+            <th scope="col" class="py-2 pr-3 font-semibold text-slate-700">Year</th>
+            <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Gross Payment</th>
+            <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Est. Federal Tax</th>
+            <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Est. State Tax</th>
+            <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Est. Net</th>
+            <th scope="col" class="py-2 text-right font-semibold text-slate-700">Cumulative Net</th>
+          </tr>
+        </thead>
+        <tbody>${payments.slice(0, VISIBLE).map(rowHtml).join("")}</tbody>
+        ${payments.length > VISIBLE ? `<tbody id="${prefix}-schedule-rest" class="schedule-rest" hidden>${payments.slice(VISIBLE).map(rowHtml).join("")}</tbody>` : ""}
+      </table>
+      ${payments.length > VISIBLE ? `<button type="button" id="${prefix}-schedule-toggle" class="no-print mt-3 text-sm font-semibold text-blue-700 underline-offset-2 hover:underline" aria-expanded="false">Show all ${payments.length} payments</button>` : ""}`;
+    const toggle = document.getElementById(`${prefix}-schedule-toggle`);
+    const rest = document.getElementById(`${prefix}-schedule-rest`);
+    toggle?.addEventListener("click", () => {
+      if (!(toggle instanceof HTMLElement) || !rest) return;
+      const isHidden = rest.hasAttribute("hidden");
+      if (isHidden) {
+        rest.removeAttribute("hidden");
+        toggle.setAttribute("aria-expanded", "true");
+        toggle.textContent = "Show fewer payments";
+      } else {
+        rest.setAttribute("hidden", "");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.textContent = `Show all ${payments.length} payments`;
+      }
+    });
+    wrap.hidden = false;
+  }
+
+  function renderTaxDetails(comparison, isCashOnly) {
+    const wrap = $("tax-details");
+    const list = $("tax-details-list");
+    if (!wrap || !list) return;
+    const cash = comparison.cash;
+    const annuity = comparison.annuity;
+    const stateWith =
+      cash.stateWithholding === null ? "Varies" : formatCurrencyExact(cash.stateWithholding);
+    list.innerHTML =
+      row("Estimated Federal Withholding (cash)", formatCurrencyExact(cash.federalWithholding), false) +
+      (isCashOnly
+        ? ""
+        : row("Estimated Federal Withholding (annuity, lifetime)", formatCurrencyExact(annuity.federalWithholding), false)) +
+      row("Estimated State Withholding", stateWith, false) +
+      row("Estimated Final Tax Liability (cash)", formatCurrencyExact(cash.totalTax), false) +
+      (isCashOnly
+        ? ""
+        : row("Estimated Final Tax Liability (annuity, lifetime)", formatCurrencyExact(annuity.totalTax), false)) +
+      row("Cash Effective Tax Rate", formatPercent(cash.effectiveRate), false) +
+      (isCashOnly
+        ? ""
+        : row("Annuity Effective Tax Rate", formatPercent(annuity.effectiveRate), false));
+    wrap.hidden = false;
+  }
+
+  function renderAssumptions(comparison) {
+    const list = $("assumptions");
+    if (!list) return;
+    list.innerHTML = comparison.assumptions.map((a) => `<li>${a}</li>`).join("");
+  }
+
+  function resultText(comparison, meta, advertisedJackpot) {
+    const { cash, annuity } = comparison;
+    const lines = [
+      `${meta}`,
+      `Advertised jackpot: ${formatCurrencyExact(advertisedJackpot)}`,
+      `Cash option: ${formatCurrencyExact(cash.gross)}`,
+      `Estimated federal tax (cash): ${formatCurrencyExact(cash.federalTax)}`,
+      `Estimated state tax (cash): ${formatCurrencyExact(cash.stateTax)}`,
+      `Estimated take-home (cash): ${formatCurrencyExact(cash.net)}`,
+    ];
+    if (!cashOnly) {
+      lines.push(
+        `Annuity: ${annuity.paymentStructure}`,
+        `Estimated total tax (annuity): ${formatCurrencyExact(annuity.totalTax)}`,
+        `Estimated total net (annuity): ${formatCurrencyExact(annuity.net)}`,
+      );
+    }
+    lines.push("Estimates only — not tax or financial advice.");
+    return lines.join("\n");
+  }
+
+  let lastResultText = "";
+  const copyButton = $("copy");
+  const copyNote = $("copy-note");
+  copyButton?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(lastResultText);
+      if (copyNote) {
+        copyNote.textContent = "Results copied to clipboard.";
+        copyNote.hidden = false;
+      }
+    } catch {
+      if (copyNote) {
+        copyNote.textContent = "Copy failed — your browser blocked clipboard access.";
+        copyNote.hidden = false;
+      }
+    }
+  });
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const submitted = event.currentTarget;
+    if (!(submitted instanceof HTMLFormElement)) return;
+    clearErrors();
+    const data = new FormData(submitted);
+    const values = {
+      jackpot: String(data.get("jackpot") ?? ""),
+      cashValue: String(data.get("cashValue") ?? ""),
+      annuityYears: String(data.get("annuityYears") ?? ""),
+      annualIncrease: String(data.get("annualIncrease") ?? ""),
+      state: String(data.get("state") ?? ""),
+      taxYear: String(data.get("taxYear") ?? ""),
+      filingStatus: String(data.get("filingStatus") ?? ""),
+    };
+    const validation = validatePayoutForm(values);
+    if (!validation.valid || !validation.parsed) {
+      const errors = validation.errors;
+      if (errors.jackpot) setError("jackpot", errors.jackpot);
+      if (errors.cashValue) setError("cashValue", errors.cashValue);
+      if (errors.annuityYears) setError("years", errors.annuityYears);
+      if (errors.annualIncrease) setError("increase", errors.annualIncrease);
+      if (errors.state) setError("state", errors.state);
+      if (errors.taxYear) setError("taxYear", errors.taxYear);
+      if (errors.filingStatus) setError("filingStatus", errors.filingStatus);
+      if (results) results.hidden = true;
+      const firstInvalid = document.querySelector("[aria-invalid='true']");
+      if (firstInvalid instanceof HTMLElement) firstInvalid.focus();
+      return;
+    }
+
+    const comparison = calculatePayoutComparison(validation.parsed);
+    if (cashOnly) {
+      // Cash-only mode: don't present annuity assumptions alongside cash results.
+      comparison.assumptions = comparison.assumptions.filter((a) => !/annuity/i.test(a));
+    }
+    const statusLabel = FILING_STATUS_LABELS[validation.parsed.filingStatus] ?? validation.parsed.filingStatus;
+    const stateName =
+      form?.querySelector(`#${prefix}-state`)?.selectedOptions?.[0]?.textContent?.trim() ??
+      validation.parsed.state;
+    const metaText = `Tax year ${validation.parsed.taxYear} · ${statusLabel} · ${stateName}`;
+    const meta = $("meta");
+    if (meta) meta.textContent = metaText;
+
+    const notice = friendlyRuleStatus(comparison.stateDataStatus);
+    const noticeEl = $("state-notice");
+    if (noticeEl) {
+      if (notice) {
+        noticeEl.textContent = notice;
+        noticeEl.hidden = false;
+      } else {
+        noticeEl.textContent = "";
+        noticeEl.hidden = true;
+      }
+    }
+
+    if (cashOnly) {
+      // Cash-only mode: render the cash side as the headline result, with the
+      // advertised jackpot shown separately (never conflated with the cash value).
+      const container = $("comparison");
+      if (container) {
+        const c = comparison.cash;
+        container.innerHTML = `<dl class="divide-y divide-slate-100">` +
+          row("Advertised Jackpot", formatCurrencyExact(validation.parsed.advertisedJackpot), false) +
+          row("Cash Option (Gross)", formatCurrencyExact(c.gross), false) +
+          row("Estimated Federal Tax", formatCurrencyExact(c.federalTax), false) +
+          row("Estimated State Tax", formatCurrencyExact(c.stateTax), false) +
+          row("Estimated Total Tax", formatCurrencyExact(c.totalTax), false) +
+          row("Estimated Take-Home", formatCurrencyExact(c.net), true) +
+          row("Effective Tax Rate", formatPercent(c.effectiveRate), false) +
+          `</dl>`;
+      }
+    } else {
+      renderComparison(comparison);
+      renderSummary(comparison);
+      renderSchedule(comparison);
+    }
+    renderTaxDetails(comparison, cashOnly);
+    renderAssumptions(comparison);
+
+    lastResultText = resultText(comparison, metaText, validation.parsed.advertisedJackpot);
+    if (copyButton) copyButton.hidden = false;
+    if (copyNote) copyNote.hidden = true;
+
+    if (results) {
+      results.hidden = false;
+      results.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+    }
+  });
+</script>

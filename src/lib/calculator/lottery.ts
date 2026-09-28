@@ -136,7 +136,11 @@ export interface LotteryValidation {
   };
 }
 
-function parseAmountField(
+/**
+ * Parse one currency form field. Exported so the payout calculator can reuse
+ * the same validation (no duplicated parsing logic).
+ */
+export function parseAmountField(
   raw: string,
   fieldLabel: string,
   max: number,

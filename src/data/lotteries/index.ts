@@ -9,7 +9,7 @@ import type { LotteryConfig } from "./types.ts";
 import { POWERBALL_CONFIG } from "./powerball.ts";
 import { MEGA_MILLIONS_CONFIG } from "./mega-millions.ts";
 
-export type { LotteryConfig, PrizeTier, MultiplierRule, NumberRange, LotterySourceRef } from "./types.ts";
+export type { LotteryConfig, PrizeTier, MultiplierRule, AnnuityConfig, AnnuityFrequency, NumberRange, LotterySourceRef } from "./types.ts";
 export { validateLotteryConfig, formatOdds } from "./types.ts";
 export { POWERBALL_CONFIG } from "./powerball.ts";
 export { MEGA_MILLIONS_CONFIG } from "./mega-millions.ts";

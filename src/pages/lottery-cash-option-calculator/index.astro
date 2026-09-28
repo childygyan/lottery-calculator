@@ -1,0 +1,181 @@
+---
+/**
+ * /lottery-cash-option-calculator/ — cash option (lump sum) estimator.
+ * Uses the payout calculator in cash-only mode: the user enters the official
+ * cash value and gets federal/state tax estimates, withholding, and take-home.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PayoutCalculator from "../../components/PayoutCalculator.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Cash Option Calculator — Lump Sum Taxes & Take-Home",
+  description:
+    "Estimate taxes on the lottery cash option. Enter the official lump-sum cash value to see federal and state tax estimates, withholding, and your take-home amount.",
+  path: "/lottery-cash-option-calculator/",
+});
+
+const faqs = [
+  {
+    question: "What is the cash option for a lottery jackpot?",
+    answer:
+      "The cash option is the lump sum actually available in the prize pool when you take your winnings all at once instead of as a 30-year annuity. It is always smaller than the advertised jackpot. The exact figure is published in the official prize announcement for each drawing — enter it in the calculator above.",
+  },
+  {
+    question: "Why is the cash option smaller than the advertised jackpot?",
+    answer:
+      "The advertised jackpot is the nominal total of 30 annuity payments spread over decades. The cash option is the present value of that payment stream — the amount actually in the prize pool today. The gap reflects the time value of money and moves with interest rates, so it is different for every drawing.",
+  },
+  {
+    question: "How is the cash option taxed?",
+    answer:
+      "The entire cash option is taxed as ordinary income in the year you receive it — federally with the progressive brackets plus standard deduction, and by most states at their rates. Because the full amount lands in one tax year, the top 37% federal bracket usually applies to most of a large cash option.",
+  },
+  {
+    question: "Is lottery withholding the same as final tax on the cash option?",
+    answer:
+      "No. Federal law requires 24% withholding on lottery winnings over $5,000, and many states withhold as well. Withholding is credited against your final tax bill — on a large cash option, the actual combined rate is typically much higher, and you pay the difference when you file.",
+  },
+  {
+    question: "Where do I find the official cash value?",
+    answer:
+      "Lotteries publish the cash value alongside the advertised jackpot for each drawing — on the game's official site and in the prize announcement. Always use that figure; never estimate it as a fixed percentage of the jackpot.",
+  },
+  {
+    question: "Should I take the cash option or the annuity?",
+    answer:
+      "This calculator doesn't answer that — it estimates what the cash option leaves after taxes so you can compare it yourself against the annuity. The payout calculator shows both options side by side with the same tax engine.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Cash Option Calculator", url: absoluteUrl("/lottery-cash-option-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[{ name: "Home", href: "/" }, { name: "Lottery Cash Option Calculator" }]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Lottery Cash Option Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Estimate what the lump sum really leaves behind. Enter the official cash value
+    from the prize announcement to see estimated federal and state taxes, withholding,
+    and your take-home amount.
+  </p>
+
+  <section aria-label="Cash option calculator" class="mt-8">
+    <PayoutCalculator mode="cash" idPrefix="cashopt" />
+  </section>
+
+  <section aria-label="Understanding the cash option" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      What the Cash Option Really Is
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        When a jackpot is advertised, the headline number is the annuity total. The{" "}
+        <strong class="font-semibold text-slate-800">cash option</strong> is the smaller
+        lump sum the lottery will actually hand you today — the present value of those
+        30 future payments, funded by the prize pool. On nine-figure jackpots the cash
+        option is often roughly half the advertised figure, but the ratio is never fixed:
+        it depends on the prize pool and prevailing interest rates at the time of the drawing.
+      </p>
+      <p>
+        Tax-wise, the cash option is simple and steep: the whole amount counts as income
+        in a single year, so the top federal bracket applies to nearly all of a large win.
+        State tax then ranges from $0 (no-income-tax states, plus California's lottery
+        exemption) to double-digit planning rates. Select your state above for both figures.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="Cash option vs annuity" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Cash Option vs Annuity
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The annuity pays the full advertised jackpot over 30 years, with each payment
+        taxed in its year; the cash option pays less, now, taxed all at once. To see both
+        with the same tax engine — gross, taxes, timing, and net side by side — use the{" "}
+        <a href="/lottery-payout-calculator/" class="font-medium text-blue-700 underline-offset-2 hover:underline">
+          lottery payout calculator
+        </a>. It presents the numbers without recommending either option.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="How we calculate" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How We Calculate
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The cash option calculator runs your entered cash value through the shared
+        lottery tax engine: federal tax from the year's progressive brackets and standard
+        deduction for your filing status, state tax from your state's configured planning
+        rate, and withholding (24% federal on amounts over $5,000) shown separately from
+        the estimated final liability. Take-home is the cash value minus estimated total
+        tax — not minus withholding.
+      </p>
+    </div>
+  </section>
+
+  <Methodology />
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "powerball-official-rules",
+      "megamillions-official-rules",
+      "irs-rev-proc-2025-32",
+      "irs-gambling-withholding",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <div class="mt-14 grid gap-8 lg:grid-cols-[1fr_320px]">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Lottery Payout Calculator",
+          href: "/lottery-payout-calculator/",
+          description: "Compare cash vs annuity with tax estimates and full schedules.",
+        },
+        {
+          label: "Lottery Annuity Calculator",
+          href: "/lottery-annuity-calculator/",
+          description: "Build an illustrative annuity payment schedule.",
+        },
+        {
+          label: "Lottery Tax Calculator",
+          href: "/lottery-tax-calculator/",
+          description: "Federal and state estimates for any lottery win, all 51 jurisdictions.",
+        },
+        {
+          label: "Lottery Calculator",
+          href: "/lottery-calculator/",
+          description: "The general jackpot and take-home estimator.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

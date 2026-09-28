@@ -1,0 +1,20 @@
+---
+/**
+ * /lottery-payout-calculator/[amount]/ — jackpot amount pages (1M → 1B).
+ * Exactly five static paths from the structured data model; every page is
+ * rendered by the reusable LotteryPayoutPage component.
+ */
+import LotteryPayoutPage from "../../components/LotteryPayoutPage.astro";
+import { getAllJackpotAmounts } from "../../data/jackpots.ts";
+
+export function getStaticPaths() {
+  return getAllJackpotAmounts().map((amount) => ({
+    params: { amount: amount.slug },
+    props: { amount },
+  }));
+}
+
+const { amount } = Astro.props;
+---
+
+<LotteryPayoutPage amount={amount} />

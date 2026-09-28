@@ -1,0 +1,72 @@
+---
+/**
+ * Server-rendered cash-vs-annuity comparison table.
+ *
+ * Presents gross, estimated taxes, timing, structure, and estimated net for
+ * both options side by side. Deliberately contains no recommendation and no
+ * ranking language — the numbers speak, the user interprets.
+ */
+import { formatCurrencyExact, formatPercent } from "../lib/calculator/index.ts";
+import type { PayoutComparison } from "../lib/calculator/index.ts";
+
+interface Props {
+  comparison: PayoutComparison;
+  /** Short label shown above the table, e.g. "Illustrative example". */
+  eyebrow?: string;
+}
+
+const { comparison, eyebrow } = Astro.props;
+const { cash, annuity } = comparison;
+
+const rows: { label: string; cash: string; annuity: string; highlight?: boolean }[] = [
+  { label: "Gross Value", cash: formatCurrencyExact(cash.gross), annuity: formatCurrencyExact(annuity.gross) },
+  { label: "Payment Structure", cash: cash.paymentStructure, annuity: annuity.paymentStructure },
+  { label: "Estimated Federal Tax", cash: formatCurrencyExact(cash.federalTax), annuity: formatCurrencyExact(annuity.federalTax) },
+  { label: "Estimated State Tax", cash: formatCurrencyExact(cash.stateTax), annuity: formatCurrencyExact(annuity.stateTax) },
+  { label: "Estimated Total Tax", cash: formatCurrencyExact(cash.totalTax), annuity: formatCurrencyExact(annuity.totalTax) },
+  {
+    label: "Estimated Net",
+    cash: formatCurrencyExact(cash.net),
+    annuity: formatCurrencyExact(annuity.net),
+    highlight: true,
+  },
+  { label: "Effective Tax Rate", cash: formatPercent(cash.effectiveRate), annuity: formatPercent(annuity.effectiveRate) },
+];
+---
+
+<div class="overflow-x-auto">
+  <table class="w-full min-w-[520px] border-collapse text-sm sm:text-base">
+    <caption class="sr-only">Cash option versus annuity comparison (estimated)</caption>
+    <thead>
+      <tr class="border-b-2 border-slate-200">
+        <th scope="col" class="py-3 pr-4 text-left font-semibold text-slate-700">
+          {eyebrow ? <span class="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-400">{eyebrow}</span> : null}
+          <span class="sr-only">Detail</span>
+        </th>
+        <th scope="col" class="py-3 pr-4 text-right font-semibold text-slate-900">Cash Option</th>
+        <th scope="col" class="py-3 text-right font-semibold text-slate-900">Annuity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr class="border-b border-slate-100">
+            <th scope="row" class:list={["py-3 pr-4 text-left", row.highlight ? "font-bold text-slate-900" : "font-medium text-slate-600"]}>
+              {row.label}
+            </th>
+            <td class:list={["py-3 pr-4 text-right tabular-nums", row.highlight ? "font-bold text-emerald-700" : "text-slate-900"]}>
+              {row.cash}
+            </td>
+            <td class:list={["py-3 text-right tabular-nums", row.highlight ? "font-bold text-emerald-700" : "text-slate-900"]}>
+              {row.annuity}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+<p class="mt-3 text-sm text-slate-500">
+  This comparison presents estimated figures only — gross amounts, taxes, timing,
+  and payment structure. It does not recommend one option over the other.
+</p>

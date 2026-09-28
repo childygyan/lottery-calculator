@@ -1,0 +1,229 @@
+---
+/**
+ * LotteryPayoutPage — reusable template for jackpot amount pages.
+ *
+ * Every numerical example on these pages is computed at build time with the
+ * real shared engine — nothing is hard-coded. Cash values are never invented:
+ * the interactive calculator requires the user to enter the official cash value.
+ */
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import PayoutCalculator from "../components/PayoutCalculator.astro";
+import Methodology from "../components/Methodology.astro";
+import Disclaimer from "../components/Disclaimer.astro";
+import FAQ from "../components/FAQ.astro";
+import SourceList from "../components/SourceList.astro";
+import RelatedLinks from "../components/RelatedLinks.astro";
+import {
+  buildPageMeta,
+  breadcrumbJsonLd,
+  faqJsonLd,
+  absoluteUrl,
+} from "../lib/seo/metadata.ts";
+import { getAllJackpotAmounts, type JackpotAmount } from "../data/jackpots.ts";
+import {
+  buildAnnuitySchedule,
+  calculateAnnuityTaxes,
+} from "../lib/calculator/index.ts";
+import { formatCurrency } from "../lib/calculator/formatting.ts";
+
+interface Props {
+  amount: JackpotAmount;
+}
+
+const { amount } = Astro.props;
+
+// Illustrative worked example: 30 equal annual payments, federal taxes only
+// (single filer, 2026), computed with the real engine at build time.
+const ILLUSTRATIVE_STATE = "TX"; // no broad income tax: shows federal-only math cleanly
+const schedule = buildAnnuitySchedule({
+  totalAdvertisedValue: amount.amount,
+  numberOfPayments: 30,
+  paymentFrequency: "annual",
+  growthRate: 0,
+});
+const taxed = calculateAnnuityTaxes({
+  payments: schedule.map((p) => p.paymentAmount),
+  state: ILLUSTRATIVE_STATE,
+  taxYear: 2026,
+  filingStatus: "single",
+});
+const first = taxed.payments[0];
+const last = taxed.payments[taxed.payments.length - 1];
+
+const meta = buildPageMeta({
+  title: amount.title,
+  description: amount.description,
+  path: `/lottery-payout-calculator/${amount.slug}/`,
+});
+
+const faqs = amount.faqs.map((f) => ({ question: f.question, answer: f.answer }));
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Payout Calculator", url: absoluteUrl("/lottery-payout-calculator/") },
+  { name: amount.label, url: absoluteUrl(`/lottery-payout-calculator/${amount.slug}/`) },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+
+const siblings = getAllJackpotAmounts().filter((a) => a.slug !== amount.slug);
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[
+      { name: "Home", href: "/" },
+      { name: "Lottery Payout Calculator", href: "/lottery-payout-calculator/" },
+      { name: amount.label },
+    ]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    {amount.h1}
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">{amount.lede}</p>
+
+  <section aria-label="Payout calculator" class="mt-8">
+    <PayoutCalculator defaultJackpot={amount.amount} idPrefix={`payout-${amount.slug}`} />
+  </section>
+
+  <section aria-label="Worked example with real calculations" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      {amount.label} by the Numbers (Calculated)
+    </h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      The example below was computed with the site's shared calculation engine —
+      not written by hand. It assumes 30 equal annual payments, a single filer, the
+      2026 federal brackets, and no state income tax, so it shows federal-only math.
+      Your state will add its own tax on top unless you live in a no-income-tax state.
+    </p>
+    <dl class="mt-6 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2">
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Each of 30 annual payments (gross)</dt>
+        <dd class="mt-1 text-xl font-bold tabular-nums text-slate-900">{formatCurrency(first.grossPayment)}</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Federal tax on one payment (est.)</dt>
+        <dd class="mt-1 text-xl font-bold tabular-nums text-slate-900">{formatCurrency(first.federalTax)}</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Net per payment (federal only, est.)</dt>
+        <dd class="mt-1 text-xl font-bold tabular-nums text-slate-900">{formatCurrency(first.netPayment)}</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Lifetime net, 30 payments (federal only, est.)</dt>
+        <dd class="mt-1 text-xl font-bold tabular-nums text-slate-900">{formatCurrency(taxed.totalNet)}</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Effective federal rate per payment (est.)</dt>
+        <dd class="mt-1 text-xl font-bold tabular-nums text-slate-900">{(first.effectiveTaxRate * 100).toFixed(1)}%</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Final (30th) payment (gross)</dt>
+        <dd class="mt-1 text-xl font-bold tabular-nums text-slate-900">{formatCurrency(last.grossPayment)}</dd>
+      </div>
+    </dl>
+    <p class="mt-3 text-sm text-slate-500">
+      Equal payments are the illustration only. Real games graduate their payments —
+      Mega Millions grows 5% per year, and Powerball's official rules describe graduated
+      payments without publishing a fixed rate.
+    </p>
+  </section>
+
+  <section aria-label="After-tax discussion" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      {amount.label} After Taxes
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      {amount.afterTaxBody.map((para) => <p>{para}</p>)}
+    </div>
+  </section>
+
+  <section aria-label="Cash option versus annuity" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Cash Option vs Annuity at {amount.shortLabel}
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      {amount.cashAnnuityBody.map((para) => <p>{para}</p>)}
+    </div>
+  </section>
+
+  <section aria-label="Context" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Putting {amount.shortLabel} in Context
+    </h2>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-base leading-relaxed text-slate-600">
+      {amount.contextBullets.map((b) => <li><strong class="font-semibold text-slate-800">{b.heading}:</strong> {b.body}</li>)}
+    </ul>
+  </section>
+
+  <section aria-label="How we calculate" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How We Calculate
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The worked example above is computed at build time: the shared annuity engine
+        splits {formatCurrency(amount.amount)} into 30 equal annual payments, then the
+        annuity tax flow taxes each payment individually with the 2026 federal brackets
+        (single filer) and a no-income-tax state so the federal math is visible. The
+        interactive calculator uses the same engines — the cash side runs the standard
+        lottery calculation on the cash value you enter, and the annuity side rebuilds
+        the schedule from your jackpot, years, and annual increase, then taxes every
+        payment in its year. Cash values are never estimated for you: enter the current
+        cash value to calculate an estimate.
+      </p>
+    </div>
+  </section>
+
+  <Methodology />
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "powerball-official-rules",
+      "megamillions-official-rules",
+      "irs-rev-proc-2025-32",
+      "irs-gambling-withholding",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <div class="mt-14 grid gap-8 lg:grid-cols-[1fr_320px]">
+    <RelatedLinks
+      title="Other jackpot sizes"
+      links={siblings.map((a) => ({
+        label: `${a.label} Payout Calculator`,
+        href: `/lottery-payout-calculator/${a.slug}/`,
+        description: `Cash vs annuity, taxes, and take-home for ${a.shortLabel}.`,
+      }))}
+    />
+  </div>
+  <div class="mt-8">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Lottery Payout Calculator",
+          href: "/lottery-payout-calculator/",
+          description: "Compare cash vs annuity for any jackpot.",
+        },
+        {
+          label: "Lottery Annuity Calculator",
+          href: "/lottery-annuity-calculator/",
+          description: "Build an illustrative annuity payment schedule.",
+        },
+        {
+          label: "Lottery Cash Option Calculator",
+          href: "/lottery-cash-option-calculator/",
+          description: "Estimate taxes and take-home on the lump sum.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

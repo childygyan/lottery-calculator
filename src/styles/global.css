@@ -41,6 +41,9 @@ body {
   .input[aria-invalid="true"] {
     @apply border-red-600;
   }
+  .input[readonly] {
+    @apply border-slate-200 bg-slate-50 text-slate-500;
+  }
   .label {
     @apply mb-1.5 block text-sm font-semibold text-slate-800;
   }
@@ -59,5 +62,30 @@ body {
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print-friendly results: hide chrome and controls, keep inputs/results/methodology */
+@media print {
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    max-width: none !important;
+  }
+  .card {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+  /* Reveal collapsed schedule rows when printing. */
+  tbody.schedule-rest[hidden] {
+    display: table-row-group !important;
+  }
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
   }
 }

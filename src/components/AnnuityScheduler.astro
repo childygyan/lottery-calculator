@@ -1,0 +1,221 @@
+---
+/**
+ * Generic annuity schedule builder (illustrative custom scenarios).
+ *
+ * Server-rendered form; a small client script builds the payment schedule
+ * with the shared annuity engine. Custom scenarios are always labeled
+ * illustrative — this tool models any schedule, not a specific lottery.
+ */
+import CurrencyInput from "./CurrencyInput.astro";
+import NumberInput from "./NumberInput.astro";
+import Disclaimer from "./Disclaimer.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "annuity" } = Astro.props;
+const f = (id: string) => `${idPrefix}-${id}`;
+---
+
+<div class="card">
+  <form id={f("form")} novalidate data-annuity-scheduler data-prefix={idPrefix}>
+    <div class="grid gap-5 sm:grid-cols-2">
+      <CurrencyInput
+        id={f("total")}
+        name="total"
+        label="Total Annuity Value"
+        placeholder="100,000,000"
+        hint="The nominal total of all payments."
+      />
+      <NumberInput
+        id={f("payments")}
+        name="payments"
+        label="Number of Payments"
+        placeholder="30"
+        hint="How many payments the total is split into."
+        inputmode="numeric"
+      />
+    </div>
+    <div class="mt-5 grid gap-5 sm:grid-cols-2">
+      <div>
+        <label for={f("frequency")} class="label">Payment Frequency</label>
+        <select id={f("frequency")} name="frequency" class="input">
+          <option value="annual" selected>Annual</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <NumberInput
+        id={f("increase")}
+        name="increase"
+        label="Annual Increase (%)"
+        placeholder="0"
+        hint="Growth per payment. 0 = equal payments. Illustrative."
+        inputmode="decimal"
+      />
+    </div>
+    <div class="mt-6">
+      <button type="submit" class="btn-primary w-full sm:w-auto">Build Schedule</button>
+    </div>
+  </form>
+</div>
+
+<section
+  id={f("results")}
+  aria-labelledby={f("results-heading")}
+  aria-live="polite"
+  class="card mt-8"
+  hidden
+>
+  <div class="flex items-center justify-between gap-3">
+    <h2 id={f("results-heading")} class="text-xl font-bold tracking-tight text-slate-900">
+      Illustrative Payment Schedule
+    </h2>
+    <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">
+      Illustrative
+    </span>
+  </div>
+  <p id={f("meta")} class="mt-2 text-sm text-slate-500"></p>
+  <div id={f("schedule")} class="mt-4 overflow-x-auto"></div>
+  <p class="mt-4 text-sm text-slate-500">
+    This is a custom illustrative scenario, not a specific lottery's official payout
+    structure. For tax estimates on each payment, use the payout calculator.
+  </p>
+</section>
+
+<div class="mt-6">
+  <Disclaimer />
+</div>
+
+<script>
+  // Illustrative annuity scheduler: validate, build, render.
+  // Config is read from the form's data attributes (no define:vars) so the
+  // script stays a plain bundleable module script.
+  import {
+    validateAnnuityScheduleInput,
+    buildAnnuitySchedule,
+    formatCurrencyExact,
+  } from "../lib/calculator/index.ts";
+
+  const schedulerForm = document.querySelector("[data-annuity-scheduler]");
+  const prefix =
+    (schedulerForm instanceof HTMLElement && schedulerForm.dataset.prefix) || "annuity";
+
+  const $ = (id) => document.getElementById(`${prefix}-${id}`);
+  const results = $("results");
+
+  function setError(fieldId, message) {
+    const input = $(fieldId);
+    const errorEl = document.getElementById(`${prefix}-${fieldId}-error`);
+    if (!input || !errorEl) return;
+    if (message) {
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+      input.setAttribute("aria-invalid", "true");
+    } else {
+      errorEl.textContent = "";
+      errorEl.hidden = true;
+      input.removeAttribute("aria-invalid");
+    }
+  }
+
+  function parseAmount(raw) {
+    const cleaned = String(raw ?? "").replace(/[$,\s]/g, "");
+    if (cleaned === "" || (cleaned.match(/\./g) ?? []).length > 1) return null;
+    const value = Number(cleaned);
+    return Number.isFinite(value) ? value : null;
+  }
+
+  schedulerForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const submitted = event.currentTarget;
+    if (!(submitted instanceof HTMLFormElement)) return;
+    ["total", "payments", "increase"].forEach((fld) => setError(fld, ""));
+    const data = new FormData(submitted);
+
+    const total = parseAmount(data.get("total"));
+    if (total === null || total <= 0) {
+      setError("total", "Enter a total annuity value greater than $0.");
+    }
+    const paymentsRaw = String(data.get("payments") ?? "").trim();
+    const paymentCount = paymentsRaw === "" ? NaN : Number(paymentsRaw);
+    const increaseRaw = String(data.get("increase") ?? "").trim().replace("%", "");
+    const increasePct = increaseRaw === "" ? 0 : Number(increaseRaw);
+
+    const checked = validateAnnuityScheduleInput({
+      totalAdvertisedValue: total ?? 0,
+      numberOfPayments: paymentCount,
+      paymentFrequency: String(data.get("frequency") ?? "annual"),
+      growthRate: Number.isFinite(increasePct) ? increasePct / 100 : NaN,
+    });
+    if (!checked.valid || !checked.parsed) {
+      if (total === null || total <= 0) {
+        // error already set above
+      } else if (!Number.isInteger(paymentCount) || paymentCount < 1) {
+        setError("payments", checked.error ?? "Enter a valid number of payments.");
+      } else {
+        setError("increase", checked.error ?? "Enter a valid annual increase.");
+      }
+      if (results) results.hidden = true;
+      const firstInvalid = document.querySelector("[aria-invalid='true']");
+      if (firstInvalid instanceof HTMLElement) firstInvalid.focus();
+      return;
+    }
+
+    const schedule = buildAnnuitySchedule(checked.parsed);
+    const meta = $("meta");
+    if (meta) {
+      const freq = checked.parsed.paymentFrequency;
+      const growth = checked.parsed.growthRate;
+      meta.textContent =
+        `${formatCurrencyExact(checked.parsed.totalAdvertisedValue)} over ` +
+        `${checked.parsed.numberOfPayments} ${freq} payments` +
+        (growth > 0 ? `, growing ${(growth * 100).toFixed(2)}% per payment` : " (equal payments)");
+    }
+
+    const container = $("schedule");
+    if (container) {
+      const VISIBLE = 5;
+      const rowHtml = (p) => `
+        <tr class="border-b border-slate-100">
+          <th scope="row" class="py-2 pr-3 text-left font-medium text-slate-600">${p.paymentNumber}</th>
+          <td class="py-2 pr-3 text-right tabular-nums text-slate-900">${formatCurrencyExact(p.paymentAmount)}</td>
+          <td class="py-2 text-right tabular-nums text-slate-600">${formatCurrencyExact(p.cumulativeAmount)}</td>
+        </tr>`;
+      container.innerHTML = `
+        <table class="w-full min-w-[420px] border-collapse text-sm">
+          <caption class="sr-only">Illustrative annuity payment schedule</caption>
+          <thead>
+            <tr class="border-b-2 border-slate-200 text-left">
+              <th scope="col" class="py-2 pr-3 font-semibold text-slate-700">Payment</th>
+              <th scope="col" class="py-2 pr-3 text-right font-semibold text-slate-700">Payment Amount</th>
+              <th scope="col" class="py-2 text-right font-semibold text-slate-700">Cumulative</th>
+            </tr>
+          </thead>
+          <tbody>${schedule.slice(0, VISIBLE).map(rowHtml).join("")}</tbody>
+          ${schedule.length > VISIBLE ? `<tbody id="${prefix}-schedule-rest" class="schedule-rest" hidden>${schedule.slice(VISIBLE).map(rowHtml).join("")}</tbody>` : ""}
+        </table>
+        ${schedule.length > VISIBLE ? `<button type="button" id="${prefix}-schedule-toggle" class="no-print mt-3 text-sm font-semibold text-blue-700 underline-offset-2 hover:underline" aria-expanded="false">Show all ${schedule.length} payments</button>` : ""}`;
+      const toggle = document.getElementById(`${prefix}-schedule-toggle`);
+      const rest = document.getElementById(`${prefix}-schedule-rest`);
+      toggle?.addEventListener("click", () => {
+        if (!(toggle instanceof HTMLElement) || !rest) return;
+        const isHidden = rest.hasAttribute("hidden");
+        if (isHidden) {
+          rest.removeAttribute("hidden");
+          toggle.setAttribute("aria-expanded", "true");
+          toggle.textContent = "Show fewer payments";
+        } else {
+          rest.setAttribute("hidden", "");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.textContent = `Show all ${schedule.length} payments`;
+        }
+      });
+    }
+
+    if (results) {
+      results.hidden = false;
+      results.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+    }
+  });
+</script>

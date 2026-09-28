@@ -1,0 +1,161 @@
+---
+/**
+ * /lottery-annuity-calculator/ — generic illustrative annuity schedule tool.
+ * Builds custom payment schedules (fixed/growing, annual/monthly) with the
+ * shared annuity engine. Custom scenarios are always labeled illustrative.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AnnuityScheduler from "../../components/AnnuityScheduler.astro";
+import Methodology from "../../components/Methodology.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+
+const meta = buildPageMeta({
+  title: "Lottery Annuity Calculator — Build a Payment Schedule",
+  description:
+    "Build an illustrative lottery annuity payment schedule. Enter the total, number of payments, frequency, and annual increase to see each payment and the running total.",
+  path: "/lottery-annuity-calculator/",
+});
+
+const faqs = [
+  {
+    question: "How does a lottery annuity work?",
+    answer:
+      "A lottery annuity splits the advertised jackpot into a series of payments — typically 30 annual payments. Each payment is taxed as ordinary income in the year you receive it. Powerball pays 30 graduated payments over 29 years; Mega Millions pays one immediate payment plus 29 annual payments, each 5% larger than the last.",
+  },
+  {
+    question: "Is this schedule the official payout for a lottery?",
+    answer:
+      "No — this tool builds illustrative custom scenarios. It models any total, payment count, frequency, and growth rate you enter. For a lottery's verified structure, use the payout calculator and select Powerball or Mega Millions, which applies the published annuity rules.",
+  },
+  {
+    question: "How are growing annuity payments calculated?",
+    answer:
+      "With a positive annual increase, payments form a geometric series: each payment is larger than the last by the growth rate, and the first payment is solved so the nominal total of all payments equals the annuity value you entered. With 0% increase, every payment is simply the total divided by the number of payments.",
+  },
+  {
+    question: "Are annuity payments taxable?",
+    answer:
+      "Yes. Each payment is taxed as ordinary income in the year received — federally always, and by most states. To estimate the tax on each payment, run the same numbers through the lottery payout calculator, which taxes every payment with the site's tax engine.",
+  },
+  {
+    question: "Why is the annuity total bigger than the cash option?",
+    answer:
+      "The annuity total is the nominal sum of payments spread over decades; the cash option is the present value of that stream sitting in the prize pool today. The difference is the time value of money, not a bonus — and it moves with interest rates.",
+  },
+];
+
+const crumbs = [
+  { name: "Home", url: absoluteUrl("/") },
+  { name: "Lottery Annuity Calculator", url: absoluteUrl("/lottery-annuity-calculator/") },
+];
+const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[{ name: "Home", href: "/" }, { name: "Lottery Annuity Calculator" }]}
+  />
+
+  <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+    Lottery Annuity Calculator
+  </h1>
+  <p class="mt-4 max-w-3xl text-lg text-slate-600">
+    Build an illustrative annuity payment schedule for any total. Enter the annuity
+    value, number of payments, frequency, and annual increase to see each payment
+    and the running total.
+  </p>
+
+  <section aria-label="Annuity schedule builder" class="mt-8">
+    <AnnuityScheduler />
+  </section>
+
+  <section aria-label="About annuity schedules" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Fixed vs Growing Payments
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        A <strong class="font-semibold text-slate-800">fixed annuity</strong> pays the
+        same amount every period: total divided by the number of payments. A{" "}
+        <strong class="font-semibold text-slate-800">growing annuity</strong> increases
+        each payment by a fixed percentage — early payments are smaller, later payments
+        larger, and the nominal total stays the same. Mega Millions uses a 5% growing
+        structure; Powerball's official rules describe graduated payments without
+        publishing a fixed rate.
+      </p>
+      <p>
+        Schedules built here are illustrative custom scenarios. They show pre-tax
+        payment amounts only — for per-payment tax estimates, use the{" "}
+        <a href="/lottery-payout-calculator/" class="font-medium text-blue-700 underline-offset-2 hover:underline">
+          lottery payout calculator
+        </a>, which taxes each payment in its year.
+      </p>
+    </div>
+  </section>
+
+  <section aria-label="How we calculate" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How We Calculate
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The schedule builder uses the shared annuity engine. For equal payments, each
+        payment is the total divided by the payment count. For growing payments, the
+        first payment is solved from the geometric series so all payments sum to the
+        annuity total, then each payment is rounded to the cent with the final payment
+        adjusted so the schedule totals exactly. No tax is estimated here — this is a
+        pre-tax illustrative schedule.
+      </p>
+    </div>
+  </section>
+
+  <Methodology />
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "powerball-official-rules",
+      "megamillions-official-rules",
+      "irs-rev-proc-2025-32",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <div class="mt-14 grid gap-8 lg:grid-cols-[1fr_320px]">
+    <RelatedLinks
+      title="Related calculators"
+      links={[
+        {
+          label: "Lottery Payout Calculator",
+          href: "/lottery-payout-calculator/",
+          description: "Compare cash vs annuity with tax estimates and full schedules.",
+        },
+        {
+          label: "Lottery Cash Option Calculator",
+          href: "/lottery-cash-option-calculator/",
+          description: "Estimate taxes and take-home on the lump sum.",
+        },
+        {
+          label: "Powerball Calculator",
+          href: "/powerball-calculator/",
+          description: "Powerball rules, prize tiers, odds, and tax estimates.",
+        },
+        {
+          label: "Mega Millions Calculator",
+          href: "/mega-millions-calculator/",
+          description: "Mega Millions rules, prize tiers, odds, and tax estimates.",
+        },
+      ]}
+    />
+  </div>
+
+  <div class="mt-12 max-w-4xl">
+    <Disclaimer />
+  </div>
+</Layout>

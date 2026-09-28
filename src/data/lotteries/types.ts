@@ -48,6 +48,32 @@ export interface MultiplierRule {
   notes?: string;
 }
 
+/** Payment frequency for an annuity schedule. */
+export type AnnuityFrequency = "annual" | "monthly";
+
+/**
+ * Structured annuity rules for a lottery game.
+ *
+ * Never invent what isn't published: when the official rules describe
+ * graduated payments without a fixed rate, growthRate stays null and the
+ * UI lets the user enter the annual increase themselves.
+ */
+export interface AnnuityConfig {
+  /** Total number of payments, e.g. 30. */
+  numberOfPayments: number;
+  paymentFrequency: AnnuityFrequency;
+  /**
+   * Per-period growth as a decimal (e.g. 0.05 = each payment 5% larger than
+   * the previous one). Null when the official rules do not publish a fixed
+   * graduation rate.
+   */
+  growthRate: number | null;
+  /** Verified description of when the first payment arrives, if published. */
+  firstPaymentDescription?: string;
+  /** Verified notes, e.g. "graduated payments" when no fixed rate is published. */
+  notes?: string;
+}
+
 export interface LotterySourceRef {
   /** Id in the central source registry (src/data/sources.ts). */
   sourceId: string;
@@ -104,6 +130,14 @@ export interface LotteryConfig {
   prizeTiers: PrizeTier[];
   /** Multiplier add-on rules, or null when the game has none. */
   multiplier: MultiplierRule | null;
+
+  // -- Annuity --
+  /**
+   * Structured annuity rules, or null when the exact payment schedule is
+   * not published. The calculator falls back to user-entered parameters
+   * rather than inventing a schedule.
+   */
+  annuity: AnnuityConfig | null;
 
   // -- Provenance --
   officialSource: LotterySourceRef;
@@ -192,6 +226,22 @@ export function validateLotteryConfig(config: LotteryConfig): string[] {
     if (!m.costDescription.trim()) fail("multiplier.costDescription is required.");
     if (!Array.isArray(m.multipliers) || m.multipliers.length === 0) {
       fail("multiplier.multipliers must be a non-empty list.");
+    }
+  }
+
+  if (config.annuity) {
+    const a = config.annuity;
+    if (!Number.isInteger(a.numberOfPayments) || a.numberOfPayments <= 0) {
+      fail("annuity.numberOfPayments must be a positive integer.");
+    }
+    if (a.numberOfPayments > 600) {
+      fail("annuity.numberOfPayments is unrealistically large.");
+    }
+    if (a.paymentFrequency !== "annual" && a.paymentFrequency !== "monthly") {
+      fail('annuity.paymentFrequency must be "annual" or "monthly".');
+    }
+    if (a.growthRate !== null && (!(a.growthRate >= 0) || a.growthRate >= 1)) {
+      fail("annuity.growthRate must be null or a decimal in [0, 1).");
     }
   }
 

@@ -7,59 +7,28 @@
  */
 import { describe, it, before } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { runInContext } from "node:vm";
 import { JSDOM } from "jsdom";
+import {
+  loadInteractivePage,
+  pageHtml,
+  setValue,
+  submitForm,
+  DIST,
+} from "./dom-utils.ts";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const DIST = join(ROOT, "dist");
-
-let dom: JSDOM;
-
-function freshDom(): JSDOM {
-  const html = readFileSync(join(DIST, "lottery-calculator", "index.html"), "utf8");
-  const d = new JSDOM(html, {
-    url: "http://localhost:4321/lottery-calculator/",
-    // Makes the window a real vm.Context for runInContext below.
-    runScripts: "outside-only",
-  });
-  // Find the bundled calculator script and run it in the window context.
-  const src = d.window.document
-    .querySelector('script[type="module"][src]')
-    ?.getAttribute("src");
-  assert.ok(src, "calculator bundle script tag exists");
-  const bundle = readFileSync(join(DIST, src.replace(/^\//, "")), "utf8");
-  // Run the bundle inside the window's own VM context so it sees the real
-  // DOM globals (document, HTMLElement, FormData, ...).
-  runInContext(bundle, d.window, { filename: "calculator-bundle.js" });
-  return d;
-}
-
-function setValue(doc: Document, id: string, value: string) {
-  const el = doc.getElementById(id) as HTMLInputElement | HTMLSelectElement;
-  el.value = value;
-}
-
-function submit(doc: Document) {
-  const form = doc.getElementById("lottery-form") as HTMLFormElement;
-  form.dispatchEvent(new dom.window.Event("submit", { bubbles: true, cancelable: true }));
-}
+const PAGE = "lottery-calculator/index.html";
+const URL = "http://localhost:4321/lottery-calculator/";
 
 before(() => {
   // Fail fast with a clear message if dist/ is stale or missing.
-  try {
-    readFileSync(join(DIST, "lottery-calculator", "index.html"), "utf8");
-  } catch {
-    throw new Error("dist/ missing — run `npm run build` before `npm run test:dom`.");
-  }
+  pageHtml(PAGE);
 });
 
 describe("calculator form (built HTML)", () => {
-  it("renders all inputs with correct defaults", () => {
-    dom = freshDom();
-    const doc = dom.window.document;
+  it("renders all inputs with correct defaults", async () => {
+    const { doc } = await loadInteractivePage(PAGE, URL);
     assert.ok(doc.getElementById("jackpot"), "jackpot input");
     assert.ok(doc.getElementById("cashValue"), "cash input");
     assert.ok(doc.getElementById("taxYear"), "tax year select");
@@ -76,13 +45,12 @@ describe("calculator form (built HTML)", () => {
     assert.equal(doc.getElementById("lottery-results")?.hidden, true, "results hidden initially");
   });
 
-  it("valid lump-sum submit fills both result sections", () => {
-    dom = freshDom();
-    const doc = dom.window.document;
+  it("valid lump-sum submit fills both result sections", async () => {
+    const { dom, doc } = await loadInteractivePage(PAGE, URL);
     setValue(doc, "jackpot", "100000000");
     setValue(doc, "cashValue", "48000000");
     setValue(doc, "state", "NY");
-    submit(doc);
+    submitForm(dom, doc, "lottery-form");
 
     assert.equal(doc.getElementById("lottery-results")?.hidden, false);
     const text = (id: string) => doc.getElementById(id)?.textContent;
@@ -103,21 +71,19 @@ describe("calculator form (built HTML)", () => {
     assert.equal(doc.getElementById("result-state-notice")?.hidden, true);
   });
 
-  it("shows the verification notice for West Virginia", () => {
-    dom = freshDom();
-    const doc = dom.window.document;
+  it("shows the verification notice for West Virginia", async () => {
+    const { dom, doc } = await loadInteractivePage(PAGE, URL);
     setValue(doc, "jackpot", "1000000");
     setValue(doc, "cashValue", "480000");
     setValue(doc, "state", "WV");
-    submit(doc);
+    submitForm(dom, doc, "lottery-form");
     const notice = doc.getElementById("result-state-notice");
     assert.equal(notice?.hidden, false);
     assert.match(notice?.textContent ?? "", /verif/i);
   });
 
-  it("annuity toggle hides cash field and estimates one annual payment", () => {
-    dom = freshDom();
-    const doc = dom.window.document;
+  it("annuity toggle hides cash field and estimates one annual payment", async () => {
+    const { dom, doc } = await loadInteractivePage(PAGE, URL);
     const annuity = doc.querySelector('input[name="payoutChoice"][value="annuity"]') as HTMLInputElement;
     annuity.checked = true;
     annuity.dispatchEvent(new dom.window.Event("change", { bubbles: true }));
@@ -125,20 +91,19 @@ describe("calculator form (built HTML)", () => {
 
     setValue(doc, "jackpot", "100000000");
     setValue(doc, "state", "TX");
-    submit(doc);
+    submitForm(dom, doc, "lottery-form");
     const text = (id: string) => doc.getElementById(id)?.textContent;
     assert.equal(text("result-payout-label"), "Annual Annuity Payment");
     assert.equal(text("result-payout"), "$3,333,333.33");
     assert.equal(text("result-state"), "$0.00");
   });
 
-  it("empty jackpot shows an error, marks the field, and keeps results hidden", () => {
-    dom = freshDom();
-    const doc = dom.window.document;
+  it("empty jackpot shows an error, marks the field, and keeps results hidden", async () => {
+    const { dom, doc } = await loadInteractivePage(PAGE, URL);
     setValue(doc, "jackpot", "");
     setValue(doc, "cashValue", "48000000");
     setValue(doc, "state", "NY");
-    submit(doc);
+    submitForm(dom, doc, "lottery-form");
     const err = doc.getElementById("jackpot-error");
     assert.equal(err?.hidden, false);
     assert.equal(err?.textContent, "Jackpot amount is required.");
@@ -148,28 +113,26 @@ describe("calculator form (built HTML)", () => {
     assert.equal(doc.activeElement?.id, "jackpot");
   });
 
-  it("cash option above jackpot shows the friendly error", () => {
-    dom = freshDom();
-    const doc = dom.window.document;
+  it("cash option above jackpot shows the friendly error", async () => {
+    const { dom, doc } = await loadInteractivePage(PAGE, URL);
     setValue(doc, "jackpot", "1000000");
     setValue(doc, "cashValue", "2000000");
     setValue(doc, "state", "NY");
-    submit(doc);
+    submitForm(dom, doc, "lottery-form");
     const err = doc.getElementById("cashValue-error");
     assert.equal(err?.hidden, false);
     assert.match(err?.textContent ?? "", /usually lower than the advertised jackpot/);
   });
 
-  it("results region is announced to screen readers", () => {
-    dom = freshDom();
-    const doc = dom.window.document;
+  it("results region is announced to screen readers", async () => {
+    const { doc } = await loadInteractivePage(PAGE, URL);
     assert.equal(doc.getElementById("lottery-results")?.getAttribute("aria-live"), "polite");
   });
 });
 
 describe("site chrome (built HTML)", () => {
   it("mobile menu toggles aria-expanded", () => {
-    const html = readFileSync(join(DIST, "index.html"), "utf8");
+    const html = pageHtml("index.html");
     const d = new JSDOM(html, { url: "http://localhost:4321/" });
     const doc = d.window.document;
     const button = doc.querySelector("[aria-expanded]");
@@ -180,7 +143,7 @@ describe("site chrome (built HTML)", () => {
   it("no localhost or placeholder leaks in built pages", () => {
     const pages = ["index.html", "lottery-calculator/index.html", "about/index.html"];
     for (const p of pages) {
-      const html = readFileSync(join(DIST, p), "utf8");
+      const html = pageHtml(p);
       assert.ok(!html.includes("localhost"), `${p}: no localhost`);
       assert.ok(!html.includes("127.0.0.1"), `${p}: no 127.0.0.1`);
     }
@@ -189,7 +152,7 @@ describe("site chrome (built HTML)", () => {
 
 describe("state pages (built HTML)", () => {
   function stateHtml(slug: string): string {
-    return readFileSync(join(DIST, "lottery-tax-calculator", slug, "index.html"), "utf8");
+    return pageHtml(join("lottery-tax-calculator", slug, "index.html"));
   }
 
   it("preselects the page's state in the calculator and keeps all 51 options", () => {
@@ -217,7 +180,7 @@ describe("state pages (built HTML)", () => {
   });
 
   it("hub has a working filter and links all 51 state pages", () => {
-    const html = readFileSync(join(DIST, "lottery-tax-calculator", "index.html"), "utf8");
+    const html = pageHtml(join("lottery-tax-calculator", "index.html"));
     const doc = new JSDOM(html).window.document;
     assert.ok(doc.getElementById("state-filter"), "filter input exists");
     const items = doc.querySelectorAll("#state-directory > li");
@@ -237,13 +200,13 @@ describe("lottery game pages (built HTML)", () => {
     { slug: "mega-millions-tax-calculator", h1: "Mega Millions Tax Calculator", game: "Mega Millions" },
   ] as const;
 
-  function pageHtml(slug: string): string {
-    return readFileSync(join(DIST, slug, "index.html"), "utf8");
+  function gameDoc(slug: string): Document {
+    return new JSDOM(pageHtml(join(slug, "index.html"))).window.document;
   }
 
   it("all four pages build with the correct H1", () => {
     for (const page of pages) {
-      const doc = new JSDOM(pageHtml(page.slug)).window.document;
+      const doc = gameDoc(page.slug);
       const h1 = doc.querySelector("h1");
       assert.ok(h1, `${page.slug}: has an h1`);
       assert.equal(h1.textContent?.trim(), page.h1, `${page.slug}: h1 text`);
@@ -252,25 +215,25 @@ describe("lottery game pages (built HTML)", () => {
 
   it("each page embeds the working calculator form", () => {
     for (const page of pages) {
-      const doc = new JSDOM(pageHtml(page.slug)).window.document;
+      const doc = gameDoc(page.slug);
       assert.ok(doc.getElementById("lottery-form"), `${page.slug}: calculator form present`);
       assert.ok(doc.getElementById("lottery-results"), `${page.slug}: results region present`);
     }
   });
 
   it("game pages render verified prize tiers and odds from the config", () => {
-    const pb = new JSDOM(pageHtml("powerball-calculator")).window.document;
+    const pb = gameDoc("powerball-calculator");
     assert.ok(pb.body.textContent?.includes("1 in 292,201,338"), "Powerball jackpot odds shown");
     assert.ok(pb.body.textContent?.includes("$1,000,000"), "Powerball Match 5 prize shown");
 
-    const mm = new JSDOM(pageHtml("mega-millions-calculator")).window.document;
+    const mm = gameDoc("mega-millions-calculator");
     assert.ok(mm.body.textContent?.includes("1 in 290,472,336"), "Mega Millions jackpot odds shown");
     assert.ok(mm.body.textContent?.includes("$10,000,000"), "Mega Millions 10X Match 5 prize shown");
   });
 
   it("pages carry breadcrumb + FAQ structured data", () => {
     for (const page of pages) {
-      const doc = new JSDOM(pageHtml(page.slug)).window.document;
+      const doc = gameDoc(page.slug);
       const scripts = [...doc.querySelectorAll('script[type="application/ld+json"]')].map(
         (s) => s.textContent ?? "",
       );
@@ -280,16 +243,17 @@ describe("lottery game pages (built HTML)", () => {
   });
 
   it("pages link to their sibling calculators, never to unbuilt routes", () => {
-    const pb = new JSDOM(pageHtml("powerball-calculator")).window.document;
+    const pb = gameDoc("powerball-calculator");
     const pbHrefs = [...pb.querySelectorAll("a")].map((a) => a.getAttribute("href") ?? "");
     assert.ok(pbHrefs.includes("/powerball-tax-calculator/"), "Powerball page links to its tax page");
     assert.ok(pbHrefs.includes("/mega-millions-calculator/"), "Powerball page links to Mega Millions");
+    // /lottery-payout-calculator/ now exists (Phase 5); /lottery-odds-calculator/ is still unbuilt.
+    assert.ok(pbHrefs.includes("/lottery-payout-calculator/"), "footer links to the live payout calculator");
     assert.ok(!pbHrefs.some((h) => h.includes("odds-calculator")), "no link to unbuilt odds calculator");
-    assert.ok(!pbHrefs.some((h) => h.includes("payout-calculator")), "no link to unbuilt payout calculator");
   });
 
   it("cash field hint tells users to enter the official cash value", () => {
-    const doc = new JSDOM(pageHtml("powerball-calculator")).window.document;
+    const doc = gameDoc("powerball-calculator");
     assert.ok(
       doc.body.textContent?.includes("Enter the current cash value to calculate an estimate."),
       "lottery pages show the no-invention cash hint",
@@ -297,11 +261,20 @@ describe("lottery game pages (built HTML)", () => {
   });
 
   it("game switcher lists the other calculators", () => {
-    const doc = new JSDOM(pageHtml("mega-millions-calculator")).window.document;
+    const doc = gameDoc("mega-millions-calculator");
     const nav = doc.querySelector('nav[aria-label="Other lottery calculators"]');
     assert.ok(nav, "switcher nav exists");
     const labels = [...nav.querySelectorAll("a")].map((a) => a.textContent ?? "");
     assert.ok(labels.some((t) => t.includes("Powerball Calculator")), "switcher links Powerball");
     assert.ok(labels.some((t) => t.includes("Lottery Tax Calculator")), "switcher links Lottery Tax");
+  });
+});
+
+describe("client bundle size (built output)", () => {
+  it("total client JavaScript stays lean", () => {
+    const files = readdirSync(join(DIST, "_astro")).filter((f) => f.endsWith(".js"));
+    let total = 0;
+    for (const f of files) total += statSync(join(DIST, "_astro", f)).size;
+    assert.ok(total < 120_000, `client JS total ${total} bytes stays under 120KB`);
   });
 });
