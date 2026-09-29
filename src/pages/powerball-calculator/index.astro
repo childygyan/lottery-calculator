@@ -16,7 +16,11 @@ import Disclaimer from "../../components/Disclaimer.astro";
 import FAQ from "../../components/FAQ.astro";
 import SourceList from "../../components/SourceList.astro";
 import RelatedLinks from "../../components/RelatedLinks.astro";
-import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import {
+  buildPageMeta,
+  faqJsonLd,
+} from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
 import { POWERBALL_CONFIG } from "../../data/lotteries/index.ts";
 import { formatOdds } from "../../data/lotteries/index.ts";
 
@@ -67,17 +71,11 @@ const faqs = [
   },
 ];
 
-const crumbs = [
-  { name: "Home", url: absoluteUrl("/") },
-  { name: "Powerball Calculator", url: absoluteUrl("/powerball-calculator/") },
-];
-const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+const jsonLd = [breadcrumbJsonLdFor("/powerball-calculator/"), faqJsonLd(faqs)];
 ---
 
 <Layout meta={meta} jsonLd={jsonLd}>
-  <Breadcrumbs
-    items={[{ name: "Home", href: "/" }, { name: "Powerball Calculator" }]}
-  />
+  <Breadcrumbs items={breadcrumbItems("/powerball-calculator/")} />
 
   <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
     Powerball Calculator

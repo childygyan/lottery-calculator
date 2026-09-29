@@ -1,0 +1,170 @@
+---
+/**
+ * /mega-millions/ — the Mega Millions hub.
+ * Collects every Mega Millions tool, explains the verified game rules, and
+ * links into the deeper calculators. Does not duplicate calculator pages:
+ * it summarizes and routes.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedCalculators from "../../components/RelatedCalculators.astro";
+import { buildPageMeta, faqJsonLd } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+import { getLotteryConfig } from "../../data/lotteries/index.ts";
+
+const PAGE_PATH = "/mega-millions/";
+const game = getLotteryConfig("mega-millions");
+
+const meta = buildPageMeta({
+  title: "Mega Millions — Calculators, Odds, Taxes & Rules",
+  description:
+    "Everything Mega Millions in one place: tax and winnings calculators, odds, payout comparison, and number generator, with verified game rules and sources.",
+  path: PAGE_PATH,
+});
+
+const tools = [
+  {
+    href: "/mega-millions-calculator/",
+    name: "Mega Millions Calculator",
+    body: "Estimate federal and state taxes and take-home winnings for any Mega Millions jackpot, using 2026 rates.",
+  },
+  {
+    href: "/mega-millions-tax-calculator/",
+    name: "Mega Millions Tax Calculator",
+    body: "Tax-focused estimate: jackpot, cash value, state, tax year, and filing status — with withholding shown separately.",
+  },
+  {
+    href: "/mega-millions-payout-calculator/",
+    name: "Mega Millions Payout Calculator",
+    body: "Cash option vs the official annuity — one immediate payment plus 29 annual payments growing 5% per year — compared with estimated taxes.",
+  },
+  {
+    href: "/mega-millions-odds-calculator/",
+    name: "Mega Millions Odds Calculator",
+    body: "Every prize tier from the verified rules: 1 in 290,472,336 jackpot odds, 1 in 23 for any prize.",
+  },
+  {
+    href: "/mega-millions-number-generator/",
+    name: "Mega Millions Number Generator",
+    body: "Random Mega Millions picks — 5 white balls from 1–70 plus a Mega Ball from 1–24 — generated privately in your browser.",
+  },
+];
+
+const faqs = [
+  {
+    question: "How does Mega Millions work?",
+    answer:
+      "Each $5 play picks 5 white balls from 1–70 and one Mega Ball from 1–24. Drawings are held Tuesday and Friday at 11:00 p.m. ET. Match all six to win the jackpot; nine prize tiers pay from $10 up to the jackpot.",
+  },
+  {
+    question: "What are the odds of winning the Mega Millions jackpot?",
+    answer:
+      "1 in 290,472,336 — the number of distinct combinations of 5 numbers from 70 plus one Mega Ball from 24. The overall odds of winning any prize are 1 in 23. The Mega Millions Odds Calculator shows every tier.",
+  },
+  {
+    question: "How does the Mega Millions annuity work?",
+    answer:
+      "The Mega Millions annuity is paid as one immediate payment followed by 29 annual payments, each 5% larger than the previous one, with the nominal total equal to the advertised jackpot. Winners may instead take a one-time lump-sum cash payment. The Mega Millions Payout Calculator compares both with estimated taxes.",
+  },
+  {
+    question: "How much tax is taken from Mega Millions winnings?",
+    answer:
+      "Winnings are taxed as ordinary income: federal brackets up to 37% plus your state's tax on lottery winnings (California exempts lottery winnings; several states have no income tax). Federal withholding of 24% applies to winnings over $5,000 but is only a prepayment. Use the Mega Millions Tax Calculator for an estimate.",
+  },
+  {
+    question: "What is the Mega Millions Multiplier?",
+    answer:
+      "One of five multipliers (2X, 3X, 4X, 5X, 10X) is randomly assigned at purchase and applies to all non-jackpot prizes — it is included in the $5 ticket price at no extra cost. It does not apply to the jackpot.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Mega Millions Calculators, Odds & Rules
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      Every Mega Millions tool in one place — winnings and
+      <a href="/mega-millions-tax-calculator/" class="text-blue-700 hover:underline">tax estimates</a>,
+      <a href="/mega-millions-payout-calculator/" class="text-blue-700 hover:underline">cash vs annuity comparison</a>,
+      <a href="/mega-millions-odds-calculator/" class="text-blue-700 hover:underline">odds by prize tier</a>,
+      and a <a href="/mega-millions-number-generator/" class="text-blue-700 hover:underline">random number generator</a> —
+      built on the verified game rules below, each with a recorded verification date.
+    </p>
+  </div>
+
+  <section aria-label="Mega Millions tools" class="mt-10">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        tools.map((tool) => (
+          <a
+            href={tool.href}
+            class="tool-card group"
+          >
+            <h2 class="tool-card-title">
+              {tool.name}
+            </h2>
+            <p class="tool-card-desc">{tool.body}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section aria-label="How Mega Millions works" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Mega Millions works
+    </h2>
+    <dl class="mt-6 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2">
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Numbers</dt>
+        <dd class="mt-1 font-semibold text-slate-900">5 white balls from 1–70 + Mega Ball from 1–24</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Ticket price</dt>
+        <dd class="mt-1 font-semibold text-slate-900">$5 per play (multiplier included)</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Drawings</dt>
+        <dd class="mt-1 font-semibold text-slate-900">Tuesday, Friday — 11:00 p.m. ET</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Jackpot odds</dt>
+        <dd class="mt-1 font-semibold text-slate-900">1 in 290,472,336</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Any-prize odds</dt>
+        <dd class="mt-1 font-semibold text-slate-900">1 in 23</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Payout options</dt>
+        <dd class="mt-1 font-semibold text-slate-900">30 annual payments growing 5%/yr, or lump-sum cash</dd>
+      </div>
+    </dl>
+    <p class="mt-4 text-sm leading-relaxed text-slate-600">
+      Rules verified {game.lastVerified} against the official Mega Millions
+      rules. {game.annuityDescription} For the tax side of a win, see
+      <a href="/lottery-tax-calculator/" class="text-blue-700 hover:underline">how lottery taxes work by state</a>.
+    </p>
+  </section>
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "megamillions-official-rules",
+      "megamillions-prize-tiers",
+      "irs-gambling-withholding",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <RelatedCalculators path={PAGE_PATH} title="More lottery tools" />
+</Layout>

@@ -14,7 +14,11 @@ import Methodology from "../../components/Methodology.astro";
 import Disclaimer from "../../components/Disclaimer.astro";
 import FAQ from "../../components/FAQ.astro";
 import RelatedLinks from "../../components/RelatedLinks.astro";
-import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import {
+  buildPageMeta,
+  faqJsonLd,
+} from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
 import {
   calculateCombinations,
   formatOneInX,
@@ -69,15 +73,11 @@ const faqs = [
   },
 ];
 
-const crumbs = [
-  { name: "Home", url: absoluteUrl("/") },
-  { name: "Lottery Combination Generator", url: absoluteUrl("/lottery-combination-generator/") },
-];
-const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+const jsonLd = [breadcrumbJsonLdFor("/lottery-combination-generator/"), faqJsonLd(faqs)];
 ---
 
 <Layout meta={meta} jsonLd={jsonLd}>
-  <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Lottery Combination Generator" }]} />
+  <Breadcrumbs items={breadcrumbItems("/lottery-combination-generator/")} />
 
   <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
     Lottery Combination Generator

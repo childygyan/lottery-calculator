@@ -1,7 +1,9 @@
 ---
 /**
- * Source / reference list. Renders registry entries with name, publisher,
- * description, and last-verified date. Links only render for verified URLs —
+ * Source / reference list. Compact by design: each source renders as a
+ * linked name plus publisher and last-verified date — a proper citation
+ * without repeating multi-sentence descriptions on every page (the full
+ * descriptions live on /sources/). Links only render for verified URLs —
  * a source without a confirmed address is named, never given a fake link.
  */
 import { SOURCES } from "../data/sources.ts";
@@ -22,27 +24,26 @@ const sources = ids
   <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
     {heading}
   </h2>
-  <ul class="mt-6 space-y-4">
+  <ul class="mt-6 space-y-2">
     {sources.map((source) => (
-      <li class="card !p-5">
-        <p class="font-semibold text-slate-900">
+      <li class="rounded-xl border border-slate-200 bg-white px-4 py-3">
+        <p class="text-sm text-slate-900">
           {source.url ? (
             <a
               href={source.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-blue-700 hover:underline"
+              class="font-semibold text-blue-700 hover:underline"
             >
               {source.name}
             </a>
           ) : (
-            source.name
+            <span class="font-semibold">{source.name}</span>
           )}
+          <span class="text-slate-500">
+            {" "}· {source.publisher} · Last verified {source.lastChecked}
+          </span>
         </p>
-        <p class="mt-1 text-sm text-slate-600">
-          {source.publisher} · Last verified {source.lastChecked}
-        </p>
-        <p class="mt-2 text-sm text-slate-600">{source.description}</p>
       </li>
     ))}
   </ul>

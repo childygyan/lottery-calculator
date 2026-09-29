@@ -12,7 +12,11 @@ import Disclaimer from "../../components/Disclaimer.astro";
 import FAQ from "../../components/FAQ.astro";
 import SourceList from "../../components/SourceList.astro";
 import RelatedLinks from "../../components/RelatedLinks.astro";
-import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import {
+  buildPageMeta,
+  faqJsonLd,
+} from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
 
 const meta = buildPageMeta({
   title: "Lottery Annuity Calculator — Build a Payment Schedule",
@@ -49,17 +53,11 @@ const faqs = [
   },
 ];
 
-const crumbs = [
-  { name: "Home", url: absoluteUrl("/") },
-  { name: "Lottery Annuity Calculator", url: absoluteUrl("/lottery-annuity-calculator/") },
-];
-const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+const jsonLd = [breadcrumbJsonLdFor("/lottery-annuity-calculator/"), faqJsonLd(faqs)];
 ---
 
 <Layout meta={meta} jsonLd={jsonLd}>
-  <Breadcrumbs
-    items={[{ name: "Home", href: "/" }, { name: "Lottery Annuity Calculator" }]}
-  />
+  <Breadcrumbs items={breadcrumbItems("/lottery-annuity-calculator/")} />
 
   <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
     Lottery Annuity Calculator

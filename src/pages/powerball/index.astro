@@ -1,0 +1,170 @@
+---
+/**
+ * /powerball/ — the Powerball hub.
+ * Collects every Powerball tool, explains the verified game rules, and
+ * links into the deeper calculators. Does not duplicate calculator pages:
+ * it summarizes and routes.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedCalculators from "../../components/RelatedCalculators.astro";
+import { buildPageMeta, faqJsonLd } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+import { getLotteryConfig } from "../../data/lotteries/index.ts";
+
+const PAGE_PATH = "/powerball/";
+const game = getLotteryConfig("powerball");
+
+const meta = buildPageMeta({
+  title: "Powerball — Calculators, Odds, Taxes & Rules",
+  description:
+    "Everything Powerball in one place: tax and winnings calculators, odds, payout comparison, and number generator, with verified game rules and sources.",
+  path: PAGE_PATH,
+});
+
+const tools = [
+  {
+    href: "/powerball-calculator/",
+    name: "Powerball Calculator",
+    body: "Estimate federal and state taxes and take-home winnings for any Powerball jackpot, using 2026 rates.",
+  },
+  {
+    href: "/powerball-tax-calculator/",
+    name: "Powerball Tax Calculator",
+    body: "Tax-focused estimate: jackpot, cash value, state, tax year, and filing status — with withholding shown separately.",
+  },
+  {
+    href: "/powerball-payout-calculator/",
+    name: "Powerball Payout Calculator",
+    body: "Cash option vs the official 30 graduated annuity payments over 29 years, compared side by side with estimated taxes.",
+  },
+  {
+    href: "/powerball-odds-calculator/",
+    name: "Powerball Odds Calculator",
+    body: "Every prize tier from the verified rules: 1 in 292,201,338 jackpot odds, 1 in 24.87 for any prize.",
+  },
+  {
+    href: "/powerball-number-generator/",
+    name: "Powerball Number Generator",
+    body: "Random Powerball picks — 5 white balls from 1–69 plus a Powerball from 1–26 — generated privately in your browser.",
+  },
+];
+
+const faqs = [
+  {
+    question: "How does Powerball work?",
+    answer:
+      "Each $2 play picks 5 white balls from 1–69 and one Powerball from 1–26. Drawings are held Monday, Wednesday, and Saturday at 10:59 p.m. ET. Match all six to win the jackpot; nine prize tiers pay from $4 up to the jackpot.",
+  },
+  {
+    question: "What are the odds of winning the Powerball jackpot?",
+    answer:
+      "1 in 292,201,338 — the number of distinct combinations of 5 numbers from 69 plus one Powerball from 26. The overall odds of winning any prize are 1 in 24.87. The Powerball Odds Calculator shows every tier.",
+  },
+  {
+    question: "How does the Powerball annuity work?",
+    answer:
+      "Jackpot winners may take the prize as an annuity paid in 30 graduated payments over 29 years, or as a one-time lump-sum cash payment. The Powerball Payout Calculator compares both with estimated taxes, using the official annuity structure.",
+  },
+  {
+    question: "How much tax is taken from Powerball winnings?",
+    answer:
+      "Winnings are taxed as ordinary income: federal brackets up to 37% plus your state's tax on lottery winnings (California exempts lottery winnings; several states have no income tax). Federal withholding of 24% applies to winnings over $5,000 but is only a prepayment. Use the Powerball Tax Calculator for an estimate.",
+  },
+  {
+    question: "What is Power Play?",
+    answer:
+      "Power Play is an optional add-on ($1 per play) that multiplies non-jackpot prizes by 2X, 3X, 4X, 5X, or 10X. It does not apply to the jackpot, and the 10X multiplier is only available when the advertised jackpot is $150 million or less.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Powerball Calculators, Odds & Rules
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      Every Powerball tool in one place — winnings and
+      <a href="/powerball-tax-calculator/" class="text-blue-700 hover:underline">tax estimates</a>,
+      <a href="/powerball-payout-calculator/" class="text-blue-700 hover:underline">cash vs annuity comparison</a>,
+      <a href="/powerball-odds-calculator/" class="text-blue-700 hover:underline">odds by prize tier</a>,
+      and a <a href="/powerball-number-generator/" class="text-blue-700 hover:underline">random number generator</a> —
+      built on the verified game rules below, each with a recorded verification date.
+    </p>
+  </div>
+
+  <section aria-label="Powerball tools" class="mt-10">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        tools.map((tool) => (
+          <a
+            href={tool.href}
+            class="tool-card group"
+          >
+            <h2 class="tool-card-title">
+              {tool.name}
+            </h2>
+            <p class="tool-card-desc">{tool.body}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section aria-label="How Powerball works" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Powerball works
+    </h2>
+    <dl class="mt-6 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2">
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Numbers</dt>
+        <dd class="mt-1 font-semibold text-slate-900">5 white balls from 1–69 + Powerball from 1–26</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Ticket price</dt>
+        <dd class="mt-1 font-semibold text-slate-900">$2 per play</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Drawings</dt>
+        <dd class="mt-1 font-semibold text-slate-900">Monday, Wednesday, Saturday — 10:59 p.m. ET</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Jackpot odds</dt>
+        <dd class="mt-1 font-semibold text-slate-900">1 in 292,201,338</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Any-prize odds</dt>
+        <dd class="mt-1 font-semibold text-slate-900">1 in 24.87</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Payout options</dt>
+        <dd class="mt-1 font-semibold text-slate-900">30 graduated payments over 29 years, or lump-sum cash</dd>
+      </div>
+    </dl>
+    <p class="mt-4 text-sm leading-relaxed text-slate-600">
+      Rules verified {game.lastVerified} against the official Powerball rules.
+      {game.annuityDescription} For the tax side of a win, see
+      <a href="/lottery-tax-calculator/" class="text-blue-700 hover:underline">how lottery taxes work by state</a>.
+    </p>
+  </section>
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={[
+      "powerball-official-rules",
+      "powerball-prize-tiers",
+      "irs-gambling-withholding",
+      "tax-foundation-state-2026",
+    ]}
+  />
+
+  <RelatedCalculators path={PAGE_PATH} title="More lottery tools" />
+</Layout>

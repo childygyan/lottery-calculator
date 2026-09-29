@@ -63,6 +63,41 @@ body {
   .form-hint {
     @apply field-hint;
   }
+  /* Compact directory link (state list, hub cards): one class instead of
+     repeating a long utility string dozens of times per page. */
+  .dir-link {
+    @apply flex items-baseline justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 transition hover:border-blue-300;
+  }
+  /* Related-tool / hub card: shared by RelatedCalculators and hub pages. */
+  .tool-card {
+    @apply block rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-300 hover:shadow-sm;
+  }
+  .tool-card-title {
+    @apply text-base font-semibold text-blue-700 group-hover:underline;
+  }
+  .tool-card-desc {
+    @apply mt-2 text-sm leading-relaxed text-slate-600;
+  }
+  /* FAQ accordion: CSS-only chevron, no repeated inline SVG per item. */
+  .faq-item > summary {
+    @apply flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-slate-900;
+  }
+  .faq-item > summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item > summary::after {
+    content: "";
+    flex-shrink: 0;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-right: 2px solid #94a3b8;
+    border-bottom: 2px solid #94a3b8;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+  }
+  .faq-item[open] > summary::after {
+    transform: rotate(225deg);
+  }
 }
 
 /* Respect reduced motion */

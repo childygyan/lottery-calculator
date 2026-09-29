@@ -1,0 +1,96 @@
+---
+/**
+ * /powerball-payout-calculator/ — Powerball cash vs annuity comparison.
+ * Locks the payout calculator to Powerball's verified annuity structure
+ * (30 graduated payments over 29 years). Distinct purpose from the generic
+ * payout calculator: game-specific payout rules, no game picker needed.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PayoutCalculator from "../../components/PayoutCalculator.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedCalculators from "../../components/RelatedCalculators.astro";
+import { buildPageMeta, faqJsonLd } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+import { getLotteryConfig } from "../../data/lotteries/index.ts";
+
+const PAGE_PATH = "/powerball-payout-calculator/";
+const game = getLotteryConfig("powerball");
+
+const meta = buildPageMeta({
+  title: "Powerball Payout Calculator — Cash vs Annuity",
+  description:
+    "Compare Powerball's cash option against its 30 graduated annuity payments. Estimate taxes and take-home for both payout choices side by side.",
+  path: PAGE_PATH,
+});
+
+const faqs = [
+  {
+    question: "What are the Powerball payout options?",
+    answer:
+      "Jackpot winners choose between a one-time lump-sum cash payment and an annuity paid in 30 graduated payments over 29 years. The advertised jackpot is the nominal total of the 30 annuity payments; the cash option is the present value of that payment stream and is always smaller.",
+  },
+  {
+    question: "How are Powerball annuity payments taxed?",
+    answer:
+      "Each annuity payment is taxed as ordinary income in the year it is received — federal brackets apply to that year's payment, plus state tax. Because each payment is smaller than a lump sum, the effective rate on a single payment is typically lower, but you receive the money over three decades. Withholding applies to each payment as it is made.",
+  },
+  {
+    question: "Why is the Powerball cash option smaller than the jackpot?",
+    answer:
+      "The jackpot figure assumes the full 30-payment annuity stream. The cash option is what that stream is worth today — the prize pool's present value — which moves with interest rates. Enter the current advertised cash value from the official Powerball site to calculate an estimate.",
+  },
+  {
+    question: "Does this calculator recommend cash or annuity?",
+    answer:
+      "No. It presents gross amounts, estimated taxes, timing, and payment structure for both options without ranking them. The right choice depends on investment returns, spending discipline, estate planning, and personal circumstances that no calculator can decide.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Powerball Payout Calculator
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      Compare Powerball's <strong class="font-semibold text-slate-900">cash option</strong> against
+      its <strong class="font-semibold text-slate-900">30 graduated annuity payments over 29 years</strong>,
+      with estimated federal and state taxes on each. The annuity schedule below
+      uses Powerball's official structure — {game.annuity.notes} Enter the
+      current cash value to calculate an estimate.
+    </p>
+  </div>
+
+  <section aria-label="Powerball payout calculator" class="mt-8">
+    <PayoutCalculator gameId="powerball" idPrefix="powerball-payout" />
+  </section>
+
+  <section aria-label="About Powerball payouts" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Powerball payouts work
+    </h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      {game.annuityDescription} Because the official rules describe the payments
+      as graduated without publishing a fixed graduation rate, the calculator
+      asks you to enter the annual increase — use 0% for fixed equal payments,
+      or model a growing schedule. For the tax mechanics behind the numbers, see
+      <a href="/powerball-tax-calculator/" class="text-blue-700 hover:underline">the Powerball tax calculator</a>,
+      and for the broader concepts,
+      <a href="/learn/cash-option-vs-annuity/" class="text-blue-700 hover:underline">cash option vs annuity explained</a>.
+    </p>
+  </section>
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={["powerball-official-rules", "irs-gambling-withholding", "tax-foundation-state-2026"]}
+  />
+
+  <RelatedCalculators path={PAGE_PATH} />
+</Layout>

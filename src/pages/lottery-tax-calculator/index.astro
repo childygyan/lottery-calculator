@@ -10,7 +10,11 @@ import LotteryCalculator from "../../components/LotteryCalculator.astro";
 import Methodology from "../../components/Methodology.astro";
 import Disclaimer from "../../components/Disclaimer.astro";
 import FAQ from "../../components/FAQ.astro";
-import { buildPageMeta, breadcrumbJsonLd, faqJsonLd, absoluteUrl } from "../../lib/seo/metadata.ts";
+import {
+  buildPageMeta,
+  faqJsonLd,
+} from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
 import { getStateTaxRules } from "../../data/taxes/states/index.ts";
 import { formatPercent } from "../../lib/calculator/formatting.ts";
 import { DEFAULT_TAX_YEAR } from "../../data/taxes/federal/index.ts";
@@ -76,17 +80,11 @@ const faqs = [
   },
 ];
 
-const crumbs = [
-  { name: "Home", url: absoluteUrl("/") },
-  { name: "Lottery Tax Calculator", url: absoluteUrl("/lottery-tax-calculator/") },
-];
-const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
+const jsonLd = [breadcrumbJsonLdFor("/lottery-tax-calculator/"), faqJsonLd(faqs)];
 ---
 
 <Layout meta={meta} jsonLd={jsonLd}>
-  <Breadcrumbs
-    items={[{ name: "Home", href: "/" }, { name: "Lottery Tax Calculator" }]}
-  />
+  <Breadcrumbs items={breadcrumbItems("/lottery-tax-calculator/")} />
 
   <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
     Lottery Tax Calculator
@@ -176,21 +174,15 @@ const jsonLd = [breadcrumbJsonLd(crumbs), faqJsonLd(faqs)];
         autocomplete="off"
       />
     </div>
-    <ul id="state-directory" class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <ul id="state-directory" class="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
       {rules.map((rule) => (
-        <li
-          data-name={rule.name.toLowerCase()}
-          class="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4"
-        >
-          <div>
-            <p class="font-semibold text-slate-900">{rule.name}</p>
-            <p class="mt-0.5 text-sm text-slate-500">{treatmentSummary(rule)}</p>
-          </div>
+        <li data-name={rule.name.toLowerCase()}>
           <a
             href={`/lottery-tax-calculator/${rule.slug}/`}
-            class="shrink-0 rounded-lg bg-blue-700 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-800"
+            class="dir-link"
           >
-            Calculate
+            <span class="font-semibold text-blue-700">{rule.name}</span>
+            <span class="shrink-0 text-xs text-slate-500">{treatmentSummary(rule)}</span>
           </a>
         </li>
       ))}

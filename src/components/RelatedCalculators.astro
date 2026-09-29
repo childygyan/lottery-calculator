@@ -1,0 +1,41 @@
+---
+/**
+ * RelatedCalculators — context-aware related-tool cards.
+ *
+ * Takes the current page path, asks the internal linking engine for the
+ * most relevant pages, and renders them as cards. No hand-maintained link
+ * lists: when a new calculator is registered in src/data/seo-pages.ts it
+ * becomes linkable everywhere automatically.
+ */
+import { relatedPages } from "../lib/seo/internal-links.ts";
+
+interface Props {
+  /** Trailing-slash site path of the current page. */
+  path: string;
+  /** Section heading. Defaults to "Related calculators". */
+  title?: string;
+  /** Maximum cards to show. Defaults to 6. */
+  limit?: number;
+}
+
+const { path, title = "Related calculators", limit = 6 } = Astro.props;
+const related = relatedPages(path, limit);
+---
+
+{
+  related.length > 0 && (
+    <section aria-label={title} class="mt-14 max-w-6xl">
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        {title}
+      </h2>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((page) => (
+          <a href={page.slug} class="tool-card group">
+            <h3 class="tool-card-title">{page.crumbName}</h3>
+            <p class="tool-card-desc">{page.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  )
+}

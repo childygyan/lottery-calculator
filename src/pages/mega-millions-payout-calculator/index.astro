@@ -1,0 +1,96 @@
+---
+/**
+ * /mega-millions-payout-calculator/ — Mega Millions cash vs annuity.
+ * Locks the payout calculator to Mega Millions' verified annuity structure
+ * (one immediate payment + 29 annual payments growing 5% per year).
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PayoutCalculator from "../../components/PayoutCalculator.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedCalculators from "../../components/RelatedCalculators.astro";
+import { buildPageMeta, faqJsonLd } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+import { getLotteryConfig } from "../../data/lotteries/index.ts";
+
+const PAGE_PATH = "/mega-millions-payout-calculator/";
+const game = getLotteryConfig("mega-millions");
+
+const meta = buildPageMeta({
+  title: "Mega Millions Payout Calculator — Cash vs Annuity",
+  description:
+    "Compare Mega Millions' cash option against its 30 annual payments growing 5% per year. Estimate taxes and take-home for both payout choices side by side.",
+  path: PAGE_PATH,
+});
+
+const faqs = [
+  {
+    question: "What are the Mega Millions payout options?",
+    answer:
+      "Jackpot winners choose between a one-time lump-sum cash payment and an annuity of one immediate payment followed by 29 annual payments, each 5% larger than the previous one. The nominal total of all 30 payments equals the advertised jackpot; the cash option is the present value of that stream and is always smaller.",
+  },
+  {
+    question: "How are Mega Millions annuity payments taxed?",
+    answer:
+      "Each payment is taxed as ordinary income in the year it is received — federal brackets apply to that year's payment, plus state tax. Because payments grow 5% per year, later payments are larger and can push into higher brackets. Withholding applies to each payment as it is made.",
+  },
+  {
+    question: "Why is the Mega Millions cash option smaller than the jackpot?",
+    answer:
+      "The jackpot figure is the nominal sum of all 30 annuity payments. The cash option is what that 30-year payment stream is worth today — its present value — which moves with interest rates. Enter the current advertised cash value from the official Mega Millions site to calculate an estimate.",
+  },
+  {
+    question: "Does this calculator recommend cash or annuity?",
+    answer:
+      "No. It presents gross amounts, estimated taxes, timing, and payment structure for both options without ranking them. The right choice depends on investment returns, spending discipline, estate planning, and personal circumstances that no calculator can decide.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Mega Millions Payout Calculator
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      Compare Mega Millions' <strong class="font-semibold text-slate-900">cash option</strong> against
+      its <strong class="font-semibold text-slate-900">annuity — one immediate payment plus 29 annual
+      payments growing 5% per year</strong>, with estimated federal and state
+      taxes on each. The annuity schedule below uses Mega Millions' official
+      structure — {game.annuity.notes} Enter the current cash value to calculate
+      an estimate.
+    </p>
+  </div>
+
+  <section aria-label="Mega Millions payout calculator" class="mt-8">
+    <PayoutCalculator gameId="mega-millions" idPrefix="mega-millions-payout" />
+  </section>
+
+  <section aria-label="About Mega Millions payouts" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      How Mega Millions payouts work
+    </h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      {game.annuityDescription} Unlike a flat payment schedule, the 5% annual
+      growth means the final payments are several times the first — which also
+      means later payments face higher marginal tax rates. For the tax mechanics
+      behind the numbers, see
+      <a href="/mega-millions-tax-calculator/" class="text-blue-700 hover:underline">the Mega Millions tax calculator</a>,
+      and for the broader concepts,
+      <a href="/learn/cash-option-vs-annuity/" class="text-blue-700 hover:underline">cash option vs annuity explained</a>.
+    </p>
+  </section>
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={["megamillions-official-rules", "irs-gambling-withholding", "tax-foundation-state-2026"]}
+  />
+
+  <RelatedCalculators path={PAGE_PATH} />
+</Layout>

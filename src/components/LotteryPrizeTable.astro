@@ -2,10 +2,12 @@
 /**
  * Prize tier table for a lottery game.
  *
- * Mobile-friendly by design: a real <table> with proper <th> scope on
- * md+ screens, and stacked cards below that breakpoint — no horizontal
- * scrolling at 320px. Games with a built-in multiplier (Mega Millions)
- * render per-multiplier columns; others render the fixed base prize.
+ * A single semantic <table> (proper <th> scope, caption) wrapped in a
+ * horizontal scroll container on small screens — one markup source instead of
+ * a duplicated desktop table + mobile card list, which halves the HTML and
+ * gives screen readers one consistent structure. Games with a built-in
+ * multiplier (Mega Millions) render per-multiplier columns; others render
+ * the fixed base prize.
  */
 import { formatOdds, type LotteryConfig } from "../data/lotteries/index.ts";
 
@@ -54,9 +56,10 @@ function multiplierPrize(tier: (typeof config.prizeTiers)[number], key: string):
     )}
   </p>
 
-  {/* Desktop table */}
-  <div class="mt-6 hidden overflow-hidden rounded-2xl border border-slate-200 md:block">
-    <table class="w-full border-collapse bg-white text-left text-sm">
+  {/* Single responsive table: horizontal scroll on small screens keeps one
+      semantic table for sighted users and screen readers alike. */}
+  <div class="mt-6 overflow-x-auto rounded-2xl border border-slate-200">
+    <table class="w-full min-w-[560px] border-collapse bg-white text-left text-sm">
       <caption class="sr-only">
         {config.name} prize tiers, prizes, and odds
       </caption>
@@ -92,34 +95,4 @@ function multiplierPrize(tier: (typeof config.prizeTiers)[number], key: string):
       </tbody>
     </table>
   </div>
-
-  {/* Mobile cards */}
-  <ul class="mt-6 space-y-3 md:hidden">
-    {config.prizeTiers.map((tier) => (
-      <li class="card !p-4">
-        <p class="font-bold text-slate-900">{tier.matchPattern}</p>
-        <dl class="mt-2 space-y-1 text-sm">
-          {multiplierTiers ? (
-            <div class="flex flex-wrap gap-x-4 gap-y-1">
-              {multiplierKeys.map((key) => (
-                <div class="flex gap-1">
-                  <dt class="font-semibold text-slate-500">{key}X:</dt>
-                  <dd class="text-slate-900">{multiplierPrize(tier, key)}</dd>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div class="flex gap-1">
-              <dt class="font-semibold text-slate-500">Prize:</dt>
-              <dd class="text-slate-900">{prizeLabel(tier)}</dd>
-            </div>
-          )}
-          <div class="flex gap-1">
-            <dt class="font-semibold text-slate-500">Odds:</dt>
-            <dd class="text-slate-900">{formatOdds(tier.odds)}</dd>
-          </div>
-        </dl>
-      </li>
-    ))}
-  </ul>
 </section>

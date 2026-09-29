@@ -18,7 +18,9 @@
     "dev": "astro dev",
     "preview": "astro preview",
     "test": "node --test tests/*.test.ts",
-    "test:dom": "node --test tests/dom.test.ts"
+    "test:dom": "node --test tests/dom.test.ts",
+    "postbuild": "node scripts/build-redirects.mjs && node scripts/check-duplicate-meta.mjs",
+    "audit:seo": "node scripts/audit-seo.mjs"
   },
   "type": "module",
   "version": "1.0.0"

@@ -1,0 +1,83 @@
+---
+/**
+ * /learn/ — educational hub.
+ * Plain-English guides to lottery taxes, payouts, odds, and combinations.
+ * Each article links to the calculator that applies the concept; nothing
+ * here is filler — every article teaches one concept completely.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import SourceList from "../../components/SourceList.astro";
+import { buildPageMeta } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+import { LEARN_ARTICLES } from "../../data/seo-pages.ts";
+
+const PAGE_PATH = "/learn/";
+
+const meta = buildPageMeta({
+  title: "Learn — Lottery Taxes, Payouts & Odds Explained",
+  description:
+    "Plain-English guides to how lottery taxes, withholding, cash vs annuity payouts, odds, and combinations actually work — each linked to the calculator that applies it.",
+  path: PAGE_PATH,
+});
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Learn How Lotteries Work
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      Short, plain-English guides to the ideas behind the calculators — how
+      lottery winnings are taxed, what the cash option really is, how odds are
+      counted, and why withholding is not your final tax bill. No financial
+      advice, no filler; each guide ends at the calculator that applies it.
+    </p>
+  </div>
+
+  <section aria-label="Lottery guides" class="mt-10">
+    <div class="grid gap-4 sm:grid-cols-2">
+      {
+        LEARN_ARTICLES.map((article) => (
+          <a
+            href={article.slug}
+            class="tool-card group"
+          >
+            <h2 class="tool-card-title">
+              {article.crumbName}
+            </h2>
+            <p class="tool-card-desc">
+              {article.description}
+            </p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section aria-label="Apply what you learn" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      From concept to calculation
+    </h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      Reading about taxes is useful; running your own numbers is better. After
+      any guide, try the
+      <a href="/lottery-tax-calculator/" class="text-blue-700 hover:underline">Lottery Tax Calculator</a>
+      for take-home estimates,
+      <a href="/lottery-payout-calculator/" class="text-blue-700 hover:underline">the payout comparison</a>
+      for cash vs annuity, or
+      <a href="/lottery-odds-calculator/" class="text-blue-700 hover:underline">the odds calculator</a>
+      to see combinations counted live. How every figure is produced — and what
+      is assumed — is documented on the
+      <a href="/methodology/" class="text-blue-700 hover:underline">Methodology page</a>.
+    </p>
+  </section>
+
+  <SourceList
+    ids={["irs-rev-proc-2025-32", "irs-gambling-withholding", "tax-foundation-state-2026"]}
+  />
+</Layout>

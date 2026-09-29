@@ -1,0 +1,196 @@
+---
+/**
+ * /lottery-calculators/ — the master tool hub.
+ * Summarizes every calculator, explains how they differ, and routes users
+ * into the right tool. Links are contextual; RelatedCalculators is omitted
+ * here because the page itself is the directory.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import { buildPageMeta, faqJsonLd } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+
+const PAGE_PATH = "/lottery-calculators/";
+
+const meta = buildPageMeta({
+  title: "Lottery Calculators — Every Tool in One Place",
+  description:
+    "Browse every lottery calculator: winnings, taxes, payouts, annuities, cash option, odds, probability, and number generators for Powerball and Mega Millions.",
+  path: PAGE_PATH,
+});
+
+const tools = [
+  {
+    href: "/lottery-calculator/",
+    name: "Lottery Calculator",
+    body: "The full picture: enter the advertised jackpot and cash option to estimate federal tax, state tax, withholding, and take-home for any lottery win.",
+  },
+  {
+    href: "/lottery-tax-calculator/",
+    name: "Lottery Tax Calculator",
+    body: "Tax-first view with 51 state guides. Compare how the same jackpot is taxed in different states, for tax years 2025 and 2026.",
+  },
+  {
+    href: "/lottery-payout-calculator/",
+    name: "Lottery Payout Calculator",
+    body: "Cash vs annuity side by side: gross amounts, estimated taxes on each, timing, and payment structure — without ranking either option.",
+  },
+  {
+    href: "/lottery-annuity-calculator/",
+    name: "Lottery Annuity Calculator",
+    body: "Build a custom payment schedule from any total: number of payments, frequency, and annual increase, with a running total.",
+  },
+  {
+    href: "/lottery-cash-option-calculator/",
+    name: "Lottery Cash Option Calculator",
+    body: "Lump sum only. Enter the official cash value to estimate federal and state taxes, withholding, and take-home on the one-time payment.",
+  },
+  {
+    href: "/lottery-odds-calculator/",
+    name: "Lottery Odds Calculator",
+    body: "Odds and combinations for any game: custom number pools, Powerball and Mega Millions presets, ticket costs, and chance of at least one win.",
+  },
+  {
+    href: "/lottery-probability-calculator/",
+    name: "Lottery Probability Calculator",
+    body: "What extra tickets actually change: the probability of at least one jackpot win with 1, 10, 100, or 1,000+ tickets.",
+  },
+  {
+    href: "/lottery-number-generator/",
+    name: "Lottery Number Generator",
+    body: "Random number sets for any game — custom pools, bonus balls, up to 100 sets. Generated in your browser; nothing is stored or sent anywhere.",
+  },
+  {
+    href: "/lottery-combination-generator/",
+    name: "Lottery Combination Generator",
+    body: "Count the distinct combinations any game's rules allow, and see the illustrative arithmetic cost of covering them all.",
+  },
+];
+
+const faqs = [
+  {
+    question: "Which lottery calculator should I start with?",
+    answer:
+      "Start with the Lottery Calculator if you want the full picture — jackpot, cash option, taxes, and take-home in one place. If you already know you only care about taxes, go straight to the Lottery Tax Calculator; if you are weighing the cash option against annual payments, use the Lottery Payout Calculator.",
+  },
+  {
+    question: "What is the difference between the payout calculator and the annuity calculator?",
+    answer:
+      "The payout calculator compares the cash option against annuity payments side by side, including estimated taxes on each. The annuity calculator builds a standalone payment schedule from any total you enter — useful for understanding how payments grow over time, independent of any particular lottery.",
+  },
+  {
+    question: "Do these calculators give financial advice?",
+    answer:
+      "No. They produce arithmetic estimates from the numbers you enter and published tax rules. Choosing between a lump sum and payments over decades involves investment returns, spending discipline, and estate planning that no calculator can decide for you.",
+  },
+  {
+    question: "Are the tax rates current?",
+    answer:
+      "Federal figures use the 2026 IRS brackets (Revenue Procedure 2025-32) and state planning rates sourced from the Tax Foundation's 2026 table, each with a recorded verification date. See the Methodology page for exactly what is assumed and when each source was last checked.",
+  },
+  {
+    question: "Do I need an account to use the calculators?",
+    answer:
+      "No. Every calculator runs entirely in your browser. Nothing you enter is stored, sent to a server, or tied to an account — there are no accounts at all.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Lottery Calculators
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      Nine tools covering every part of a lottery win: what you would owe in
+      taxes, how the <a href="/lottery-payout-calculator/" class="text-blue-700 hover:underline">cash option compares with annuity payments</a>,
+      what the <a href="/lottery-odds-calculator/" class="text-blue-700 hover:underline">odds</a> really mean,
+      and random <a href="/lottery-number-generator/" class="text-blue-700 hover:underline">number generation</a>
+      for convenience. Every figure is labeled an estimate, and every tax
+      figure traces back to a named, dated source.
+    </p>
+  </div>
+
+  <section aria-label="All lottery calculators" class="mt-10">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        tools.map((tool) => (
+          <a
+            href={tool.href}
+            class="tool-card group"
+          >
+            <h2 class="tool-card-title">
+              {tool.name}
+            </h2>
+            <p class="tool-card-desc">{tool.body}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section aria-label="Game hubs" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Calculators by game
+    </h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      Playing a specific game? The
+      <a href="/powerball/" class="text-blue-700 hover:underline">Powerball hub</a>
+      and
+      <a href="/mega-millions/" class="text-blue-700 hover:underline">Mega Millions hub</a>
+      collect each game's calculators, verified rules, odds, and payout
+      structures in one place — including game-specific tax and payout pages
+      that lock in the official annuity schedule.
+    </p>
+  </section>
+
+  <section aria-label="How to choose a calculator" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      Which tool answers your question?
+    </h2>
+    <dl class="mt-6 space-y-4">
+      <div class="rounded-2xl border border-slate-200 bg-white p-5">
+        <dt class="font-semibold text-slate-900">“How much would I keep?”</dt>
+        <dd class="mt-1 text-sm leading-relaxed text-slate-600">
+          Use the <a href="/lottery-calculator/" class="text-blue-700 hover:underline">Lottery Calculator</a> for
+          the complete estimate, or the <a href="/lottery-tax-calculator/" class="text-blue-700 hover:underline">Lottery Tax Calculator</a> to
+          focus on federal vs state tax.
+        </dd>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-5">
+        <dt class="font-semibold text-slate-900">“Cash or annuity?”</dt>
+        <dd class="mt-1 text-sm leading-relaxed text-slate-600">
+          Use the <a href="/lottery-payout-calculator/" class="text-blue-700 hover:underline">Lottery Payout Calculator</a> to
+          compare both options side by side with estimated taxes on each.
+        </dd>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-5">
+        <dt class="font-semibold text-slate-900">“What are my chances?”</dt>
+        <dd class="mt-1 text-sm leading-relaxed text-slate-600">
+          Use the <a href="/lottery-odds-calculator/" class="text-blue-700 hover:underline">Lottery Odds Calculator</a> for
+          combinations and odds, or the <a href="/lottery-probability-calculator/" class="text-blue-700 hover:underline">Probability Calculator</a> to
+          see what multiple tickets change.
+        </dd>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-5">
+        <dt class="font-semibold text-slate-900">“Pick numbers for me.”</dt>
+        <dd class="mt-1 text-sm leading-relaxed text-slate-600">
+          Use the <a href="/lottery-number-generator/" class="text-blue-700 hover:underline">Lottery Number Generator</a>.
+          Random picks do not improve the mathematical odds — they are a convenience, not a strategy.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <FAQ items={faqs} />
+
+  <SourceList
+    ids={["irs-rev-proc-2025-32", "tax-foundation-state-2026", "irs-gambling-withholding"]}
+  />
+</Layout>
