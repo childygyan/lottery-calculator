@@ -1,0 +1,202 @@
+---
+/**
+ * /methodology/ — how the lottery calculators work.
+ * What each tool computes, the assumptions behind every estimate, how tax
+ * data and game rules are sourced, and when each was last verified.
+ * Everything stated here is grounded in the actual calculation engines.
+ */
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import SourceList from "../components/SourceList.astro";
+import RelatedCalculators from "../components/RelatedCalculators.astro";
+import { buildPageMeta } from "../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../lib/seo/breadcrumbs.ts";
+
+const PAGE_PATH = "/methodology/";
+
+const meta = buildPageMeta({
+  title: "Methodology — How Our Lottery Calculators Work",
+  description:
+    "What the lottery calculators compute, the assumptions behind every estimate, how tax data and game rules are sourced, and when each was last verified.",
+  path: PAGE_PATH,
+});
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH)];
+
+const ALL_SOURCE_IDS = [
+  "irs-rev-proc-2025-32",
+  "irs-gambling-withholding",
+  "tax-foundation-state-2026",
+  "ca-lottery-exemption",
+  "wa-no-income-tax",
+  "nh-no-income-tax",
+  "wv-sb392-unverified",
+  "powerball-official-rules",
+  "powerball-prize-tiers",
+  "megamillions-official-rules",
+  "megamillions-prize-tiers",
+];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Methodology
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      How the Lottery Calculator tools produce their numbers — what each one
+      computes, the assumptions baked into every estimate, where the tax data
+      and game rules come from, and when each source was last verified. No
+      black boxes: if a number appears on this site, this page explains how it
+      was made.
+    </p>
+  </div>
+
+  <article class="mt-10 max-w-3xl space-y-10 text-base leading-relaxed text-slate-600">
+    <section aria-labelledby="what-we-compute">
+      <h2 id="what-we-compute" class="text-2xl font-bold tracking-tight text-slate-900">
+        What the calculators compute
+      </h2>
+      <ul class="mt-4 list-disc space-y-2 pl-6">
+        <li>
+          <strong class="font-semibold text-slate-800">Tax estimates</strong> — estimated
+          federal and state tax on a lottery prize, plus estimated take-home
+          amount and effective tax rate.
+        </li>
+        <li>
+          <strong class="font-semibold text-slate-800">Payout comparisons</strong> —
+          cash option versus annuity, shown side by side as estimates with no
+          recommendation of one over the other.
+        </li>
+        <li>
+          <strong class="font-semibold text-slate-800">Odds &amp; probability</strong> —
+          jackpot odds, odds of any prize, and probability across multiple
+          tickets, derived from each game's official rules.
+        </li>
+        <li>
+          <strong class="font-semibold text-slate-800">Random number generation</strong> —
+          quick-pick style combinations for convenience only. Every combination
+          has exactly the same probability; nothing here predicts winners.
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="tax-method">
+      <h2 id="tax-method" class="text-2xl font-bold tracking-tight text-slate-900">
+        How tax estimates work
+      </h2>
+      <ol class="mt-4 list-decimal space-y-2 pl-6">
+        <li>
+          Lottery winnings are treated as ordinary income. The calculator
+          subtracts the standard deduction for your filing status (single,
+          married filing jointly, married filing separately, or head of
+          household), then applies that tax year's progressive federal
+          brackets.
+        </li>
+        <li>
+          State tax is estimated with a top-marginal-rate planning estimate for
+          the selected state and year — a deliberately conservative planning
+          figure, not a simulation of a full state return.
+        </li>
+        <li>
+          States that do not tax lottery winnings (for example California,
+          which exempts California Lottery winnings, and states with no
+          individual income tax) show $0 state tax.
+        </li>
+        <li>
+          Estimated federal and state taxes are added for the total estimated
+          liability; subtracting it from the prize gives the estimated
+          take-home amount and effective tax rate.
+        </li>
+      </ol>
+      <p class="mt-4">
+        Federal <strong class="font-semibold text-slate-800">withholding</strong> is
+        kept separate from estimated liability throughout the site. Withholding
+        (24% on gambling winnings over $5,000) is what may be held back when
+        you are paid — it is credited against your final tax bill, not added to
+        it. West Virginia is currently flagged as needing verification because
+        a reported 2026 rate change is not yet confirmed against an
+        authoritative source.
+      </p>
+    </section>
+
+    <section aria-labelledby="payout-method">
+      <h2 id="payout-method" class="text-2xl font-bold tracking-tight text-slate-900">
+        How payout estimates work
+      </h2>
+      <p class="mt-4">
+        The <strong class="font-semibold text-slate-800">cash option is never
+        invented</strong> — you always enter the current cash value yourself,
+        because only the lottery publishing the jackpot knows it. For the
+        annuity, each annual payment is taxed in the year it is received:
+      </p>
+      <ul class="mt-4 list-disc space-y-2 pl-6">
+        <li>
+          <strong class="font-semibold text-slate-800">Powerball:</strong> 30
+          graduated payments over 29 years. No verified fixed growth rate is
+          published, so you enter the growth rate — the default is clearly
+          labeled as an assumption.
+        </li>
+        <li>
+          <strong class="font-semibold text-slate-800">Mega Millions:</strong>
+          one immediate payment followed by 29 annual payments, each 5% larger
+          than the last, per the official game rules.
+        </li>
+      </ul>
+      <p class="mt-4">
+        The site shows cash and annuity estimates side by side and never says
+        one choice is better than the other.
+      </p>
+    </section>
+
+    <section aria-labelledby="odds-method">
+      <h2 id="odds-method" class="text-2xl font-bold tracking-tight text-slate-900">
+        How odds are calculated
+      </h2>
+      <p class="mt-4">
+        All odds come from the combinatorics of each game's official matrix —
+        for example, Powerball's 5-from-69 plus 1-from-26 and Mega Millions'
+        5-from-70 plus 1-from-24. Jackpot totals are derived from the
+        centralized game configuration at build time, never hard-coded.
+        Multi-ticket probability uses the standard 1&nbsp;−&nbsp;(1&nbsp;−&nbsp;p)^n
+        formula under the documented assumption that each ticket is an
+        independent draw.
+      </p>
+    </section>
+
+    <section aria-labelledby="generator-method">
+      <h2 id="generator-method" class="text-2xl font-bold tracking-tight text-slate-900">
+        How the number generator works
+      </h2>
+      <p class="mt-4">
+        Combinations are drawn with the WebCrypto API (a partial Fisher–Yates
+        shuffle with rejection sampling), falling back to Math.random only if
+        WebCrypto is unavailable. Main numbers are sorted, bonus balls are
+        drawn separately, duplicates are removed by default, and requests are
+        capped at 100 sets. Generated sets are for convenience only — the
+        generator makes no prediction, and no "hot", "cold", or "due" numbers
+        exist. Nothing is stored, tracked, or sent anywhere.
+      </p>
+    </section>
+
+    <section aria-labelledby="limitations">
+      <h2 id="limitations" class="text-2xl font-bold tracking-tight text-slate-900">
+        Limitations
+      </h2>
+      <ul class="mt-4 list-disc space-y-2 pl-6">
+        <li>Every figure on this site is an estimate, not tax or financial advice.</li>
+        <li>State figures are planning-rate estimates; local and city taxes are not included.</li>
+        <li>Your actual tax bill depends on your full return and the laws in effect when you claim.</li>
+        <li>Game rules and tax laws change — verify against the official sources below before acting.</li>
+      </ul>
+    </section>
+  </article>
+
+  <div class="max-w-3xl">
+    <SourceList ids={ALL_SOURCE_IDS} heading="Data sources" />
+  </div>
+
+  <RelatedCalculators currentPath={PAGE_PATH} />
+</Layout>
