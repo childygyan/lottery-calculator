@@ -7,10 +7,12 @@
  * Duplicates here mean two URLs competing for the same search intent —
  * they must be fixed (or consolidated) before shipping, never silently
  * published.
+ *
+ * Dependency-free (regex over the generated <head>): the gate must run in
+ * minimal CI/build environments where dev-only packages may be absent.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { JSDOM } from "jsdom";
 
 const DIST = "dist";
 const failures = [];
@@ -24,37 +26,41 @@ function pages(dir, base) {
   }
   return out;
 }
-// Homepage lives at dist/index.html (base === "").
-for (const f of readdirSync(DIST, { withFileTypes: true })) {
-  if (f.isFile() && f.name === "index.html") {
-    // handled below
-  }
-}
 
 const all = pages(DIST, "");
-{
-  const doc = new JSDOM(readFileSync(join(DIST, "index.html"), "utf8")).window.document;
-  all.push({ path: join(DIST, "index.html"), slug: "/", doc });
-}
-for (const page of all) {
-  if (!page.doc) {
-    page.doc = new JSDOM(readFileSync(page.path, "utf8")).window.document;
+// Homepage lives at dist/index.html (base === "").
+all.push({ path: join(DIST, "index.html"), slug: "/" });
+
+/** Extract a head field with a tolerant regex — generated markup is ours. */
+function field(html, name) {
+  let m;
+  if (name === "title") {
+    m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    return (m?.[1] ?? "").trim();
   }
+  if (name === "description") {
+    m =
+      html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i) ??
+      html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["']/i);
+    return (m?.[1] ?? "").trim();
+  }
+  if (name === "canonical") {
+    m =
+      html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']*)["']/i) ??
+      html.match(/<link[^>]*href=["']([^"']*)["'][^>]*rel=["']canonical["']/i);
+    return (m?.[1] ?? "").trim();
+  }
+  return "";
 }
 
-function field(doc, name) {
-  if (name === "title") return (doc.querySelector("title")?.textContent ?? "").trim();
-  if (name === "description")
-    return (doc.querySelector('meta[name="description"]')?.getAttribute("content") ?? "").trim();
-  if (name === "canonical")
-    return (doc.querySelector('link[rel="canonical"]')?.getAttribute("href") ?? "").trim();
-  return "";
+for (const page of all) {
+  page.head = readFileSync(page.path, "utf8").split("</head>")[0] ?? "";
 }
 
 for (const name of ["title", "description", "canonical"]) {
   const seen = new Map();
   for (const page of all) {
-    const value = field(page.doc, name);
+    const value = field(page.head, name);
     if (!value) {
       failures.push(`Missing ${name}: ${page.slug}`);
       continue;

@@ -8,6 +8,7 @@
   "description": "Lottery Calculator \u2014 estimate lottery winnings, taxes, payouts, and take-home amounts.",
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "jsdom": "^30.1.1",
     "typescript": "^5.6.0"
   },
   "name": "lottery-calculator",
