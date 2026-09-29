@@ -30,6 +30,7 @@ export const footerNav: NavItem[] = [
   { label: "Mega Millions Number Generator", href: "/mega-millions-number-generator/" },
   { label: "Lottery Combination Generator", href: "/lottery-combination-generator/" },
   { label: "About", href: "/about/" },
+  { label: "Methodology", href: "/methodology/" },
   { label: "Contact", href: "/contact/" },
   { label: "Privacy Policy", href: "/privacy/" },
   { label: "Terms", href: "/terms/" },

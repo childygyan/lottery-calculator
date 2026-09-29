@@ -42,6 +42,7 @@ Lottery Calculator (https://lotterycalculator.site) is a free informational tool
 ## Site info
 
 - About: https://lotterycalculator.site/about/
+- Methodology (how every number is calculated): https://lotterycalculator.site/methodology/
 - Contact: https://lotterycalculator.site/contact/
 - Privacy: https://lotterycalculator.site/privacy/
 - Terms: https://lotterycalculator.site/terms/
