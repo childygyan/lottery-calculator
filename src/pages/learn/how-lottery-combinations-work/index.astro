@@ -1,0 +1,101 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Every lottery ticket is one combination — one specific set of numbers out of every set the game allows. Counting those sets is what combinations are, and it's the single idea underneath all lottery odds.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What is a combination in the lottery?",
+    answer:
+      "One combination is one complete set of numbers on a ticket — for Powerball, a specific 5 white balls plus a Powerball. The order of the white balls doesn't matter; {3, 11, 24, 35, 68} + 14 is the same combination however you write it.",
+  },
+  {
+    question: "How many Powerball combinations are there?",
+    answer:
+      "292,201,338. There are 11,238,513 ways to choose 5 white balls from 69, times 26 possible Powerballs. Mega Millions has 290,472,336: 12,103,014 ways to choose 5 from 70, times 24 Mega Balls.",
+  },
+  {
+    question: "How much would it cost to buy every combination?",
+    answer:
+      "At $2 per Powerball ticket, full coverage of all 292,201,338 combinations would cost about $584 million — more than most jackpots after tax, before even considering the logistics and the risk of splitting the prize. That's why 'buy every ticket' schemes never work.",
+  },
+  {
+    question: "Does the order of numbers on my ticket matter?",
+    answer:
+      "No. Lottery combinations are unordered — matching the drawn numbers in any order wins. That's also why our number generator sorts the white balls on each ticket: {5, 12, 30} is the same ticket as {30, 5, 12}.",
+  },
+  {
+    question: "Can two tickets have the same combination?",
+    answer:
+      "Yes, unless you check. Nothing stops two quick-picks from producing identical numbers, and duplicates waste money — you're paying twice for the same chance. Our generator deduplicates combinations by default for exactly this reason.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+];
+---
+
+<LearnArticle
+  slug="/learn/how-lottery-combinations-work/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Counting without listing</h2>
+  <p>
+    You can't write out 292 million tickets, but you can count them. The
+    counting tool is the combination formula: the number of ways to choose{" "}
+    <em>k</em> balls from <em>n</em>, where order doesn't matter. For
+    Powerball's white balls that's "69 choose 5" = 11,238,513. Multiply by the
+    26 possible Powerballs and you get the famous total: 292,201,338 possible
+    tickets. Our{" "}
+    <a href="/lottery-combination-generator/" class="font-semibold text-blue-700 hover:underline">
+      combinations calculator
+    </a>{" "}
+    runs this for any game configuration — including custom ones you define
+    yourself.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Why order doesn't matter</h2>
+  <p>
+    If order mattered, there would be far more "tickets" — 69 × 68 × 67 × 66
+    × 65 arrangements of white balls instead of 11,238,513 combinations. But
+    the lottery only cares which numbers were drawn, not the sequence, so
+    every ordering of the same five numbers is one combination. This is also
+    why generated tickets show sorted white balls: sorting is just tidiness,
+    not strategy.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The "buy them all" fantasy</h2>
+  <p>
+    If every combination costs $2 and there are 292,201,338 of them, full
+    coverage costs roughly $584 million — and you'd need to physically buy,
+    store, and check 292 million tickets before the drawing, while risking
+    that another winner splits the jackpot with you. The expected cost of
+    covering all combinations always exceeds the prize; lotteries are
+    designed that way. Smaller versions of the same idea (wheeling systems,
+    syndicates buying thousands of tickets) improve the chance of{" "}
+    <em>a</em> win while leaving the expected value negative.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Combinations vs. your ticket</h2>
+  <p>
+    Your ticket is one combination. A second, different ticket is a second
+    combination. Ten different tickets are ten combinations out of 292
+    million — which is exactly why each ticket's chance stays 1 in 292
+    million no matter how many you buy. The{" "}
+    <a href="/lottery-number-generator/" class="font-semibold text-blue-700 hover:underline">
+      number generator
+    </a>{" "}
+    produces unique random combinations (deduplicated by default, up to 100
+    sets), and the{" "}
+    <a href="/lottery-probability-calculator/" class="font-semibold text-blue-700 hover:underline">
+      probability explorer
+    </a>{" "}
+    translates combination counts into plain percentages.
+  </p>
+</LearnArticle>

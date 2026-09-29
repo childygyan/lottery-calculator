@@ -1,0 +1,105 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Lottery odds aren't opinions or vibes — they're arithmetic. Every game's odds come from counting combinations, and once you see the counting, the famous numbers (1 in 292 million and friends) stop being mysterious.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What are the odds of winning the Powerball jackpot?",
+    answer:
+      "1 in 292,201,338. Powerball draws 5 white balls from 69 plus 1 Powerball from 26; multiplying the combinations (11,238,513 × 26) gives the jackpot odds, verified against the official Powerball rules.",
+  },
+  {
+    question: "What are the odds of winning the Mega Millions jackpot?",
+    answer:
+      "1 in 290,472,336. Mega Millions draws 5 balls from 70 plus 1 Mega Ball from 24; the combinations (12,103,014 × 24) give the jackpot odds, verified against the official Mega Millions rules.",
+  },
+  {
+    question: "Do buying more tickets improve your odds?",
+    answer:
+      "Each ticket is an independent combination, so 10 different tickets give you 10 chances in 292 million — better than 1, but still roughly 1 in 29 million per ticket set. Importantly, buying more tickets does not change the odds of any single ticket, and it can never make a negative-expectation game profitable: the expected cost of full coverage always exceeds the jackpot.",
+  },
+  {
+    question: "Are some numbers luckier than others?",
+    answer:
+      "No. Every combination has exactly the same probability in every drawing, and drawings are independent — past results don't influence future ones. Our number generator is explicitly a random convenience tool, not a prediction system.",
+  },
+  {
+    question: "What are the overall odds of winning any Powerball prize?",
+    answer:
+      "1 in 24.87. That includes the smallest prizes; the jackpot itself remains 1 in 292,201,338.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+];
+---
+
+<LearnArticle
+  slug="/learn/how-lottery-odds-work/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Odds are just counting</h2>
+  <p>
+    A lottery drawing picks a combination of numbered balls. The jackpot odds
+    are simply <em>1 divided by the number of possible combinations</em>. For
+    Powerball, there are 11,238,513 ways to choose 5 white balls from 69, and
+    26 possible Powerballs — multiply them and you get 292,201,338 possible
+    tickets, so the jackpot odds are{" "}
+    <strong class="font-semibold text-slate-800">1 in 292,201,338</strong>.
+    Mega Millions works the same way: 12,103,014 ways to choose 5 from 70,
+    times 24 Mega Balls, giving{" "}
+    <strong class="font-semibold text-slate-800">1 in 290,472,336</strong>.
+  </p>
+  <p>
+    Our{" "}
+    <a href="/lottery-odds-calculator/" class="font-semibold text-blue-700 hover:underline">
+      odds calculator
+    </a>{" "}
+    derives these from the official game configurations — the numbers are
+    computed, never hard-coded — and the{" "}
+    <a href="/lottery-probability-calculator/" class="font-semibold text-blue-700 hover:underline">
+      probability explorer
+    </a>{" "}
+    shows what "1 in 292 million" means as a percentage.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What extra tickets actually do</h2>
+  <p>
+    Every ticket you buy is one more combination out of the total — so with{" "}
+    <em>n</em> different tickets, your chance of at least one jackpot win is{" "}
+    <em>n</em> divided by the total combinations (for small <em>n</em>). Ten
+    tickets means ten chances. But each ticket's own odds never change, and no
+    number of tickets changes the math that matters: the expected value of a
+    ticket is negative. Buying every combination would cost more than the
+    jackpot pays — our combinations guide works through exactly that.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Independence: the part people get wrong</h2>
+  <p>
+    Drawings are independent events. A combination that won last week is
+    exactly as likely as any other this week; balls have no memory, and there
+    are no "due" numbers. Systems built on hot, cold, or overdue numbers are
+    numerology with a spreadsheet. That's why this site's{" "}
+    <a href="/lottery-number-generator/" class="font-semibold text-blue-700 hover:underline">
+      number generator
+    </a>{" "}
+    is labeled plainly as a random convenience — it can't predict anything,
+    and it doesn't claim to.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Odds vs. probability</h2>
+  <p>
+    "1 in 292,201,338" (odds) and "0.00000034%" (probability) describe the same
+    fact. Odds compare wins to total outcomes; probability is wins divided by
+    total outcomes. People consistently overestimate tiny probabilities, which
+    is why jackpots feel closer than they are — a feeling the arithmetic
+    doesn't share.
+  </p>
+</LearnArticle>

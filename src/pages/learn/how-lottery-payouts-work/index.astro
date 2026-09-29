@@ -1,0 +1,103 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "The drawing is the exciting part; the payout is the paperwork part. From the moment your ticket is confirmed, there's a sequence — claiming, the cash-vs-annuity choice, withholding, and eventually the real tax bill. Here's the whole path.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "How do lottery winnings get paid out?",
+    answer:
+      "After you claim a jackpot, you choose between the cash option (a lump sum equal to the prize pool's present value) and the annuity (payments over ~30 years). The choice is generally irrevocable once made, so compare estimates before claiming.",
+  },
+  {
+    question: "How long does it take to receive lottery winnings?",
+    answer:
+      "It varies by lottery and claim size — large jackpots involve verification, paperwork, and a claim center visit. Smaller prizes can often be claimed at retailers. The annuity's first payment typically arrives weeks after the claim is finalized.",
+  },
+  {
+    question: "Is 24% withheld from lottery winnings when paid?",
+    answer:
+      "Yes — federal law requires 24% withholding on lottery and gambling winnings over $5,000 at payout time. That's a prepayment credited against your final tax, not the final amount owed.",
+  },
+  {
+    question: "Do annuity payments get taxed each year?",
+    answer:
+      "Yes. Each annual annuity payment is ordinary income in the year you receive it, with withholding applied to each payment. Our annuity calculator taxes every payment in its own year rather than taxing the total up front.",
+  },
+  {
+    question: "Can lottery winnings be paid to a trust or split among winners?",
+    answer:
+      "Many lotteries allow claims through a legal entity such as a trust, and office pools typically split the prize per their agreement — each recipient is then taxed on their share. Tax treatment of entities and splits is genuinely complex; get professional advice before claiming this way.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+  "irs-gambling-withholding",
+];
+---
+
+<LearnArticle
+  slug="/learn/how-lottery-payouts-work/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Step 1: Claim the ticket</h2>
+  <p>
+    Sign the ticket, keep it somewhere safe, and check your lottery's claim
+    rules — large jackpots usually require an in-person visit to a claim
+    center with identification, and there's a claim deadline (often 90 days to
+    a year depending on the game and state). This is also the moment to
+    quietly assemble professional help: a tax adviser and an attorney who've
+    handled windfalls before, <em>before</em> the money moves.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Step 2: Choose cash or annuity</h2>
+  <p>
+    At claim time you pick the lump sum or the annuity — and in most
+    lotteries this choice can't be undone later. The advertised jackpot is the
+    annuity total; the cash option is its present value. Our{" "}
+    <a href="/learn/cash-option-vs-annuity/" class="font-semibold text-blue-700 hover:underline">
+      cash vs annuity guide
+    </a>{" "}
+    walks through the trade-offs, and the calculators let you compare both
+    with identical assumptions. Run the numbers before you sign anything.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Step 3: Withholding happens immediately</h2>
+  <p>
+    When the prize is paid, 24% is withheld for federal taxes on winnings over
+    $5,000, plus any applicable state withholding. On a $100 million cash
+    payout, that's $24 million held back on day one — which sounds like a lot
+    until you remember the top federal bracket is 37%. The withheld amount is
+    credited against your final liability; it's not the final number.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Step 4: The real tax bill arrives at filing time</h2>
+  <p>
+    Come tax season, the winnings join the rest of your income on your
+    return, the brackets do their work, and the withholding is subtracted
+    from the total owed. Jackpot winners almost always owe more at this
+    stage. The{" "}
+    <a href="/learn/lottery-withholding-vs-tax/" class="font-semibold text-blue-700 hover:underline">
+      withholding vs tax guide
+    </a>{" "}
+    explains the difference in detail — it's the single most misunderstood
+    part of lottery money.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Step 5 (annuity): repeat yearly</h2>
+  <p>
+    Annuity winners go through a smaller version of this every year for three
+    decades: a payment arrives, withholding is taken, and the payment is
+    reported as that year's income. The{" "}
+    <a href="/lottery-annuity-calculator/" class="font-semibold text-blue-700 hover:underline">
+      annuity calculator
+    </a>{" "}
+    shows the estimated after-tax amount of each individual payment.
+  </p>
+</LearnArticle>

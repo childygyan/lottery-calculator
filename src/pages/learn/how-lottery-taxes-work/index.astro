@@ -1,0 +1,122 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Win the lottery and the IRS treats you like any other high earner: winnings are ordinary income, taxed with the same brackets and the same filing statuses. Here's how the bill is actually built — and why the advertised jackpot is never the number you keep.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "Are lottery winnings taxed as income?",
+    answer:
+      "Yes. In the United States, lottery winnings are taxed as ordinary income at the federal level — the same way as wages. They are added to your other income for the year and taxed with the progressive federal brackets for your filing status.",
+  },
+  {
+    question: "How much tax do you pay on a $100 million lottery win?",
+    answer:
+      "It depends on your state, filing status, and whether you take cash or annuity — but a rough planning figure is 37% federal on most of it (the top bracket) plus your state's tax. Use the lottery tax calculator with your state selected for an estimate; every figure it shows is labeled as an estimate, not a final bill.",
+  },
+  {
+    question: "Do you pay state tax on lottery winnings?",
+    answer:
+      "Usually yes, in the state where you live or claim the prize — but not always. California exempts California Lottery winnings from state tax, and several states have no individual income tax at all. The calculator shows $0 state tax for those states.",
+  },
+  {
+    question: "Does filing status change the tax on lottery winnings?",
+    answer:
+      "Yes. The federal brackets and standard deduction differ for single, married filing jointly, married filing separately, and head of household filers, so the same prize can produce a different federal estimate depending on which status you choose.",
+  },
+  {
+    question: "Is the 24% withheld from lottery winnings the final tax?",
+    answer:
+      "No. The 24% is federal withholding — a prepayment credited against your final bill, like withholding from a paycheck. On a large jackpot your actual marginal rate is usually higher, so more tax is typically due at filing time. See our guide on withholding vs tax.",
+  },
+];
+
+const sourceIds = [
+  "irs-rev-proc-2025-32",
+  "irs-gambling-withholding",
+  "tax-foundation-state-2026",
+  "ca-lottery-exemption",
+];
+---
+
+<LearnArticle
+  slug="/learn/how-lottery-taxes-work/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Winnings are ordinary income</h2>
+  <p>
+    The first thing to understand: there is no special "lottery tax." A $500
+    million jackpot is taxed exactly like $500 million of salary — as ordinary
+    income, stacked on top of whatever else you earned that year, and run
+    through the progressive federal brackets for your filing status. The
+    brackets are marginal, so only the slice of income inside each bracket is
+    taxed at that bracket's rate.
+  </p>
+  <p>
+    Before the brackets apply, the standard deduction for your filing status
+    is subtracted. Our calculators use the 2025 and 2026 IRS figures,
+    including the four filing statuses: single, married filing jointly,
+    married filing separately, and head of household.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Then comes state tax</h2>
+  <p>
+    Most states tax lottery winnings as income too, each with its own rates
+    and brackets. Because a full 50-state return simulation isn't practical in
+    a browser calculator, our tools use a top-marginal-rate planning estimate
+    per state — deliberately conservative and clearly labeled. Two important
+    exceptions are handled explicitly:
+  </p>
+  <ul class="list-disc space-y-2 pl-6">
+    <li>
+      <strong class="font-semibold text-slate-800">California</strong> exempts
+      California Lottery winnings from state income tax (federal tax still
+      applies in full).
+    </li>
+    <li>
+      States with <strong class="font-semibold text-slate-800">no individual
+      income tax</strong> — such as Texas, Florida, and Washington — show $0
+      state tax on lottery winnings.
+    </li>
+  </ul>
+  <p>
+    Local and city income taxes are not included in the estimate. West
+    Virginia is currently flagged as needing verification because a reported
+    2026 rate change hasn't been confirmed against an authoritative source.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Cash or annuity changes the timing</h2>
+  <p>
+    Take the lump sum and the whole cash value is taxable in a single year —
+    pushing nearly all of it into the top federal bracket. Take the annuity
+    and each annual payment is taxed in the year you receive it, which spreads
+    the income across decades. That's the main tax mechanics behind the
+    cash-vs-annuity decision; our annuity calculator taxes each payment
+    year by year instead of applying the lump-sum math to the total.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Withholding is not the bill</h2>
+  <p>
+    When you're paid, the lottery withholds 24% for federal taxes on winnings
+    over $5,000. That withholding is credited against your final liability —
+    it's a down payment, not the total. On a jackpot-sized win, the top
+    federal bracket is 37%, so winners typically owe substantially more at
+    filing time. Our calculators keep withholding and estimated liability in
+    separate lines so the two are never confused.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Try it with your numbers</h2>
+  <p>
+    Theory is useful; your own numbers are better. Enter a jackpot, a cash
+    value, and your state in the{" "}
+    <a href="/lottery-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery tax calculator
+    </a>{" "}
+    to see estimated federal tax, state tax, total tax, and take-home — every
+    figure labeled as an estimate.
+  </p>
+</LearnArticle>

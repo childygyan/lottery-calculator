@@ -1,0 +1,59 @@
+---
+/**
+ * Shared layout for /learn/ guide articles.
+ * Pulls title/description/breadcrumbs from the central LEARN_ARTICLES
+ * registry so the hub, sitemap, and linking engine always agree.
+ * Article body goes in the default slot; FAQs and sources are props.
+ */
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "./Breadcrumbs.astro";
+import FAQ, { type FaqItem } from "./FAQ.astro";
+import SourceList from "./SourceList.astro";
+import RelatedCalculators from "./RelatedCalculators.astro";
+import { buildPageMeta, faqJsonLd } from "../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../lib/seo/breadcrumbs.ts";
+import { LEARN_ARTICLES } from "../data/seo-pages.ts";
+
+interface Props {
+  /** Registry slug, e.g. "/learn/how-lottery-taxes-work/". */
+  slug: string;
+  /** One-paragraph standfirst under the H1. */
+  intro: string;
+  faqs?: FaqItem[];
+  /** Source registry ids for the article's Sources box. */
+  sourceIds?: string[];
+}
+
+const { slug, intro, faqs = [], sourceIds = [] } = Astro.props;
+const article = LEARN_ARTICLES.find((a) => a.slug === slug);
+if (!article) throw new Error(`Unknown learn article slug: ${slug}`);
+
+const meta = buildPageMeta({
+  title: article.title,
+  description: article.description,
+  path: slug,
+});
+
+const jsonLd = [breadcrumbJsonLdFor(slug)];
+if (faqs.length > 0) jsonLd.push(faqJsonLd(faqs));
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(slug)} />
+
+  <article class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      {article.crumbName}
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">{intro}</p>
+
+    <div class="mt-8 space-y-6 text-base leading-relaxed text-slate-600">
+      <slot />
+    </div>
+
+    {faqs.length > 0 && <FAQ items={faqs} />}
+    {sourceIds.length > 0 && <SourceList ids={sourceIds} />}
+  </article>
+
+  <RelatedCalculators path={slug} />
+</Layout>

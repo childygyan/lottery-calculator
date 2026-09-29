@@ -1,0 +1,113 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "The billboard jackpot is the annuity total — 30 years of payments. The cash option is what those payments are worth today. Neither choice is objectively better; here's what each one actually means so you can compare them honestly.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What is the cash option on a lottery jackpot?",
+    answer:
+      "The cash option (lump sum) is the present-day value of the advertised annuity jackpot — the actual cash in the prize pool. It is always smaller than the advertised jackpot, often roughly half, and you must enter the current published cash value yourself because only the lottery knows it.",
+  },
+  {
+    question: "How does the lottery annuity work?",
+    answer:
+      "Powerball pays 30 graduated payments over 29 years; Mega Millions pays one immediate payment followed by 29 annual payments, each 5% larger than the last. Each annual payment is taxable in the year you receive it.",
+  },
+  {
+    question: "Do you pay less tax with the annuity?",
+    answer:
+      "Not necessarily less in total — but the timing differs. A lump sum stacks nearly all the income into one tax year (top bracket), while the annuity spreads payments across decades, so each year's payment is taxed with that year's brackets and rates. The annuity calculator on this site taxes each payment year by year.",
+  },
+  {
+    question: "Can you switch from annuity to cash later?",
+    answer:
+      "Lottery rules vary, but generally the cash-vs-annuity choice is irrevocable once made at claim time. That's why comparing honest estimates before you claim matters.",
+  },
+  {
+    question: "Which should I choose, cash or annuity?",
+    answer:
+      "This site never recommends one over the other — it's a personal financial decision involving investment returns, discipline, taxes, and estate planning. Our calculators show both estimates side by side so you can compare them with the same assumptions.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+  "irs-rev-proc-2025-32",
+];
+---
+
+<LearnArticle
+  slug="/learn/cash-option-vs-annuity/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The jackpot number is the annuity</h2>
+  <p>
+    When a jackpot is advertised at, say, $500 million, that figure is the
+    total of the annuity payments — not a pile of cash waiting in a vault. The
+    lottery invests the prize pool and pays it out over decades; the{" "}
+    <strong class="font-semibold text-slate-800">cash option</strong> is what
+    that prize pool is worth right now. Because of the time value of money,
+    the cash option is always smaller — frequently around half the advertised
+    figure, though the exact ratio moves with interest rates.
+  </p>
+  <p>
+    <strong class="font-semibold text-slate-800">Important:</strong> no
+    calculator can know the current cash value on its own. Any site that shows
+    you a cash figure without you entering it is inventing it. Here, you
+    always type the published cash value yourself.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What the annuity actually pays</h2>
+  <ul class="list-disc space-y-2 pl-6">
+    <li>
+      <strong class="font-semibold text-slate-800">Powerball:</strong> 30
+      graduated payments over 29 years — each payment larger than the last.
+      No verified fixed growth rate is published, so our calculator asks you
+      for the growth assumption and labels the default as an assumption.
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-800">Mega Millions:</strong> one
+      immediate payment, then 29 annual payments, each 5% larger than the
+      previous one, per the official game rules.
+    </li>
+  </ul>
+  <p>
+    Each annuity payment is taxable income in the year it's received. Our
+    annuity calculator applies that year's tax computation to each payment
+    individually — it never just taxes the jackpot total and divides by 30.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The honest trade-offs</h2>
+  <p>
+    <strong class="font-semibold text-slate-800">Cash</strong> gives you
+    control immediately: invest it, spend it, gift it. The price is
+    concentration — nearly the entire prize lands in one tax year, mostly in
+    the top federal bracket, and the discipline to make it last 30 years is
+    entirely on you.
+  </p>
+  <p>
+    <strong class="font-semibold text-slate-800">Annuity</strong> enforces
+    patience: a rising payment every year for three decades, with the tax
+    spread across those years too. The price is illiquidity and inflation
+    risk — a dollar in year 29 buys less than a dollar today, and you
+    generally can't change your mind later.
+  </p>
+  <p>
+    Anyone who tells you one choice is universally "better" is selling
+    something. Compare the two with identical assumptions in the{" "}
+    <a href="/lottery-annuity-calculator/" class="font-semibold text-blue-700 hover:underline">
+      annuity calculator
+    </a>{" "}
+    and the{" "}
+    <a href="/lottery-cash-option-calculator/" class="font-semibold text-blue-700 hover:underline">
+      cash option calculator
+    </a>
+    , then talk to a fiduciary financial adviser before claiming.
+  </p>
+</LearnArticle>

@@ -1,0 +1,104 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Every lottery payout over $5,000 has 24% held back for federal taxes. That feels definitive — like the tax is handled. It isn't. Withholding is a prepayment toward your bill, and on a jackpot the real bill is almost always bigger.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "How much is withheld from lottery winnings?",
+    answer:
+      "Federal law requires 24% withholding on lottery and other gambling winnings over $5,000 at payout time. States may withhold their own percentage on top of that.",
+  },
+  {
+    question: "Is the 24% withholding my final lottery tax?",
+    answer:
+      "No. Withholding is a prepayment credited against your final tax liability, exactly like withholding from a paycheck. Your actual tax is computed on your return using the progressive brackets — for a jackpot winner that's mostly the 37% top bracket — and you pay the difference.",
+  },
+  {
+    question: "Why is withholding less than the actual tax on jackpots?",
+    answer:
+      "The 24% withholding rate is a flat statutory rate set by law, while your real tax uses marginal brackets up to 37%. The gap between 24% and your effective rate on a huge win is what you owe at filing time.",
+  },
+  {
+    question: "Can withholding ever be more than the tax owed?",
+    answer:
+      "Yes, on smaller wins. If your total income keeps you in lower brackets, 24% withholding can exceed your actual liability — in which case the excess comes back as a refund when you file. That's another reason to think of withholding as a prepayment, not a bill.",
+  },
+  {
+    question: "How do I estimate the real tax beyond withholding?",
+    answer:
+      "Use the lottery tax calculator: it shows estimated federal tax, state tax, total tax, and take-home separately from the 24% withholding figure, so you can see the gap before filing season surprises you.",
+  },
+];
+
+const sourceIds = [
+  "irs-gambling-withholding",
+  "irs-rev-proc-2025-32",
+];
+---
+
+<LearnArticle
+  slug="/learn/lottery-withholding-vs-tax/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Two different numbers</h2>
+  <p>
+    Think of it like a paycheck. Your employer withholds tax every payday —
+    but your actual tax is only settled when you file. Lottery payouts work
+    the same way:
+  </p>
+  <ul class="list-disc space-y-2 pl-6">
+    <li>
+      <strong class="font-semibold text-slate-800">Withholding (24%)</strong>
+      {" "}— taken automatically when you're paid, on winnings over $5,000.
+      It's money held aside and credited to your account with the IRS.
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-800">Tax liability</strong> —
+      computed on your tax return: winnings plus your other income, minus
+      deductions, run through the progressive brackets for your filing status.
+      This is the actual bill.
+    </li>
+  </ul>
+  <p>
+    If withholding exceeds the liability, you get a refund. If the liability
+    is bigger — the usual case for jackpots — you pay the difference.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">A concrete example</h2>
+  <p>
+    Take a $100 million cash win. At payout, $24 million is withheld
+    federally. But nearly all of that $100 million falls in the 37% top
+    federal bracket, so the real federal liability is roughly $37 million
+    (before the standard deduction and any state tax). The winner would owe
+    about $13 million more at filing time — plus state tax on top. This is
+    why our calculators display withholding and estimated liability as two
+    separate lines: confusing them is the most expensive misunderstanding in
+    lottery finance.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">State withholding too</h2>
+  <p>
+    Many states also withhold their own percentage at payout. State
+    withholding, like federal withholding, is a prepayment — your final state
+    liability is computed on your state return. The calculator's state
+    estimate uses a top-marginal-rate planning figure, which is why it can
+    differ from what was withheld.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What to actually do</h2>
+  <p>
+    Don't spend the post-withholding amount as if it's yours free and clear.
+    Set aside a reserve for the filing-time balance — a tax professional can
+    size it — and consider quarterly estimated payments so you're not hit
+    with underpayment penalties. Then check your own gap in the{" "}
+    <a href="/lottery-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery tax calculator
+    </a>
+    , which keeps withholding and estimated liability visibly separate.
+  </p>
+</LearnArticle>
