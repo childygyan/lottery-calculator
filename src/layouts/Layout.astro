@@ -12,6 +12,10 @@ import { siteUrl } from "../data/site.ts";
 /** Legacy staging hostname — visitors here are sent to the production domain. */
 const LEGACY_HOST = "lottery-calculator.childygyan.workers.dev";
 
+/** Google Analytics 4 measurement ID. Fires on the production domain only. */
+const GA_ID = "G-HEF85ZBF99";
+const PROD_HOST = new URL(siteUrl).hostname;
+
 interface Props {
   meta: PageMeta;
   /** JSON-LD strings rendered as application/ld+json scripts. */
@@ -41,7 +45,21 @@ const { meta, jsonLd = [] } = Astro.props;
     <meta name="twitter:description" content={meta.description} />
     <meta name="twitter:image" content={meta.ogImage} />
     <meta name="theme-color" content="#1d4ed8" />
+    <meta name="google-site-verification" content="s2ccM6JUwChvS3CW0v_8vFprHIRqZvqXEGPKBkITMKo" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEF85ZBF99"></script>
+    <script define:vars={{ GA_ID, PROD_HOST }}>
+      // Google Analytics 4 — production domain only, so staging/test traffic
+      // never pollutes the numbers.
+      if (window.location.hostname === PROD_HOST) {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () {
+          window.dataLayer.push(arguments);
+        };
+        window.gtag("js", new Date());
+        window.gtag("config", GA_ID);
+      }
+    </script>
     <script define:vars={{ siteUrl, LEGACY_HOST }}>
       // Immediate redirect off the legacy workers.dev staging hostname.
       // (The permanent 301 lives in the Worker itself — see docs/WORKER-REDIRECT.md.)
