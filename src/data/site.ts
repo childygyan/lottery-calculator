@@ -4,8 +4,8 @@ export const siteName = "Lottery Calculator";
 
 export const siteTagline = "Estimate lottery winnings, taxes, and take-home amounts";
 
-// Placeholder domain. Replace with the production domain before launch.
-export const siteUrl = "https://lotterycalculator.example.com";
+// Production domain.
+export const siteUrl = "https://lotterycalculator.site";
 
 export const siteDescription =
   "Calculate estimated lottery winnings, taxes, payouts, and take-home amounts with easy-to-use lottery calculators.";
@@ -16,4 +16,4 @@ export const defaultOgImage = `${siteUrl}/og-image.svg`;
 
 export const siteAuthor = siteName;
 
-export const contactEmail = "contact@lotterycalculator.example.com";
+export const contactEmail = "contact@lotterycalculator.site";
