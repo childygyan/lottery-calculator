@@ -7,6 +7,10 @@ import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import type { PageMeta } from "../lib/seo/metadata.ts";
+import { siteUrl } from "../data/site.ts";
+
+/** Legacy staging hostname — visitors here are sent to the production domain. */
+const LEGACY_HOST = "lottery-calculator.childygyan.workers.dev";
 
 interface Props {
   meta: PageMeta;
@@ -38,6 +42,15 @@ const { meta, jsonLd = [] } = Astro.props;
     <meta name="twitter:image" content={meta.ogImage} />
     <meta name="theme-color" content="#1d4ed8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script define:vars={{ siteUrl, LEGACY_HOST }}>
+      // Immediate redirect off the legacy workers.dev staging hostname.
+      // (The permanent 301 lives in the Worker itself — see docs/WORKER-REDIRECT.md.)
+      if (window.location.hostname === LEGACY_HOST) {
+        window.location.replace(
+          siteUrl + window.location.pathname + window.location.search + window.location.hash,
+        );
+      }
+    </script>
     {jsonLd.map((json) => <script type="application/ld+json" set:html={json} />)}
   </head>
   <body>
