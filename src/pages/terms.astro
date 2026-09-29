@@ -2,11 +2,11 @@
 import Layout from "../layouts/Layout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import { buildPageMeta } from "../lib/seo/metadata.ts";
-import { siteName } from "../data/site.ts";
+import { siteName, contactEmail } from "../data/site.ts";
 
 const meta = buildPageMeta({
   title: `Terms of Use — ${siteName}`,
-  description: `The terms of use for ${siteName}: our calculators provide estimates for informational purposes only.`,
+  description: `The terms of use for ${siteName}: our calculators provide estimates for informational purposes only. Read the full terms before using the site.`,
   path: "/terms/",
 });
 ---
@@ -18,28 +18,84 @@ const meta = buildPageMeta({
       <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Terms of Use</h1>
       <p class="mt-2 text-sm text-slate-500">Last updated: September 2026</p>
       <div class="mt-6 space-y-5 text-base leading-relaxed text-slate-600">
-        <h2 class="pt-2 text-xl font-bold text-slate-900">Estimates only</h2>
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Who operates this site</h2>
         <p>
-          All calculators on {siteName} produce estimates for informational purposes only.
-          Results are not tax, legal, or financial advice, and should not be relied on for
-          decisions about actual winnings. Consult a qualified professional for advice about
-          your situation.
+          {siteName} is operated by Firoz Khan (FK Digital Media). By using
+          this site, you agree to these terms.
         </p>
-        <h2 class="pt-2 text-xl font-bold text-slate-900">Acceptable use</h2>
+
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Estimates only — not advice</h2>
         <p>
-          You agree not to misuse the site, attempt to disrupt it, or misrepresent its
-          outputs as official tax calculations.
+          All calculators on {siteName} produce estimates for informational
+          purposes only. Results are not tax, legal, or financial advice, and
+          should not be relied on for decisions about actual winnings. Tax
+          figures use planning-rate estimates and published brackets; your
+          real tax bill depends on your full tax return and the laws in effect
+          when you claim a prize. Consult a qualified tax professional for
+          advice about your situation.
         </p>
+
+        <h2 class="pt-2 text-xl font-bold text-slate-900">How you may use the site</h2>
+        <p>
+          The calculators are free for personal, non-commercial use. You agree
+          not to:
+        </p>
+        <ul class="list-disc space-y-2 pl-6">
+          <li>Misuse the site or attempt to disrupt its operation;</li>
+          <li>
+            Misrepresent calculator outputs as official tax calculations or as
+            advice from a licensed professional;
+          </li>
+          <li>
+            Copy substantial parts of the site's content and present it as your
+            own.
+          </li>
+        </ul>
+
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Intellectual property</h2>
+        <p>
+          The site's text, design, and calculation logic are owned by the
+          operator unless otherwise noted. You may link to any public page and
+          quote brief excerpts with attribution; anything beyond that needs
+          permission.
+        </p>
+
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Third-party links</h2>
+        <p>
+          We link to official sources such as lottery organizations and tax
+          authorities for reference. We do not control those sites and are not
+          responsible for their content, accuracy, or privacy practices.
+        </p>
+
         <h2 class="pt-2 text-xl font-bold text-slate-900">No warranties</h2>
         <p>
-          The site is provided "as is" without warranties of any kind. Tax rules change, and
-          while we aim to keep our planning estimates current, we cannot guarantee any
-          figure is complete or up to date.
+          The site is provided "as is" without warranties of any kind, express
+          or implied. Tax rules and lottery game rules change, and while we
+          aim to keep our planning estimates current (each source shows when it
+          was last verified), we cannot guarantee any figure is complete or up
+          to date.
         </p>
+
         <h2 class="pt-2 text-xl font-bold text-slate-900">Limitation of liability</h2>
         <p>
-          To the maximum extent permitted by law, {siteName} is not liable for any decisions
-          made based on calculator estimates.
+          To the maximum extent permitted by law, {siteName} and its operator
+          are not liable for any loss or decision made based on calculator
+          estimates or site content.
+        </p>
+
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Changes to these terms</h2>
+        <p>
+          We may update these terms from time to time; the "Last updated" date
+          above will reflect the latest version. Continued use of the site
+          after changes means you accept the updated terms.
+        </p>
+
+        <h2 class="pt-2 text-xl font-bold text-slate-900">Contact</h2>
+        <p>
+          Questions about these terms? Email us at{" "}
+          <a href={`mailto:${contactEmail}`} class="font-semibold text-blue-700 hover:underline">
+            {contactEmail}
+          </a>.
         </p>
       </div>
     </article>
