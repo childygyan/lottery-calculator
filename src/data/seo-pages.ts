@@ -327,6 +327,51 @@ const STATIC_PAGES: SEOPageEntry[] = [
     priority: 0.8,
     lottery: "powerball",
   }),
+  entry({
+    slug: "/powerball-payout-chart/",
+    pageType: "game",
+    intent: "educational",
+    title: "Powerball Payout Chart — All 9 Prize Tiers, Prizes & Odds",
+    description:
+      "The complete Powerball payout chart: all 9 prize tiers with match requirements, prize amounts, and odds — plus Power Play multiplier details.",
+    crumbName: "Powerball Payout Chart",
+    parent: "/powerball/",
+    primaryTopic: "powerball",
+    relatedTopics: ["payout", "odds", "lottery-tax", "cash-option"],
+    indexable: true,
+    priority: 0.8,
+    lottery: "powerball",
+  }),
+  entry({
+    slug: "/powerball-jackpot-analysis/",
+    pageType: "game",
+    intent: "educational",
+    title: "Powerball Jackpot Analysis — How to Analyze Any Jackpot",
+    description:
+      "How to analyze a Powerball jackpot: cash value vs annuity, tax estimates, odds, and expected value — an honest framework, not hype.",
+    crumbName: "Powerball Jackpot Analysis",
+    parent: "/powerball/",
+    primaryTopic: "powerball",
+    relatedTopics: ["payout", "annuity", "cash-option", "lottery-tax", "odds"],
+    indexable: true,
+    priority: 0.8,
+    lottery: "powerball",
+  }),
+  entry({
+    slug: "/powerball-annuity-calculator/",
+    pageType: "game",
+    intent: "annuity",
+    title: "Powerball Annuity Calculator — 30 Payments Schedule",
+    description:
+      "Calculate Powerball's 30 graduated annuity payments over 29 years. Enter the jackpot and annual increase to see each yearly payment.",
+    crumbName: "Powerball Annuity Calculator",
+    parent: "/powerball/",
+    primaryTopic: "powerball",
+    relatedTopics: ["annuity", "payout", "cash-option", "lottery-tax"],
+    indexable: true,
+    priority: 0.8,
+    lottery: "powerball",
+  }),
 
   /* ---------------- Mega Millions cluster ---------------- */
   entry({

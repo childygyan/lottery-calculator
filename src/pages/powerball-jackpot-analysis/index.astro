@@ -1,0 +1,164 @@
+---
+/**
+ * /powerball-jackpot-analysis/ — an honest framework for analyzing any
+ * Powerball jackpot. No live jackpot data is invented; the page teaches the
+ * five-step analysis and links each step to the calculator that runs it.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedCalculators from "../../components/RelatedCalculators.astro";
+import { buildPageMeta, faqJsonLd } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+
+const PAGE_PATH = "/powerball-jackpot-analysis/";
+
+const meta = buildPageMeta({
+  title: "Powerball Jackpot Analysis — How to Analyze Any Jackpot",
+  description:
+    "How to analyze a Powerball jackpot: cash value vs annuity, tax estimates, odds, and expected value — an honest framework, not hype.",
+  path: PAGE_PATH,
+});
+
+const faqs = [
+  {
+    question: "How do you analyze a Powerball jackpot?",
+    answer:
+      "In five steps: (1) get the advertised jackpot and the current cash value from the official Powerball site; (2) compare the cash option against the 30-payment annuity; (3) estimate federal and state taxes — keeping withholding separate from the final liability; (4) sanity-check the odds (1 in 292,201,338); and (5) remember the expected value of a ticket is negative. Each step has a calculator on this site.",
+  },
+  {
+    question: "What is the most important number in a jackpot analysis?",
+    answer:
+      "The cash value — the lump sum you'd actually receive. The advertised jackpot is the annuity total, not cash in hand. Because only the lottery publishes the current cash value, enter it yourself from powerball.com rather than trusting any site that fills it in for you.",
+  },
+  {
+    question: "Is there ever a 'good' jackpot to play?",
+    answer:
+      "Mathematically, no jackpot makes a $2 ticket a good investment — the expected value stays negative because the odds (1 in 292,201,338) are so long and jackpots can be split. A bigger jackpot improves the ratio but never flips it positive. Play for entertainment, within a budget.",
+  },
+  {
+    question: "Should jackpot analysis use cash or annuity figures?",
+    answer:
+      "Always compare both with the same assumptions. The annuity total looks bigger but arrives over 29 years; the cash option is smaller but immediate. Our payout calculator shows both side by side with estimated taxes, without recommending either.",
+  },
+  {
+    question: "How accurate are jackpot tax estimates?",
+    answer:
+      "They're planning estimates, not predictions. Federal brackets and your filing status are exact; state figures use a clearly labeled top-marginal planning rate. Your real bill depends on your full tax picture — which is why every figure on this site is labeled an estimate.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Powerball Jackpot Analysis
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      When the jackpot climbs, the hype climbs faster. This is the sober
+      version: a five-step framework for analyzing any Powerball jackpot with
+      real numbers — and an honest answer about what the math actually says.
+    </p>
+  </div>
+
+  <div class="mt-10 max-w-3xl space-y-10">
+    <section>
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+        Step 1: Get the two real numbers
+      </h2>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        Every analysis starts with two figures from the official Powerball
+        site: the <strong class="font-semibold text-slate-900">advertised
+        jackpot</strong> (the annuity total) and the{" "}
+        <strong class="font-semibold text-slate-900">cash value</strong> (the
+        lump sum). If a site shows you a cash value without citing the
+        official source — or fills one in from thin air — close the tab. Only
+        the lottery knows the current cash value.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+        Step 2: Cash vs annuity, side by side
+      </h2>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        The jackpot is 30 graduated payments over 29 years; the cash option is
+        what that stream is worth today — often roughly half. Run both through
+        the{" "}
+        <a href="/powerball-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+          Powerball payout calculator
+        </a>{" "}
+        with identical assumptions, or build the full payment schedule in the{" "}
+        <a href="/powerball-annuity-calculator/" class="font-semibold text-blue-700 hover:underline">
+          Powerball annuity calculator
+        </a>
+        . Neither option is objectively better — the comparison is about
+        timing, control, and taxes, not a winner-takes-all verdict.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+        Step 3: Estimate the tax — then add more
+      </h2>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        Winnings are ordinary income: the top federal bracket (37%) does most
+        of the work on a jackpot, plus your state's tax. The 24% withheld at
+        payout is a prepayment, not the bill — winners virtually always owe
+        more at filing time. The{" "}
+        <a href="/powerball-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+          Powerball tax calculator
+        </a>{" "}
+        keeps withholding and estimated liability on separate lines so the gap
+        is visible before it surprises you.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+        Step 4: Sanity-check the odds
+      </h2>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        The jackpot odds are{" "}
+        <strong class="font-semibold text-slate-900">1 in 292,201,338</strong>{" "}
+        — every drawing, every ticket, no exceptions. Buying 100 tickets gives
+        you 100 chances in 292 million, which is still 1 in 2.9 million. The{" "}
+        <a href="/powerball-odds-calculator/" class="font-semibold text-blue-700 hover:underline">
+          Powerball odds calculator
+        </a>{" "}
+        shows all nine tiers, and the{" "}
+        <a href="/powerball-payout-chart/" class="font-semibold text-blue-700 hover:underline">
+          payout chart
+        </a>{" "}
+        lists every prize. No number-picking system changes any of this.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900">
+        Step 5: The expected-value reality check
+      </h2>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        Multiply the after-tax jackpot value by 1 in 292,201,338 and compare
+        it to the $2 ticket. The result is negative — always. A huge jackpot
+        narrows the gap but never closes it, especially once you account for
+        the chance of splitting the prize. That's not a reason never to play;
+        it's the reason to play only what you'd happily spend on entertainment.
+      </p>
+    </section>
+  </div>
+
+  <div class="mt-10 max-w-3xl">
+    <FAQ items={faqs} />
+  </div>
+  <div class="max-w-3xl">
+    <SourceList ids={["powerball-official-rules", "powerball-prize-tiers", "irs-rev-proc-2025-32", "irs-gambling-withholding"]} />
+  </div>
+
+  <RelatedCalculators path={PAGE_PATH} />
+</Layout>

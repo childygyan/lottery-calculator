@@ -1,0 +1,110 @@
+---
+/**
+ * /powerball-annuity-calculator/ — Powerball's 30 graduated annuity payments.
+ * Locked to the verified official structure; the growth rate stays
+ * user-entered because Powerball publishes no fixed rate.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PowerballAnnuityScheduler from "../../components/PowerballAnnuityScheduler.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedCalculators from "../../components/RelatedCalculators.astro";
+import { buildPageMeta, faqJsonLd } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+import { getLotteryConfig } from "../../data/lotteries/index.ts";
+
+const PAGE_PATH = "/powerball-annuity-calculator/";
+const game = getLotteryConfig("powerball");
+
+const meta = buildPageMeta({
+  title: "Powerball Annuity Calculator — 30 Payments Schedule",
+  description:
+    "Calculate Powerball's 30 graduated annuity payments over 29 years. Enter the jackpot and annual increase to see each yearly payment.",
+  path: PAGE_PATH,
+});
+
+const faqs = [
+  {
+    question: "How does the Powerball annuity work?",
+    answer:
+      "The advertised jackpot is paid as 30 graduated payments over 29 years — each payment larger than the last. The official rules describe the payments as graduated but publish no fixed graduation rate, so this calculator asks you to enter the annual increase yourself (use 0% for equal payments).",
+  },
+  {
+    question: "Are Powerball annuity payments taxed?",
+    answer:
+      "Yes. Each annual payment is taxed as ordinary income in the year you receive it — federal brackets apply to that year's payment, plus state tax. Withholding applies to each payment as it's made. Use the Powerball tax calculator to estimate the tax on any single payment.",
+  },
+  {
+    question: "Can I switch from annuity to cash later?",
+    answer:
+      "Generally no — the cash-vs-annuity choice is made at claim time and is effectively irrevocable. Compare both options with the Powerball payout calculator before claiming.",
+  },
+  {
+    question: "Why is the first annuity payment smaller than the jackpot divided by 30?",
+    answer:
+      "Because the payments are graduated: they grow each year so that the nominal total equals the advertised jackpot. With a positive annual increase, early payments are smaller and later payments larger. With 0% increase, every payment is exactly the jackpot divided by 30.",
+  },
+  {
+    question: "Does this calculator recommend annuity over cash?",
+    answer:
+      "No. It shows the payment schedule with your own growth assumption — gross amounts before tax. To compare against the lump sum, use the Powerball payout calculator, which presents both without ranking them.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Powerball Annuity Calculator
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      {game.annuityDescription} Enter the advertised jackpot and your annual
+      increase assumption to see all 30 gross payments. {game.annuity.notes}
+    </p>
+  </div>
+
+  <section aria-label="Powerball annuity calculator" class="mt-8 max-w-3xl">
+    <PowerballAnnuityScheduler />
+  </section>
+
+  <section aria-label="About the Powerball annuity" class="mt-14 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      What to know before you use it
+    </h2>
+    <div class="mt-4 space-y-4 text-base leading-relaxed text-slate-600">
+      <p>
+        The <strong class="font-semibold text-slate-800">growth rate is your
+        assumption, not a published fact.</strong> Powerball's official rules
+        say the 30 payments are graduated but give no fixed percentage — any
+        site showing you a schedule without asking for this number is inventing
+        it. Try 0% for equal payments, or experiment with 2–5% to see how
+        graduation shifts money toward later years.
+      </p>
+      <p>
+        The schedule shows <strong class="font-semibold text-slate-800">gross
+        amounts before tax</strong>. In reality, each payment arrives net of
+        24% federal withholding (on amounts over $5,000), and the balance of
+        the tax is settled when you file. For the full after-tax picture, see
+        the{" "}
+        <a href="/powerball-jackpot-analysis/" class="font-semibold text-blue-700 hover:underline">
+          jackpot analysis framework
+        </a>
+        .
+      </p>
+    </div>
+  </section>
+
+  <div class="mt-10 max-w-3xl">
+    <FAQ items={faqs} />
+  </div>
+  <div class="max-w-3xl">
+    <SourceList ids={["powerball-official-rules", "irs-gambling-withholding"]} />
+  </div>
+
+  <RelatedCalculators path={PAGE_PATH} />
+</Layout>

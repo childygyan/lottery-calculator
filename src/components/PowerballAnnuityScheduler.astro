@@ -1,0 +1,169 @@
+---
+/**
+ * Powerball-locked annuity schedule builder.
+ *
+ * Official structure (verified): 30 graduated payments over 29 years.
+ * The rules publish no fixed graduation rate, so the user enters the annual
+ * increase — the input is labeled as an assumption, never a fact.
+ * Reuses the shared, tested annuity engine; no duplicated math.
+ */
+import CurrencyInput from "./CurrencyInput.astro";
+import NumberInput from "./NumberInput.astro";
+import Disclaimer from "./Disclaimer.astro";
+
+const idPrefix = "pb-annuity";
+const f = (id: string) => `${idPrefix}-${id}`;
+---
+
+<div class="card">
+  <form id={f("form")} novalidate data-pb-annuity-scheduler>
+    <div class="grid gap-5 sm:grid-cols-2">
+      <CurrencyInput
+        id={f("jackpot")}
+        name="jackpot"
+        label="Advertised Jackpot"
+        placeholder="500,000,000"
+        hint="The annuity total — the advertised jackpot figure."
+      />
+      <NumberInput
+        id={f("increase")}
+        name="increase"
+        label="Annual Increase (%)"
+        placeholder="0"
+        hint="Your assumption for payment growth. 0 = equal payments. Powerball publishes no fixed rate."
+        inputmode="decimal"
+      />
+    </div>
+    <p class="mt-4 text-sm text-slate-500">
+      Fixed by the official rules: <strong class="font-semibold text-slate-700">30 annual payments
+      over 29 years</strong>.
+    </p>
+    <div class="mt-6">
+      <button type="submit" class="btn-primary w-full sm:w-auto">Build Payment Schedule</button>
+    </div>
+  </form>
+</div>
+
+<section
+  id={f("results")}
+  aria-labelledby={f("results-heading")}
+  aria-live="polite"
+  class="card mt-8"
+  hidden
+>
+  <h2 id={f("results-heading")} class="text-xl font-bold tracking-tight text-slate-900">
+    30 Graduated Powerball Annuity Payments
+  </h2>
+  <p id={f("meta")} class="mt-2 text-sm text-slate-500"></p>
+  <div id={f("schedule")} class="mt-4 overflow-x-auto"></div>
+  <p class="mt-4 text-sm text-slate-500">
+    Gross payment amounts before tax. Each payment is taxed as ordinary income
+    in the year received — estimate the tax on any payment with the{" "}
+    <a href="/powerball-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball tax calculator
+    </a>
+    .
+  </p>
+</section>
+
+<div class="mt-6">
+  <Disclaimer />
+</div>
+
+<script>
+  // Powerball annuity schedule: 30 annual payments, user-entered growth.
+  import {
+    validateAnnuityScheduleInput,
+    buildAnnuitySchedule,
+    formatCurrencyExact,
+  } from "../lib/calculator/index.ts";
+
+  const PREFIX = "pb-annuity";
+  const $ = (id) => document.getElementById(`${PREFIX}-${id}`);
+
+  function setError(fieldId, message) {
+    const input = $(fieldId);
+    const errorEl = document.getElementById(`${PREFIX}-${fieldId}-error`);
+    if (!input || !errorEl) return;
+    if (message) {
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+      input.setAttribute("aria-invalid", "true");
+    } else {
+      errorEl.textContent = "";
+      errorEl.hidden = true;
+      input.removeAttribute("aria-invalid");
+    }
+  }
+
+  function parseCurrency(raw) {
+    const cleaned = String(raw ?? "").replace(/[$,\s]/g, "");
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : NaN;
+  }
+
+  const form = document.querySelector("[data-pb-annuity-scheduler]");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const jackpot = parseCurrency($("jackpot").value);
+    const increaseRaw = String($("increase").value ?? "").trim();
+    const increasePct = increaseRaw === "" ? 0 : Number(increaseRaw);
+
+    let ok = true;
+    if (!Number.isFinite(jackpot) || jackpot <= 0) {
+      setError("jackpot", "Enter the advertised jackpot — a number greater than $0.");
+      ok = false;
+    } else setError("jackpot", "");
+    if (!Number.isFinite(increasePct) || increasePct < 0 || increasePct > 100) {
+      setError("increase", "Enter an annual increase between 0 and 100%.");
+      ok = false;
+    } else setError("increase", "");
+    if (!ok) return;
+
+    const checked = validateAnnuityScheduleInput({
+      totalAdvertisedValue: jackpot,
+      numberOfPayments: 30,
+      paymentFrequency: "annual",
+      growthRate: increasePct / 100,
+    });
+    if (!checked.valid) {
+      setError("jackpot", checked.error ?? "Those inputs don't form a valid schedule.");
+      return;
+    }
+
+    const payments = buildAnnuitySchedule({
+      totalAdvertisedValue: jackpot,
+      numberOfPayments: 30,
+      paymentFrequency: "annual",
+      growthRate: increasePct / 100,
+    });
+
+    const meta = $("meta");
+    meta.textContent =
+      `Jackpot ${formatCurrencyExact(jackpot)} → 30 annual payments` +
+      (increasePct > 0 ? `, growing ${increasePct}% per year (your assumption)` : ", equal payments") +
+      ". Gross amounts, before tax.";
+
+    const rows = payments
+      .map(
+        (p) =>
+          `<tr class="border-t border-slate-200">` +
+          `<td class="px-4 py-2.5 text-slate-900">Year ${p.paymentNumber}</td>` +
+          `<td class="px-4 py-2.5 text-slate-600">${formatCurrencyExact(p.paymentAmount)}</td>` +
+          `<td class="px-4 py-2.5 text-slate-600">${formatCurrencyExact(p.cumulativeAmount)}</td>` +
+          `</tr>`,
+      )
+      .join("");
+
+    $("schedule").innerHTML =
+      `<table class="w-full min-w-[420px] border-collapse text-left text-sm">` +
+      `<thead><tr class="bg-slate-50">` +
+      `<th scope="col" class="px-4 py-2.5 font-semibold text-slate-900">Payment</th>` +
+      `<th scope="col" class="px-4 py-2.5 font-semibold text-slate-900">Gross Amount</th>` +
+      `<th scope="col" class="px-4 py-2.5 font-semibold text-slate-900">Running Total</th>` +
+      `</tr></thead><tbody>${rows}</tbody></table>`;
+
+    $("results").hidden = false;
+    $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+</script>

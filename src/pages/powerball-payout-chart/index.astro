@@ -1,0 +1,148 @@
+---
+/**
+ * /powerball-payout-chart/ — the complete Powerball prize tier table.
+ * All figures come from the centralized, verified Powerball game config
+ * (src/data/lotteries/powerball.ts); nothing is hard-coded here.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import FAQ from "../../components/FAQ.astro";
+import SourceList from "../../components/SourceList.astro";
+import RelatedCalculators from "../../components/RelatedCalculators.astro";
+import { buildPageMeta, faqJsonLd } from "../../lib/seo/metadata.ts";
+import { breadcrumbItems, breadcrumbJsonLdFor } from "../../lib/seo/breadcrumbs.ts";
+import { getLotteryConfig } from "../../data/lotteries/index.ts";
+
+const PAGE_PATH = "/powerball-payout-chart/";
+const game = getLotteryConfig("powerball");
+
+const meta = buildPageMeta({
+  title: "Powerball Payout Chart — All 9 Prize Tiers, Prizes & Odds",
+  description:
+    "The complete Powerball payout chart: all 9 prize tiers with match requirements, prize amounts, and odds — plus Power Play multiplier details.",
+  path: PAGE_PATH,
+});
+
+function formatOdds(odds: number): string {
+  return `1 in ${odds.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+}
+
+function formatPrize(prize: number | "jackpot"): string {
+  return prize === "jackpot" ? "Jackpot*" : `$${prize.toLocaleString("en-US")}`;
+}
+
+const faqs = [
+  {
+    question: "How many prize tiers does Powerball have?",
+    answer:
+      "Nine. They range from matching just the Powerball ($4, odds 1 in 38.32) up to matching all five white balls plus the Powerball for the jackpot (odds 1 in 292,201,338). The overall odds of winning any prize are 1 in 24.87.",
+  },
+  {
+    question: "What is the Powerball jackpot starting amount?",
+    answer:
+      "The advertised starting jackpot is $20 million, and it grows with each drawing that has no jackpot winner. The jackpot figure is the nominal total of the 30-payment annuity; the cash option is always smaller.",
+  },
+  {
+    question: "How does Power Play change the payout chart?",
+    answer:
+      "Adding Power Play ($1 per play) multiplies every non-jackpot prize by 2X, 3X, 4X, 5X, or 10X — drawn at random. The Match 5 prize with Power Play is always $2 million, and the 10X multiplier is only available when the advertised jackpot is $150 million or less.",
+  },
+  {
+    question: "Are Powerball prizes taxed?",
+    answer:
+      "Yes — all Powerball prizes are ordinary income. Federal tax applies to every tier, most states tax winnings too, and 24% federal withholding applies to prizes over $5,000. Use the Powerball tax calculator to estimate the take-home on any prize.",
+  },
+  {
+    question: "What does 'pari-mutuel' mean for Powerball prizes?",
+    answer:
+      "In California, non-jackpot Powerball prizes are paid on a pari-mutuel basis — the prize pool is split among winners of each tier — so the amounts can differ from the fixed chart. Everywhere else, non-jackpot prizes are the fixed amounts shown here.",
+  },
+];
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH), faqJsonLd(faqs)];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Powerball Payout Chart
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      Every way to win Powerball, in one table: what you need to match, what
+      it pays, and the odds — taken from the verified game rules, not
+      guesswork. Each play costs{" "}
+      <strong class="font-semibold text-slate-900">${game.ticketPrice}</strong>,
+      with drawings{" "}
+      <strong class="font-semibold text-slate-900">{game.drawDays}</strong>.
+    </p>
+  </div>
+
+  <section aria-label="Powerball prize tiers" class="mt-8 max-w-4xl">
+    <div class="overflow-x-auto rounded-xl border border-slate-200">
+      <table class="w-full min-w-[560px] border-collapse text-left text-sm">
+        <thead>
+          <tr class="bg-slate-50">
+            <th scope="col" class="px-4 py-3 font-semibold text-slate-900">Match</th>
+            <th scope="col" class="px-4 py-3 font-semibold text-slate-900">Prize</th>
+            <th scope="col" class="px-4 py-3 font-semibold text-slate-900">Odds</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            game.prizeTiers.map((tier) => (
+              <tr class="border-t border-slate-200">
+                <td class="px-4 py-3 font-medium text-slate-900">{tier.matchPattern}</td>
+                <td class="px-4 py-3 text-slate-600">{formatPrize(tier.basePrize)}</td>
+                <td class="px-4 py-3 text-slate-600">{formatOdds(tier.odds)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 text-sm text-slate-500">
+      *Jackpot amount varies — the advertised jackpot starts at $20 million and
+      rolls over until won. Overall odds of winning any prize: 1 in 24.87.
+    </p>
+  </section>
+
+  <section aria-label="Power Play" class="mt-10 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900">Power Play multipliers</h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      {game.multiplier.notes} {game.multiplier.costDescription}
+    </p>
+  </section>
+
+  <section aria-label="About these figures" class="mt-10 max-w-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900">What the chart doesn't show</h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600">
+      The chart is the <em>gross</em> prize — what the lottery pays before
+      taxes. Every prize is taxable income, and 24% federal withholding applies
+      to prizes over $5,000. To see what a prize is actually worth after tax,
+      run it through the{" "}
+      <a href="/powerball-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+        Powerball tax calculator
+      </a>
+      . For the jackpot specifically, compare the{" "}
+      <a href="/powerball-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+        cash option against the annuity
+      </a>
+      , or read the{" "}
+      <a href="/powerball-jackpot-analysis/" class="font-semibold text-blue-700 hover:underline">
+        jackpot analysis framework
+      </a>
+      .
+    </p>
+  </section>
+
+  <div class="mt-10 max-w-3xl">
+    <FAQ items={faqs} />
+  </div>
+  <div class="max-w-3xl">
+    <SourceList ids={["powerball-official-rules", "powerball-prize-tiers", "irs-gambling-withholding"]} />
+  </div>
+
+  <RelatedCalculators path={PAGE_PATH} />
+</Layout>
