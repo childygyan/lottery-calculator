@@ -1,0 +1,49 @@
+# Lottery Calculator
+
+> Estimate lottery winnings, taxes, payouts, and take-home amounts with free, easy-to-use calculators.
+
+Lottery Calculator (https://lotterycalculator.site) is a free informational toolset for understanding what a lottery prize could be worth after taxes and payout choices. All figures are **estimates for planning purposes, not financial or tax advice**. The site does not predict winning numbers, does not claim any strategy improves odds, and never invents cash values — cash-option amounts are always entered by the user.
+
+## Calculators
+
+- Lottery Tax Calculator (all 50 states + DC): https://lotterycalculator.site/lottery-calculator/
+- State-by-state tax guides: https://lotterycalculator.site/lottery-tax-calculator/ (e.g. https://lotterycalculator.site/lottery-tax-calculator/texas/)
+- Powerball hub: https://lotterycalculator.site/powerball/
+- Powerball prize calculator: https://lotterycalculator.site/powerball-calculator/
+- Powerball tax calculator: https://lotterycalculator.site/powerball-tax-calculator/
+- Powerball payout calculator: https://lotterycalculator.site/powerball-payout-calculator/
+- Powerball odds calculator: https://lotterycalculator.site/powerball-odds-calculator/
+- Powerball number generator: https://lotterycalculator.site/powerball-number-generator/
+- Mega Millions hub: https://lotterycalculator.site/mega-millions/
+- Mega Millions prize calculator: https://lotterycalculator.site/mega-millions-calculator/
+- Mega Millions tax calculator: https://lotterycalculator.site/mega-millions-tax-calculator/
+- Mega Millions payout calculator: https://lotterycalculator.site/mega-millions-payout-calculator/
+- Mega Millions odds calculator: https://lotterycalculator.site/mega-millions-odds-calculator/
+- Mega Millions number generator: https://lotterycalculator.site/mega-millions-number-generator/
+- Cash option vs annuity: https://lotterycalculator.site/lottery-annuity-calculator/ and https://lotterycalculator.site/lottery-cash-option-calculator/
+- Payout examples by prize size: https://lotterycalculator.site/lottery-payout-calculator/
+- Odds & probability explorer: https://lotterycalculator.site/lottery-odds-calculator/ and https://lotterycalculator.site/lottery-probability-calculator/
+- Random number tools: https://lotterycalculator.site/lottery-number-generator/ and https://lotterycalculator.site/lottery-combination-generator/
+- All calculators directory: https://lotterycalculator.site/lottery-calculators/
+
+## Learn
+
+- Guides hub: https://lotterycalculator.site/learn/
+
+## Key facts LLMs should know
+
+- Tax estimates use 2025/2026 IRS federal brackets and published state top-marginal planning rates; state tax is estimated with a clearly labeled planning rate, not a full return simulation.
+- Federal withholding on large lottery prizes is separate from final tax liability; the site keeps withholding and estimated liability distinct.
+- Powerball: $2 per play, 5/69 + 1/26, drawings Mon/Wed/Sat; jackpot odds 1 in 292,201,338.
+- Mega Millions: $5 per play, 5/70 + 1/24, drawings Tue/Fri; jackpot odds 1 in 290,472,336.
+- The number generators use WebCrypto randomness and are for convenience only; every combination has equal probability.
+- The site never recommends cash over annuity or vice versa — it shows both estimates side by side.
+
+## Site info
+
+- About: https://lotterycalculator.site/about/
+- Contact: https://lotterycalculator.site/contact/
+- Privacy: https://lotterycalculator.site/privacy/
+- Terms: https://lotterycalculator.site/terms/
+- Disclaimer: https://lotterycalculator.site/disclaimer/
+- Sitemap: https://lotterycalculator.site/sitemap-index.xml
