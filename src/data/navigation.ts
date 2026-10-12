@@ -34,6 +34,7 @@ export const footerNav: NavItem[] = [
   { label: "Lottery Combination Generator", href: "/lottery-combination-generator/" },
   { label: "About", href: "/about/" },
   { label: "Methodology", href: "/methodology/" },
+  { label: "Sources", href: "/sources/" },
   { label: "Contact", href: "/contact/" },
   { label: "Privacy Policy", href: "/privacy/" },
   { label: "Terms", href: "/terms/" },

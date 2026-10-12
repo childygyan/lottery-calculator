@@ -566,6 +566,20 @@ const STATIC_PAGES: SEOPageEntry[] = [
     indexable: true,
     priority: 0.3,
   }),
+  entry({
+    slug: "/sources/",
+    pageType: "info",
+    intent: "info",
+    title: "Sources — Lottery Rules, Tax Data & Methodology References",
+    description:
+      "Every source behind our lottery calculators: official game rules, IRS tax data, and state tax rates, with links and last-verified dates.",
+    crumbName: "Sources",
+    parent: "/",
+    primaryTopic: "methodology",
+    relatedTopics: ["lottery-tax", "payout", "odds"],
+    indexable: true,
+    priority: 0.6,
+  }),
 ];
 
 /* ------------------------------------------------------------------ */

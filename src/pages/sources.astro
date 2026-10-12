@@ -1,0 +1,215 @@
+---
+/**
+ * /sources/ — every source the site relies on, grouped by section:
+ * Lottery rules, Federal tax, State tax, and how each source feeds the
+ * calculation engines. Entries come verbatim from src/data/sources.ts —
+ * no invented URLs or dates. Links render only for verified URLs.
+ */
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import FAQ from "../components/FAQ.astro";
+import RelatedCalculators from "../components/RelatedCalculators.astro";
+import { buildPageMeta } from "../lib/seo/metadata.ts";
+import {
+  breadcrumbItems,
+  breadcrumbJsonLdFor,
+} from "../lib/seo/breadcrumbs.ts";
+import { SOURCES } from "../data/sources.ts";
+
+const PAGE_PATH = "/sources/";
+
+const meta = buildPageMeta({
+  title: "Sources — Lottery Rules, Tax Data & Methodology References",
+  description:
+    "Every source behind our lottery calculators: official game rules, IRS tax data, and state tax rates, with links and last-verified dates.",
+  path: PAGE_PATH,
+});
+
+const jsonLd = [breadcrumbJsonLdFor(PAGE_PATH)];
+
+interface SourceGroup {
+  id: string;
+  heading: string;
+  blurb: string;
+  sourceIds: string[];
+}
+
+const GROUPS: SourceGroup[] = [
+  {
+    id: "lottery-rules",
+    heading: "Lottery rules",
+    blurb:
+      "Official game rules and prize tables. Everything the odds, payout, annuity, and number-generator engines know about Powerball and Mega Millions comes from these publications.",
+    sourceIds: [
+      "powerball-official-rules",
+      "powerball-prize-tiers",
+      "megamillions-official-rules",
+      "megamillions-prize-tiers",
+    ],
+  },
+  {
+    id: "federal-tax",
+    heading: "Federal tax",
+    blurb:
+      "Federal income tax data used by the tax engine: the tax-year brackets and standard deductions behind every federal estimate, plus the withholding rule kept separate from estimated liability.",
+    sourceIds: ["irs-rev-proc-2025-32", "irs-gambling-withholding"],
+  },
+  {
+    id: "state-tax",
+    heading: "State tax",
+    blurb:
+      "State individual income tax data used by the state-tax engine. The Tax Foundation's published 2026 rates provide the top-marginal-rate planning figures; the remaining entries document the states that need no state-tax estimate — plus West Virginia, which is honestly flagged as needing verification.",
+    sourceIds: [
+      "tax-foundation-state-2026",
+      "ca-lottery-exemption",
+      "nh-no-income-tax",
+      "wa-no-income-tax",
+      "wv-sb392-unverified",
+    ],
+  },
+];
+
+const FAQs = [
+  {
+    question: "Where do your tax numbers come from?",
+    answer:
+      "Federal tax estimates use the tax brackets and standard deductions from IRS Revenue Procedure 2025-32 (tax year 2026), and state estimates use the Tax Foundation's published 2026 state income tax rates and brackets. States with no income tax or a lottery-winnings exemption are documented individually in the State tax section above.",
+  },
+  {
+    question: "Why do some sources have no link?",
+    answer:
+      "We only link an address we have verified. When the exact URL is not confirmed, we name the publication (for example, the IRS guidance or a state revenue department) so you can find it, rather than risk sending you to a wrong or fake address.",
+  },
+  {
+    question: "What does 'unverified' mean on the West Virginia entry?",
+    answer:
+      "Reports indicate West Virginia may have reduced its income tax rates again for 2026 (SB 392), but we have not confirmed passage and final rates against an authoritative source. The calculator therefore uses the Tax Foundation's published 2026 rates and flags West Virginia as needing verification, instead of quietly using a possibly wrong rate.",
+  },
+  {
+    question: "How current are these sources?",
+    answer:
+      "Each entry shows the date it was last verified — currently September 28, 2026 for every entry. Game rules and tax laws change, so before acting on real winnings, verify the figures against the official sources linked above and consult a qualified tax professional.",
+  },
+];
+---
+
+<Layout meta={meta} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems(PAGE_PATH)} />
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Sources
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600">
+      Every figure on this site traces back to one of the sources below — the
+      official lottery rules, IRS tax publications, and state tax data our
+      engines use. Each entry links to its real address (where verified), names
+      its publisher, and shows when it was last checked.
+    </p>
+  </div>
+
+  <article class="mt-10 max-w-3xl space-y-12 text-base leading-relaxed text-slate-600">
+    {GROUPS.map((group) => (
+      <section aria-labelledby={group.id}>
+        <h2 id={group.id} class="text-2xl font-bold tracking-tight text-slate-900">
+          {group.heading}
+        </h2>
+        <p class="mt-3">{group.blurb}</p>
+        <ul class="mt-6 space-y-4">
+          {group.sourceIds.map((sourceId) => {
+            const source = SOURCES[sourceId];
+            const unverified = sourceId === "wv-sb392-unverified";
+            return (
+              <li class="rounded-xl border border-slate-200 bg-white px-5 py-4">
+                <p class="text-slate-900">
+                  {source.url ? (
+                    <a
+                      href={source.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="font-semibold text-blue-700 hover:underline"
+                    >
+                      {source.name}
+                    </a>
+                  ) : (
+                    <span class="font-semibold">{source.name}</span>
+                  )}
+                  {unverified && (
+                    <span class="ml-2 inline-block rounded-full bg-amber-100 px-2.5 py-0.5 align-middle text-xs font-bold uppercase tracking-wide text-amber-800">
+                      Unverified
+                    </span>
+                  )}
+                </p>
+                <p class="mt-1 text-sm text-slate-500">
+                  {source.publisher} · Last verified {source.lastChecked}
+                </p>
+                <p class="mt-2 text-slate-600">{source.description}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+
+    <section aria-labelledby="calculation-methodology">
+      <h2 id="calculation-methodology" class="text-2xl font-bold tracking-tight text-slate-900">
+        Calculation methodology
+      </h2>
+      <p class="mt-3">
+        Which engine each source feeds — the data flow behind every number on
+        the site:
+      </p>
+      <ul class="mt-4 list-disc space-y-2 pl-6">
+        <li>
+          <strong class="font-semibold text-slate-800">IRS Revenue Procedure 2025-32</strong>{" "}
+          feeds the <strong class="font-semibold text-slate-800">tax engine</strong>: federal
+          income tax brackets by filing status and standard deduction amounts for
+          tax year 2026.
+        </li>
+        <li>
+          <strong class="font-semibold text-slate-800">IRS gambling withholding guidance</strong>{" "}
+          feeds the <strong class="font-semibold text-slate-800">withholding display</strong> on
+          tax result pages: 24% withheld on gambling and lottery winnings over $5,000,
+          shown separately from estimated liability.
+        </li>
+        <li>
+          <strong class="font-semibold text-slate-800">Tax Foundation 2026 state rates</strong>{" "}
+          feeds the <strong class="font-semibold text-slate-800">state-tax engine</strong>:
+          top-marginal-rate planning estimates for all 50 states plus DC.
+        </li>
+        <li>
+          The <strong class="font-semibold text-slate-800">California exemption</strong> and
+          the <strong class="font-semibold text-slate-800">New Hampshire / Washington</strong>{" "}
+          entries feed the <strong class="font-semibold text-slate-800">state-tax engine's</strong>{" "}
+          $0-tax cases, while the <strong class="font-semibold text-slate-800">West Virginia</strong>{" "}
+          entry keeps the engine honest where its input is still unverified.
+        </li>
+        <li>
+          The <strong class="font-semibold text-slate-800">Powerball and Mega Millions official rules</strong>{" "}
+          feed the <strong class="font-semibold text-slate-800">game configuration</strong>:
+          ball matrices, drawing schedules, annuity structures (30 graduated Powerball payments;
+          Mega Millions' immediate payment plus 29 annual payments, each 5% larger), and
+          multiplier mechanics.
+        </li>
+        <li>
+          The <strong class="font-semibold text-slate-800">Powerball and Mega Millions prize tables</strong>{" "}
+          feed the <strong class="font-semibold text-slate-800">odds and payout pages</strong>:
+          the nine-tier prize ladders, per-tier jackpot odds, and payout charts.
+        </li>
+      </ul>
+      <p class="mt-4">
+        For a full account of how these inputs become estimates — assumptions,
+        withholding separation, and known limitations — see the{" "}
+        <a href="/methodology/" class="font-semibold text-blue-700 hover:underline">
+          methodology page
+        </a>.
+      </p>
+    </section>
+  </article>
+
+  <div class="max-w-3xl">
+    <FAQ items={FAQs} />
+  </div>
+
+  <RelatedCalculators path={PAGE_PATH} />
+</Layout>

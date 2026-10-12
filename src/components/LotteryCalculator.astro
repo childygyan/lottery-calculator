@@ -91,7 +91,7 @@ const stateOptions = getStateOptions(DEFAULT_TAX_YEAR);
     <div class="mt-5 grid gap-5 sm:grid-cols-3">
       <div>
         <label for="taxYear" class="label">Tax Year</label>
-        <select id="taxYear" name="taxYear" class="input" aria-required="true">
+        <select id="taxYear" name="taxYear" class="input" aria-required="true" aria-describedby="taxYear-error">
           {
             SUPPORTED_TAX_YEARS.map((year) => (
               <option value={String(year)} selected={year === DEFAULT_TAX_YEAR}>
@@ -104,7 +104,7 @@ const stateOptions = getStateOptions(DEFAULT_TAX_YEAR);
       </div>
       <div>
         <label for="filingStatus" class="label">Filing Status</label>
-        <select id="filingStatus" name="filingStatus" class="input" aria-required="true">
+        <select id="filingStatus" name="filingStatus" class="input" aria-required="true" aria-describedby="filingStatus-error">
           {
             FILING_STATUSES.map((status) => (
               <option value={status} selected={status === "single"}>

@@ -61,7 +61,7 @@ const jackpotValue = defaultJackpot ? defaultJackpot.toLocaleString("en-US") : "
       !cashOnly && (
         <div>
           <label for={f("game")} class="label">Annuity structure</label>
-          <select id={f("game")} name="game" class="input" data-game>
+          <select id={f("game")} name="game" class="input" data-game aria-describedby={f("game-hint")}>
             {gameOptions.map((g) => (
               <option value={g.value} selected={g.value === selectedGame}>{g.label}</option>
             ))}
@@ -132,7 +132,7 @@ const jackpotValue = defaultJackpot ? defaultJackpot.toLocaleString("en-US") : "
     <div class="mt-5 grid gap-5 sm:grid-cols-3">
       <div>
         <label for={f("taxYear")} class="label">Tax Year</label>
-        <select id={f("taxYear")} name="taxYear" class="input" aria-required="true">
+        <select id={f("taxYear")} name="taxYear" class="input" aria-required="true" aria-describedby={f("taxYear") + "-error"}>
           {
             SUPPORTED_TAX_YEARS.map((year) => (
               <option value={String(year)} selected={year === DEFAULT_TAX_YEAR}>
@@ -145,7 +145,7 @@ const jackpotValue = defaultJackpot ? defaultJackpot.toLocaleString("en-US") : "
       </div>
       <div>
         <label for={f("filingStatus")} class="label">Filing Status</label>
-        <select id={f("filingStatus")} name="filingStatus" class="input" aria-required="true">
+        <select id={f("filingStatus")} name="filingStatus" class="input" aria-required="true" aria-describedby={f("filingStatus") + "-error"}>
           {
             FILING_STATUSES.map((status) => (
               <option value={status} selected={status === "single"}>

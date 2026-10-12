@@ -1,0 +1,18 @@
+# Production security headers — Cloudflare Pages / Workers static assets.
+# This file is copied from public/ into dist/ at build time.
+#
+# NOTE: Content-Security-Policy is intentionally OMITTED. The calculator
+# pages rely on inline scripts (gtag config + legacy-host redirect in the
+# Layout head, and Astro-bundled inline module scripts in each calculator
+# component), and the one external script is loaded from
+# https://www.googletagmanager.com. A CSP without 'unsafe-inline' would
+# break every calculator on the site, and allowing 'unsafe-inline' would
+# make the policy near-worthless. Revisit if scripts are ever extracted
+# to same-origin .js files and hashed.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
