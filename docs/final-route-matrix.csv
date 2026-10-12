@@ -1,0 +1,98 @@
+route,status,canonical,indexable,title,h1,links_out,depth
+/,200,https://lotterycalculator.site/,yes,"Lottery Calculator — Estimate Winnings, Taxes & Take-Home",Lottery Calculator,31,0
+/404/,404,https://lotterycalculator.site/404/,no,Page not found — Lottery Calculator,Page not found.,31,-1
+/about/,200,https://lotterycalculator.site/about/,yes,About — Lottery Calculator,About,31,1
+/contact/,200,https://lotterycalculator.site/contact/,yes,Contact — Lottery Calculator,Contact,31,1
+/disclaimer/,200,https://lotterycalculator.site/disclaimer/,yes,Disclaimer — Lottery Calculator,Disclaimer,31,1
+/learn/,200,https://lotterycalculator.site/learn/,yes,"Learn — Lottery Taxes, Payouts & Odds Explained",Learn How Lotteries Work,37,2
+/learn/cash-option-vs-annuity/,200,https://lotterycalculator.site/learn/cash-option-vs-annuity/,yes,Cash Option vs Annuity — How Lottery Payouts Compare,Cash Option vs Annuity,35,3
+/learn/how-lottery-combinations-work/,200,https://lotterycalculator.site/learn/how-lottery-combinations-work/,yes,How Lottery Combinations Work — Counting Every Possible Ticket,How Lottery Combinations Work,34,3
+/learn/how-lottery-odds-work/,200,https://lotterycalculator.site/learn/how-lottery-odds-work/,yes,How Lottery Odds Work — Combinations & Probability,How Lottery Odds Work,34,3
+/learn/how-lottery-payouts-work/,200,https://lotterycalculator.site/learn/how-lottery-payouts-work/,yes,How Lottery Payouts Work — From Drawing to Money in Hand,How Lottery Payouts Work,35,3
+/learn/how-lottery-taxes-work/,200,https://lotterycalculator.site/learn/how-lottery-taxes-work/,yes,How Lottery Taxes Work — Federal & State Tax on Winnings,How Lottery Taxes Work,36,3
+/learn/lottery-withholding-vs-tax/,200,https://lotterycalculator.site/learn/lottery-withholding-vs-tax/,yes,Lottery Withholding vs Tax — Why 24% Isn't the Final Bill,Lottery Withholding vs Tax,36,3
+/lottery-annuity-calculator/,200,https://lotterycalculator.site/lottery-annuity-calculator/,yes,Lottery Annuity Calculator — Build a Payment Schedule,Lottery Annuity Calculator,32,1
+/lottery-calculator/,200,https://lotterycalculator.site/lottery-calculator/,yes,Lottery Winnings Calculator — Estimate Taxes & Take-Home Pay,Lottery Winnings Calculator,32,1
+/lottery-calculators/,200,https://lotterycalculator.site/lottery-calculators/,yes,Lottery Calculators — Every Tool in One Place,Lottery Calculators,33,2
+/lottery-cash-option-calculator/,200,https://lotterycalculator.site/lottery-cash-option-calculator/,yes,Lottery Cash Option Calculator — Lump Sum Taxes & Take-Home,Lottery Cash Option Calculator,32,1
+/lottery-combination-generator/,200,https://lotterycalculator.site/lottery-combination-generator/,yes,Lottery Combination Generator — Count Possible Combinations,Lottery Combination Generator,32,1
+/lottery-number-generator/,200,https://lotterycalculator.site/lottery-number-generator/,yes,Lottery Number Generator — Random Number Sets,Lottery Number Generator,32,1
+/lottery-odds-calculator/,200,https://lotterycalculator.site/lottery-odds-calculator/,yes,Lottery Odds Calculator — Calculate Your Chances,Lottery Odds Calculator,32,1
+/lottery-payout-calculator/,200,https://lotterycalculator.site/lottery-payout-calculator/,yes,Lottery Payout Calculator — Cash vs Annuity Comparison,Lottery Payout Calculator,37,1
+/lottery-payout-calculator/1-billion/,200,https://lotterycalculator.site/lottery-payout-calculator/1-billion/,yes,$1 Billion Lottery Payout Calculator — Taxes & Take-Home,$1 Billion Lottery Payout Calculator,36,2
+/lottery-payout-calculator/1-million/,200,https://lotterycalculator.site/lottery-payout-calculator/1-million/,yes,$1 Million Lottery Payout Calculator — Taxes & Take-Home,$1 Million Lottery Payout Calculator,36,2
+/lottery-payout-calculator/10-million/,200,https://lotterycalculator.site/lottery-payout-calculator/10-million/,yes,$10 Million Lottery Payout Calculator — Taxes & Take-Home,$10 Million Lottery Payout Calculator,36,2
+/lottery-payout-calculator/100-million/,200,https://lotterycalculator.site/lottery-payout-calculator/100-million/,yes,$100 Million Lottery Payout Calculator — Taxes & Take-Home,$100 Million Lottery Payout Calculator,36,2
+/lottery-payout-calculator/500-million/,200,https://lotterycalculator.site/lottery-payout-calculator/500-million/,yes,$500 Million Lottery Payout Calculator — Taxes & Take-Home,$500 Million Lottery Payout Calculator,36,2
+/lottery-probability-calculator/,200,https://lotterycalculator.site/lottery-probability-calculator/,yes,Lottery Probability Calculator — Chance of Winning With Multiple Tickets,Lottery Probability Calculator,32,1
+/lottery-tax-calculator/,200,https://lotterycalculator.site/lottery-tax-calculator/,yes,Lottery Tax Calculator — Estimate Federal & State Tax on Winnings,Lottery Tax Calculator,83,1
+/lottery-tax-calculator/alabama/,200,https://lotterycalculator.site/lottery-tax-calculator/alabama/,yes,Alabama Lottery Tax Calculator — Estimate Your Take-Home Winnings,Alabama Lottery Tax Calculator,36,2
+/lottery-tax-calculator/alaska/,200,https://lotterycalculator.site/lottery-tax-calculator/alaska/,yes,Alaska Lottery Tax Calculator — Estimate Your Take-Home Winnings,Alaska Lottery Tax Calculator,34,2
+/lottery-tax-calculator/arizona/,200,https://lotterycalculator.site/lottery-tax-calculator/arizona/,yes,Arizona Lottery Tax Calculator — Estimate Your Take-Home Winnings,Arizona Lottery Tax Calculator,36,2
+/lottery-tax-calculator/arkansas/,200,https://lotterycalculator.site/lottery-tax-calculator/arkansas/,yes,Arkansas Lottery Tax Calculator — Estimate Your Take-Home Winnings,Arkansas Lottery Tax Calculator,36,2
+/lottery-tax-calculator/california/,200,https://lotterycalculator.site/lottery-tax-calculator/california/,yes,California Lottery Tax Calculator — Estimate Your Take-Home Winnings,California Lottery Tax Calculator,35,2
+/lottery-tax-calculator/colorado/,200,https://lotterycalculator.site/lottery-tax-calculator/colorado/,yes,Colorado Lottery Tax Calculator — Estimate Your Take-Home Winnings,Colorado Lottery Tax Calculator,36,2
+/lottery-tax-calculator/connecticut/,200,https://lotterycalculator.site/lottery-tax-calculator/connecticut/,yes,Connecticut Lottery Tax Calculator — Estimate Your Take-Home Winnings,Connecticut Lottery Tax Calculator,35,2
+/lottery-tax-calculator/delaware/,200,https://lotterycalculator.site/lottery-tax-calculator/delaware/,yes,Delaware Lottery Tax Calculator — Estimate Your Take-Home Winnings,Delaware Lottery Tax Calculator,35,2
+/lottery-tax-calculator/district-of-columbia/,200,https://lotterycalculator.site/lottery-tax-calculator/district-of-columbia/,yes,District of Columbia Lottery Tax Calculator — Estimate Your Take-Home Winnings,District of Columbia Lottery Tax Calculator,34,2
+/lottery-tax-calculator/florida/,200,https://lotterycalculator.site/lottery-tax-calculator/florida/,yes,Florida Lottery Tax Calculator — Estimate Your Take-Home Winnings,Florida Lottery Tax Calculator,34,2
+/lottery-tax-calculator/georgia/,200,https://lotterycalculator.site/lottery-tax-calculator/georgia/,yes,Georgia Lottery Tax Calculator — Estimate Your Take-Home Winnings,Georgia Lottery Tax Calculator,36,2
+/lottery-tax-calculator/hawaii/,200,https://lotterycalculator.site/lottery-tax-calculator/hawaii/,yes,Hawaii Lottery Tax Calculator — Estimate Your Take-Home Winnings,Hawaii Lottery Tax Calculator,34,2
+/lottery-tax-calculator/idaho/,200,https://lotterycalculator.site/lottery-tax-calculator/idaho/,yes,Idaho Lottery Tax Calculator — Estimate Your Take-Home Winnings,Idaho Lottery Tax Calculator,36,2
+/lottery-tax-calculator/illinois/,200,https://lotterycalculator.site/lottery-tax-calculator/illinois/,yes,Illinois Lottery Tax Calculator — Estimate Your Take-Home Winnings,Illinois Lottery Tax Calculator,36,2
+/lottery-tax-calculator/indiana/,200,https://lotterycalculator.site/lottery-tax-calculator/indiana/,yes,Indiana Lottery Tax Calculator — Estimate Your Take-Home Winnings,Indiana Lottery Tax Calculator,36,2
+/lottery-tax-calculator/iowa/,200,https://lotterycalculator.site/lottery-tax-calculator/iowa/,yes,Iowa Lottery Tax Calculator — Estimate Your Take-Home Winnings,Iowa Lottery Tax Calculator,36,2
+/lottery-tax-calculator/kansas/,200,https://lotterycalculator.site/lottery-tax-calculator/kansas/,yes,Kansas Lottery Tax Calculator — Estimate Your Take-Home Winnings,Kansas Lottery Tax Calculator,36,2
+/lottery-tax-calculator/kentucky/,200,https://lotterycalculator.site/lottery-tax-calculator/kentucky/,yes,Kentucky Lottery Tax Calculator — Estimate Your Take-Home Winnings,Kentucky Lottery Tax Calculator,36,2
+/lottery-tax-calculator/louisiana/,200,https://lotterycalculator.site/lottery-tax-calculator/louisiana/,yes,Louisiana Lottery Tax Calculator — Estimate Your Take-Home Winnings,Louisiana Lottery Tax Calculator,35,2
+/lottery-tax-calculator/maine/,200,https://lotterycalculator.site/lottery-tax-calculator/maine/,yes,Maine Lottery Tax Calculator — Estimate Your Take-Home Winnings,Maine Lottery Tax Calculator,34,2
+/lottery-tax-calculator/maryland/,200,https://lotterycalculator.site/lottery-tax-calculator/maryland/,yes,Maryland Lottery Tax Calculator — Estimate Your Take-Home Winnings,Maryland Lottery Tax Calculator,36,2
+/lottery-tax-calculator/massachusetts/,200,https://lotterycalculator.site/lottery-tax-calculator/massachusetts/,yes,Massachusetts Lottery Tax Calculator — Estimate Your Take-Home Winnings,Massachusetts Lottery Tax Calculator,36,2
+/lottery-tax-calculator/michigan/,200,https://lotterycalculator.site/lottery-tax-calculator/michigan/,yes,Michigan Lottery Tax Calculator — Estimate Your Take-Home Winnings,Michigan Lottery Tax Calculator,35,2
+/lottery-tax-calculator/minnesota/,200,https://lotterycalculator.site/lottery-tax-calculator/minnesota/,yes,Minnesota Lottery Tax Calculator — Estimate Your Take-Home Winnings,Minnesota Lottery Tax Calculator,36,2
+/lottery-tax-calculator/mississippi/,200,https://lotterycalculator.site/lottery-tax-calculator/mississippi/,yes,Mississippi Lottery Tax Calculator — Estimate Your Take-Home Winnings,Mississippi Lottery Tax Calculator,36,2
+/lottery-tax-calculator/missouri/,200,https://lotterycalculator.site/lottery-tax-calculator/missouri/,yes,Missouri Lottery Tax Calculator — Estimate Your Take-Home Winnings,Missouri Lottery Tax Calculator,36,2
+/lottery-tax-calculator/montana/,200,https://lotterycalculator.site/lottery-tax-calculator/montana/,yes,Montana Lottery Tax Calculator — Estimate Your Take-Home Winnings,Montana Lottery Tax Calculator,35,2
+/lottery-tax-calculator/nebraska/,200,https://lotterycalculator.site/lottery-tax-calculator/nebraska/,yes,Nebraska Lottery Tax Calculator — Estimate Your Take-Home Winnings,Nebraska Lottery Tax Calculator,36,2
+/lottery-tax-calculator/nevada/,200,https://lotterycalculator.site/lottery-tax-calculator/nevada/,yes,Nevada Lottery Tax Calculator — Estimate Your Take-Home Winnings,Nevada Lottery Tax Calculator,37,2
+/lottery-tax-calculator/new-hampshire/,200,https://lotterycalculator.site/lottery-tax-calculator/new-hampshire/,yes,New Hampshire Lottery Tax Calculator — Estimate Your Take-Home Winnings,New Hampshire Lottery Tax Calculator,35,2
+/lottery-tax-calculator/new-jersey/,200,https://lotterycalculator.site/lottery-tax-calculator/new-jersey/,yes,New Jersey Lottery Tax Calculator — Estimate Your Take-Home Winnings,New Jersey Lottery Tax Calculator,35,2
+/lottery-tax-calculator/new-mexico/,200,https://lotterycalculator.site/lottery-tax-calculator/new-mexico/,yes,New Mexico Lottery Tax Calculator — Estimate Your Take-Home Winnings,New Mexico Lottery Tax Calculator,35,2
+/lottery-tax-calculator/new-york/,200,https://lotterycalculator.site/lottery-tax-calculator/new-york/,yes,New York Lottery Tax Calculator — Estimate Your Take-Home Winnings,New York Lottery Tax Calculator,36,2
+/lottery-tax-calculator/north-carolina/,200,https://lotterycalculator.site/lottery-tax-calculator/north-carolina/,yes,North Carolina Lottery Tax Calculator — Estimate Your Take-Home Winnings,North Carolina Lottery Tax Calculator,36,2
+/lottery-tax-calculator/north-dakota/,200,https://lotterycalculator.site/lottery-tax-calculator/north-dakota/,yes,North Dakota Lottery Tax Calculator — Estimate Your Take-Home Winnings,North Dakota Lottery Tax Calculator,35,2
+/lottery-tax-calculator/ohio/,200,https://lotterycalculator.site/lottery-tax-calculator/ohio/,yes,Ohio Lottery Tax Calculator — Estimate Your Take-Home Winnings,Ohio Lottery Tax Calculator,37,2
+/lottery-tax-calculator/oklahoma/,200,https://lotterycalculator.site/lottery-tax-calculator/oklahoma/,yes,Oklahoma Lottery Tax Calculator — Estimate Your Take-Home Winnings,Oklahoma Lottery Tax Calculator,36,2
+/lottery-tax-calculator/oregon/,200,https://lotterycalculator.site/lottery-tax-calculator/oregon/,yes,Oregon Lottery Tax Calculator — Estimate Your Take-Home Winnings,Oregon Lottery Tax Calculator,36,2
+/lottery-tax-calculator/pennsylvania/,200,https://lotterycalculator.site/lottery-tax-calculator/pennsylvania/,yes,Pennsylvania Lottery Tax Calculator — Estimate Your Take-Home Winnings,Pennsylvania Lottery Tax Calculator,36,2
+/lottery-tax-calculator/rhode-island/,200,https://lotterycalculator.site/lottery-tax-calculator/rhode-island/,yes,Rhode Island Lottery Tax Calculator — Estimate Your Take-Home Winnings,Rhode Island Lottery Tax Calculator,34,2
+/lottery-tax-calculator/south-carolina/,200,https://lotterycalculator.site/lottery-tax-calculator/south-carolina/,yes,South Carolina Lottery Tax Calculator — Estimate Your Take-Home Winnings,South Carolina Lottery Tax Calculator,34,2
+/lottery-tax-calculator/south-dakota/,200,https://lotterycalculator.site/lottery-tax-calculator/south-dakota/,yes,South Dakota Lottery Tax Calculator — Estimate Your Take-Home Winnings,South Dakota Lottery Tax Calculator,36,2
+/lottery-tax-calculator/tennessee/,200,https://lotterycalculator.site/lottery-tax-calculator/tennessee/,yes,Tennessee Lottery Tax Calculator — Estimate Your Take-Home Winnings,Tennessee Lottery Tax Calculator,36,2
+/lottery-tax-calculator/texas/,200,https://lotterycalculator.site/lottery-tax-calculator/texas/,yes,Texas Lottery Tax Calculator — Estimate Your Take-Home Winnings,Texas Lottery Tax Calculator,36,2
+/lottery-tax-calculator/utah/,200,https://lotterycalculator.site/lottery-tax-calculator/utah/,yes,Utah Lottery Tax Calculator — Estimate Your Take-Home Winnings,Utah Lottery Tax Calculator,36,2
+/lottery-tax-calculator/vermont/,200,https://lotterycalculator.site/lottery-tax-calculator/vermont/,yes,Vermont Lottery Tax Calculator — Estimate Your Take-Home Winnings,Vermont Lottery Tax Calculator,35,2
+/lottery-tax-calculator/virginia/,200,https://lotterycalculator.site/lottery-tax-calculator/virginia/,yes,Virginia Lottery Tax Calculator — Estimate Your Take-Home Winnings,Virginia Lottery Tax Calculator,36,2
+/lottery-tax-calculator/washington/,200,https://lotterycalculator.site/lottery-tax-calculator/washington/,yes,Washington Lottery Tax Calculator — Estimate Your Take-Home Winnings,Washington Lottery Tax Calculator,34,2
+/lottery-tax-calculator/west-virginia/,200,https://lotterycalculator.site/lottery-tax-calculator/west-virginia/,yes,West Virginia Lottery Tax Calculator — Estimate Your Take-Home Winnings,West Virginia Lottery Tax Calculator,37,2
+/lottery-tax-calculator/wisconsin/,200,https://lotterycalculator.site/lottery-tax-calculator/wisconsin/,yes,Wisconsin Lottery Tax Calculator — Estimate Your Take-Home Winnings,Wisconsin Lottery Tax Calculator,36,2
+/lottery-tax-calculator/wyoming/,200,https://lotterycalculator.site/lottery-tax-calculator/wyoming/,yes,Wyoming Lottery Tax Calculator — Estimate Your Take-Home Winnings,Wyoming Lottery Tax Calculator,36,2
+/mega-millions-calculator/,200,https://lotterycalculator.site/mega-millions-calculator/,yes,Mega Millions Calculator — Estimate Taxes & Take-Home Winnings,Mega Millions Calculator,33,1
+/mega-millions-number-generator/,200,https://lotterycalculator.site/mega-millions-number-generator/,yes,Mega Millions Number Generator — Random Mega Millions Picks,Mega Millions Number Generator,33,1
+/mega-millions-odds-calculator/,200,https://lotterycalculator.site/mega-millions-odds-calculator/,yes,Mega Millions Odds Calculator — Calculate Your Winning Chances,Mega Millions Odds Calculator,33,1
+/mega-millions-payout-calculator/,200,https://lotterycalculator.site/mega-millions-payout-calculator/,yes,Mega Millions Payout Calculator — Cash vs Annuity,Mega Millions Payout Calculator,35,3
+/mega-millions-tax-calculator/,200,https://lotterycalculator.site/mega-millions-tax-calculator/,yes,Mega Millions Tax Calculator — Federal & State Tax on Winnings,Mega Millions Tax Calculator,33,1
+/mega-millions/,200,https://lotterycalculator.site/mega-millions/,yes,"Mega Millions — Calculators, Odds, Taxes & Rules","Mega Millions Calculators, Odds & Rules",34,2
+/methodology/,200,https://lotterycalculator.site/methodology/,yes,Methodology — How Our Lottery Calculators Work,Methodology,36,1
+/powerball-annuity-calculator/,200,https://lotterycalculator.site/powerball-annuity-calculator/,yes,Powerball Annuity Calculator — 30 Payments Schedule,Powerball Annuity Calculator,34,1
+/powerball-calculator/,200,https://lotterycalculator.site/powerball-calculator/,yes,Powerball Calculator — Estimate Taxes & Take-Home Winnings,Powerball Calculator,33,1
+/powerball-jackpot-analysis/,200,https://lotterycalculator.site/powerball-jackpot-analysis/,yes,Powerball Jackpot Analysis — How to Analyze Any Jackpot,Powerball Jackpot Analysis,34,1
+/powerball-number-generator/,200,https://lotterycalculator.site/powerball-number-generator/,yes,Powerball Number Generator — Random Powerball Picks,Powerball Number Generator,33,1
+/powerball-odds-calculator/,200,https://lotterycalculator.site/powerball-odds-calculator/,yes,Powerball Odds Calculator — Calculate Your Winning Chances,Powerball Odds Calculator,33,1
+/powerball-payout-calculator/,200,https://lotterycalculator.site/powerball-payout-calculator/,yes,Powerball Payout Calculator — Cash vs Annuity,Powerball Payout Calculator,34,2
+/powerball-payout-chart/,200,https://lotterycalculator.site/powerball-payout-chart/,yes,"Powerball Payout Chart — All 9 Prize Tiers, Prizes & Odds",Powerball Payout Chart,34,1
+/powerball-tax-calculator/,200,https://lotterycalculator.site/powerball-tax-calculator/,yes,Powerball Tax Calculator — Federal & State Tax on Winnings,Powerball Tax Calculator,33,1
+/powerball/,200,https://lotterycalculator.site/powerball/,yes,"Powerball — Calculators, Odds, Taxes & Rules","Powerball Calculators, Odds & Rules",33,2
+/privacy/,200,https://lotterycalculator.site/privacy/,yes,Privacy Policy — Lottery Calculator,Privacy Policy,31,1
+/sources/,200,https://lotterycalculator.site/sources/,yes,"Sources — Lottery Rules, Tax Data & Methodology References",Sources,35,1
+/terms/,200,https://lotterycalculator.site/terms/,yes,Terms of Use — Lottery Calculator,Terms of Use,31,1

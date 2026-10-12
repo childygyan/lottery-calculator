@@ -1,0 +1,245 @@
+{
+  "generatedAt": "2026-10-12",
+  "vectors": [
+    {
+      "engine": "tax",
+      "inputs": {
+        "advertisedJackpot": 100000000,
+        "cashValue": 100000000,
+        "payoutChoice": "lump_sum",
+        "state": "CA",
+        "taxYear": 2026,
+        "filingStatus": "single"
+      },
+      "expected": {
+        "taxableAmount": 100000000,
+        "federalTax": 36950000.25,
+        "stateTax": 0,
+        "totalEstimatedTax": 36950000.25,
+        "estimatedTakeHome": 63049999.75,
+        "federalWithholding": 24000000,
+        "stateWithholding": null,
+        "totalWithholding": 24000000,
+        "estimatedEffectiveTaxRate": 0.3695000025,
+        "stateDataStatus": "not_applicable"
+      }
+    },
+    {
+      "engine": "tax",
+      "inputs": {
+        "advertisedJackpot": 10000000,
+        "cashValue": 10000000,
+        "payoutChoice": "lump_sum",
+        "state": "TX",
+        "taxYear": 2026,
+        "filingStatus": "married_jointly"
+      },
+      "expected": {
+        "taxableAmount": 10000000,
+        "federalTax": 3610250.5,
+        "stateTax": 0,
+        "totalEstimatedTax": 3610250.5,
+        "estimatedTakeHome": 6389749.5,
+        "federalWithholding": 2400000,
+        "stateWithholding": null,
+        "totalWithholding": 2400000,
+        "estimatedEffectiveTaxRate": 0.36102505,
+        "stateDataStatus": "not_applicable"
+      }
+    },
+    {
+      "engine": "tax",
+      "inputs": {
+        "advertisedJackpot": 30000000,
+        "cashValue": 15000000,
+        "payoutChoice": "annuity",
+        "state": "NY",
+        "taxYear": 2026,
+        "filingStatus": "head_of_household"
+      },
+      "expected": {
+        "taxableAmount": 1000000,
+        "federalTax": 315213.5,
+        "stateTax": 109000,
+        "totalEstimatedTax": 424213.5,
+        "estimatedTakeHome": 575786.5,
+        "federalWithholding": 240000,
+        "stateWithholding": null,
+        "totalWithholding": 240000,
+        "estimatedEffectiveTaxRate": 0.4242135,
+        "stateDataStatus": "verified"
+      }
+    },
+    {
+      "engine": "tax-fallback",
+      "inputs": {
+        "advertisedJackpot": 5000000,
+        "cashValue": 5000000,
+        "payoutChoice": "lump_sum",
+        "state": "NY",
+        "taxYear": 2025,
+        "filingStatus": "single"
+      },
+      "note": "tax year 2025 is unsupported (only 2026 data ships); engine falls back to 2026 rules",
+      "expected": {
+        "taxYearUsed": 2026,
+        "federalTax": 1800000.25,
+        "stateTax": 545000,
+        "equalsExplicit2026": true
+      }
+    },
+    {
+      "engine": "payout",
+      "inputs": {
+        "advertisedJackpot": 500000000,
+        "cashValue": 250000000,
+        "annuityYears": 30,
+        "annualIncrease": 0,
+        "state": "CA",
+        "taxYear": 2026,
+        "filingStatus": "single"
+      },
+      "expected": {
+        "cash": {
+          "gross": 250000000,
+          "federalTax": 92450000.25,
+          "stateTax": 0,
+          "totalTax": 92450000.25,
+          "net": 157549999.75,
+          "federalWithholding": 60000000,
+          "stateWithholding": null,
+          "totalWithholding": 60000000
+        },
+        "annuityFirstPayment": 16666666.67,
+        "annuityLastPayment": 16666666.57,
+        "annuityGross": 500000000,
+        "annuityTotalTax": 183500007.56,
+        "annuityNet": 316499992.44,
+        "assumptions": [
+          "Annuity: 30 annual payments totalling $500,000,000.00 in equal payments.",
+          "Cash option: $250,000,000.00 paid at once, taxed in a single year.",
+          "Each annuity payment is taxed as that year's income using the same tax engine as the cash option.",
+          "These are planning estimates, not tax or financial advice."
+        ]
+      }
+    },
+    {
+      "engine": "payout",
+      "inputs": {
+        "advertisedJackpot": 500000000,
+        "cashValue": 250000000,
+        "annuityYears": 30,
+        "annualIncrease": 0.05,
+        "state": "CA",
+        "taxYear": 2026,
+        "filingStatus": "single"
+      },
+      "expected": {
+        "cash": {
+          "gross": 250000000,
+          "federalTax": 92450000.25,
+          "stateTax": 0,
+          "totalTax": 92450000.25,
+          "net": 157549999.75,
+          "federalWithholding": 60000000,
+          "stateWithholding": null,
+          "totalWithholding": 60000000
+        },
+        "annuityFirstPayment": 7525717.54,
+        "annuityLastPayment": 30976873.83,
+        "annuityGross": 500000000,
+        "annuityTotalTax": 183500007.5,
+        "annuityNet": 316499992.5,
+        "assumptions": [
+          "Annuity: 30 annual payments totalling $500,000,000.00, growing 5.00% per year.",
+          "Cash option: $250,000,000.00 paid at once, taxed in a single year.",
+          "Each annuity payment is taxed as that year's income using the same tax engine as the cash option.",
+          "These are planning estimates, not tax or financial advice."
+        ]
+      }
+    },
+    {
+      "engine": "odds",
+      "inputs": {
+        "game": "powerball",
+        "note": "jackpot combinations from verified game config"
+      },
+      "expected": {
+        "oneInX": 292201338,
+        "configJackpotOdds": 292201338,
+        "equal": true,
+        "tenTicketProbability": 3.422297722988077e-8
+      }
+    },
+    {
+      "engine": "odds",
+      "inputs": {
+        "game": "mega_millions",
+        "note": "jackpot combinations from verified game config"
+      },
+      "expected": {
+        "oneInX": 290472336,
+        "configJackpotOdds": 290472336,
+        "equal": true
+      }
+    },
+    {
+      "engine": "combinations",
+      "inputs": {
+        "n": 69,
+        "r": 5
+      },
+      "expected": {
+        "value": 11238513
+      }
+    },
+    {
+      "engine": "generator",
+      "inputs": {
+        "game": "powerball",
+        "sets": 100,
+        "rng": "mulberry32",
+        "rngSeed": 12345,
+        "avoidDuplicates": false
+      },
+      "expected": {
+        "allMainsInRange": true,
+        "allMainsSorted": true,
+        "allMainsUniqueWithinTicket": true,
+        "allBonusesInRange": true,
+        "allMainsCount5": true,
+        "allBonusesCount1": true,
+        "firstTicket": {
+          "mainNumbers": [
+            1,
+            6,
+            37,
+            38,
+            54
+          ],
+          "bonusNumbers": [
+            2
+          ]
+        }
+      }
+    },
+    {
+      "engine": "withholding",
+      "inputs": {
+        "payoutAmount": 1000000,
+        "taxYear": 2026,
+        "filingStatus": "single",
+        "state": "CA"
+      },
+      "expected": {
+        "federalWithholding": 240000,
+        "stateWithholding": null,
+        "totalWithholding": 240000,
+        "twentyFourPercentOfPrize": 240000,
+        "liabilityFederalTax": 320000.25,
+        "liabilityTotalTax": 320000.25,
+        "withholdingSeparateFromLiability": true
+      }
+    }
+  ]
+}
