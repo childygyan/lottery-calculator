@@ -1,0 +1,124 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "An annuity turns one jackpot into decades of payments — but how is each payment actually sized? The answer is graduated-payment math: early payments are smaller, later ones larger, and the two big games do it differently. Here's the intuition, no heavy formulas required.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "How are lottery annuity payments calculated?",
+    answer:
+      "The payments form a graduated (growing) series: each payment is larger than the last by a growth rate, and the first payment is sized so that all payments add up to the advertised jackpot. With 0% growth, every payment is simply the jackpot divided by the number of payments.",
+  },
+  {
+    question: "Why is the first annuity payment less than the jackpot divided by 30?",
+    answer:
+      "Because the payments grow. If every payment were jackpot ÷ 30, the series couldn't grow and still total the jackpot. With a positive growth rate, money shifts toward later years — so the first payment is smaller than an equal split, and the last payment is larger.",
+  },
+  {
+    question: "What is Mega Millions' annuity growth rate?",
+    answer:
+      "5%, published in the official rules: one immediate payment, then 29 annual payments, each 5% larger than the previous one.",
+  },
+  {
+    question: "What is Powerball's annuity growth rate?",
+    answer:
+      "The official rules describe 30 graduated payments over 29 years but publish no fixed rate — so any growth percentage is an assumption, not a fact. Our Powerball annuity calculator asks you to enter it (try 0% for equal payments) and labels it as your assumption.",
+  },
+  {
+    question: "Are annuity payments taxed when calculated or when received?",
+    answer:
+      "When received. Each annual payment is ordinary income in the year it arrives, taxed with that year's brackets — which is why spreading payments across decades changes the tax picture versus a lump sum.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+  "irs-gambling-withholding",
+];
+---
+
+<LearnArticle
+  slug="/learn/how-lottery-annuity-payments-work/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The core idea: a growing series</h2>
+  <p>
+    An annuity jackpot isn't divided — it's <em>scheduled</em>. The lottery
+    commits to a total (the advertised jackpot) and a payment count, then
+    sizes each payment so the whole series adds up to that total. With
+    graduated payments, each year's check is bigger than the last by a fixed
+    growth rate. Think of it as a staircase climbing toward the jackpot
+    total: the first step is low, the last step is high, and the staircase as
+    a whole reaches exactly the advertised number.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Why the first payment is the smallest</h2>
+  <p>
+    This confuses everyone, so let's be explicit. If payments grow each year
+    and must still total the jackpot, the early ones <em>must</em> start below
+    an equal split — otherwise the growing later payments would overshoot the
+    total. With 0% growth there's no staircase at all: every payment equals
+    the jackpot divided by the number of payments. The bigger the growth
+    rate, the smaller the first payment and the larger the last. Nothing is
+    being taken from you; it's arithmetic, not a fee.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Mega Millions: the 5% rule is published</h2>
+  <p>
+    Mega Millions is the transparent one. The official rules state the
+    schedule exactly:{" "}
+    <strong class="font-semibold text-slate-800">one immediate payment, then
+    29 annual payments, each 5% larger than the previous one</strong>. Because
+    the rate is published, the full schedule for any jackpot is determined —
+    no assumptions needed. Note the first payment arrives immediately at
+    claim time, unlike Powerball's structure.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Powerball: the rate is your assumption</h2>
+  <p>
+    Powerball's official rules describe{" "}
+    <strong class="font-semibold text-slate-800">30 graduated payments over
+    29 years</strong> — but publish no fixed graduation rate. That means any
+    Powerball payment schedule you've ever seen online either asked for a
+    growth assumption or silently invented one. Our{" "}
+    <a href="/powerball-annuity-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball annuity calculator
+    </a>{" "}
+    does the honest thing: you enter the jackpot and your own annual increase
+    (0% for equal payments), and it's labeled as your assumption throughout.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What the schedule doesn't show: taxes</h2>
+  <p>
+    Payment schedules show <em>gross</em> amounts. In reality, each payment
+    arrives net of 24% federal withholding (on amounts over $5,000), and each
+    is taxed as ordinary income in the year received — which is precisely why
+    the annuity's tax story differs from the lump sum's. To see every payment
+    with estimated taxes applied year by year, use the{" "}
+    <a href="/lottery-annuity-calculator/" class="font-semibold text-blue-700 hover:underline">
+      annuity calculator
+    </a>{" "}
+    or the game-specific{" "}
+    <a href="/powerball-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+      payout comparison
+    </a>
+    .
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Try the math yourself</h2>
+  <p>
+    The best way to feel the staircase: build one. Enter any jackpot in the{" "}
+    <a href="/powerball-annuity-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball annuity calculator
+    </a>{" "}
+    at 0% growth and watch every payment equal jackpot ÷ 30 — then raise the
+    growth rate and watch the first payment shrink while the last one climbs.
+    Same jackpot, same total, completely different shape. That's the whole
+    idea.
+  </p>
+</LearnArticle>

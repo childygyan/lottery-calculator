@@ -1,0 +1,110 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "The short answer: 6 numbers — 5 white balls from 1–69 and 1 Powerball from 1–26. The longer answer is why that matrix exists: it's the machine that manufactures 292,201,338 possible combinations, and therefore the famous odds.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "How many numbers are in Powerball?",
+    answer:
+      "Six: 5 white balls drawn from 1–69, plus 1 Powerball drawn from 1–26. You must match all six to win the jackpot.",
+  },
+  {
+    question: "Why does Powerball use two separate number pools?",
+    answer:
+      "The separate Powerball pool (1–26) multiplies the combinations: 11,238,513 ways to arrange the white balls times 26 possible Powerballs gives 292,201,338 total combinations. A single-pool design would need a much larger matrix to reach the same odds.",
+  },
+  {
+    question: "Do the white ball numbers have to be in order?",
+    answer:
+      "No. The 5 white balls are an unordered combination — 3-11-24-35-68 is the same ticket as 68-35-24-11-3. Only the Powerball is a separate, distinguished pick.",
+  },
+  {
+    question: "Can the Powerball be the same number as a white ball?",
+    answer:
+      "Yes. The Powerball is drawn from its own 1–26 pool, independent of the white balls, so it can duplicate one of your white-ball numbers. That doesn't affect anything — they're separate picks.",
+  },
+  {
+    question: "How many numbers do you need to match to win anything?",
+    answer:
+      "At minimum, just the Powerball alone wins $4 (odds 1 in 38.32). There are nine prize tiers in total — see all of them in the Powerball payout chart.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "powerball-prize-tiers",
+];
+---
+
+<LearnArticle
+  slug="/learn/how-many-numbers-in-powerball/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The 5 + 1 matrix</h2>
+  <p>
+    Every Powerball ticket holds{" "}
+    <strong class="font-semibold text-slate-800">5 white balls from
+    1–69</strong> and{" "}
+    <strong class="font-semibold text-slate-800">1 Powerball from
+    1–26</strong>. The white balls are drawn from one machine, the Powerball
+    from another. Drawings happen Monday, Wednesday, and Saturday at 10:59
+    p.m. ET, and each play costs $2.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What the matrix manufactures: combinations</h2>
+  <p>
+    The matrix isn't decoration — it's an odds engine. There are 11,238,513
+    ways to choose 5 unordered white balls from 69. For each of those, the
+    Powerball can be any of 26 numbers. Multiply: 11,238,513 × 26 ={" "}
+    <strong class="font-semibold text-slate-800">292,201,338</strong> possible
+    tickets — and therefore jackpot odds of 1 in 292,201,338. Change the
+    matrix and you change the odds; that's exactly why lotteries adjust ball
+    counts when they want bigger jackpots. Explore the counting in the{" "}
+    <a href="/lottery-combination-generator/" class="font-semibold text-blue-700 hover:underline">
+      combination generator
+    </a>{" "}
+    and the{" "}
+    <a href="/powerball-odds-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball odds calculator
+    </a>
+    .
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Order doesn't matter (for the white balls)</h2>
+  <p>
+    The white balls form a combination, not a sequence: matching the five
+    numbers in any order wins. That's why generated tickets show sorted white
+    balls — sorting is tidiness, not strategy. The Powerball stands apart as
+    its own pick from its own pool, which is why a ticket is written "5 +
+    Powerball" rather than "6 numbers."
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Every subset is a prize tier</h2>
+  <p>
+    You don't need all six numbers to win. Matching just the Powerball pays
+    $4; matching 1 white ball plus the Powerball also pays $4; and it scales
+    up through nine tiers to the jackpot. The full table — match pattern,
+    prize, and odds for each tier — is in the{" "}
+    <a href="/powerball-payout-chart/" class="font-semibold text-blue-700 hover:underline">
+      Powerball payout chart
+    </a>
+    . Overall, the odds of winning any prize are 1 in 24.87.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What the numbers can't do</h2>
+  <p>
+    Six numbers, 292 million combinations, and every single one has exactly
+    the same probability in every drawing. No set of "lucky" numbers, no
+    pattern, no analysis of past draws changes that — drawings are
+    independent. If you want random picks without the superstition, the{" "}
+    <a href="/powerball-number-generator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball number generator
+    </a>{" "}
+    produces them with no claims attached.
+  </p>
+</LearnArticle>

@@ -1,0 +1,111 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Every Powerball jackpot starts at $20 million — and then, if nobody wins, it climbs. Sometimes it climbs to a billion. Here's the rollover mechanic behind the climb, why it accelerates, and what a giant jackpot does and doesn't change.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What is a lottery rollover?",
+    answer:
+      "When no ticket wins the jackpot in a drawing, the jackpot prize money rolls over into the next drawing's jackpot. Each rollover adds the new drawing's sales on top of the unclaimed amount, so the advertised jackpot grows.",
+  },
+  {
+    question: "What does a Powerball jackpot start at?",
+    answer:
+      "The advertised starting jackpot is $20 million. From there it grows with every drawing that produces no jackpot winner, fed by a share of each drawing's ticket sales.",
+  },
+  {
+    question: "Why do jackpots grow faster as they get bigger?",
+    answer:
+      "It's a feedback loop: a bigger advertised jackpot sells more tickets, and more ticket sales add more money to the prize pool, which makes the next jackpot bigger still. Growth accelerates until someone wins.",
+  },
+  {
+    question: "Does a bigger jackpot mean better odds?",
+    answer:
+      "No. The odds of any single ticket winning are 1 in 292,201,338 in every drawing, whether the jackpot is $20 million or $2 billion. A bigger jackpot improves the prize, not the probability — and it also raises the chance that you'll have to split it with another winner.",
+  },
+  {
+    question: "Can a jackpot roll over forever?",
+    answer:
+      "In practice, no. As the jackpot grows, ticket sales explode, which means more combinations are covered and a winner becomes likely within a few drawings. Giant jackpots are rare precisely because the mechanic that builds them also ends them.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "powerball-prize-tiers",
+];
+---
+
+<LearnArticle
+  slug="/learn/how-lottery-jackpots-grow/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">It starts at $20 million</h2>
+  <p>
+    Every Powerball jackpot sequence begins at the same place: an advertised{" "}
+    <strong class="font-semibold text-slate-800">$20 million</strong>. That
+    figure is the annuity total — the nominal sum of 30 graduated payments
+    over 29 years — not cash on hand. If someone wins at $20 million, the
+    next drawing resets to $20 million and the cycle starts over.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">No winner? It rolls.</h2>
+  <p>
+    The rollover is the entire engine. When a drawing produces no jackpot
+    winner — which, at 1 in 292,201,338 odds, is the usual outcome — the
+    jackpot money isn't paid out; it carries into the next drawing. Then the
+    next drawing's ticket sales add their share on top. Three drawings a
+    week (Monday, Wednesday, Saturday) means three chances per week for the
+    pile to grow.
+  </p>
+  <p>
+    Note what rolls over and what doesn't: only the jackpot. The eight
+    smaller prize tiers pay out every drawing regardless, from $4 up to $1
+    million. The rollover mechanic touches the top prize alone.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The feedback loop that builds billionaires' headlines</h2>
+  <p>
+    Here's why growth accelerates. A $40 million jackpot sells more tickets
+    than a $20 million one. More tickets mean more dollars flowing into the
+    prize pool, which makes the <em>next</em> jackpot bigger — which sells
+    even more tickets. Each cycle feeds the next. That's how jackpots go from
+    $20 million to $500 million to over a billion in a matter of weeks: not
+    steady arithmetic, but a compounding loop of hype and sales.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Why the loop always ends</h2>
+  <p>
+    The same mechanic that builds giant jackpots guarantees they don't last.
+    When ticket sales explode, the number of combinations in play explodes
+    with them — and with enough tickets sold, covering the winning
+    combination becomes likely rather than miraculous. That's why billion-
+    dollar jackpots are rare events, not permanent fixtures: the jackpot gets
+    big <em>because</em> nobody won, and then somebody wins <em>because</em>{" "}
+    it got big.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What a huge jackpot doesn't change</h2>
+  <p>
+    Three things stay exactly the same no matter the size. First, your
+    ticket's odds: 1 in 292,201,338, every drawing, forever. Second, the
+    expected value of a $2 ticket stays negative — a bigger prize narrows the
+    gap but never closes it. Third, and most overlooked: a giant jackpot
+    <em>increases</em> your chance of splitting the prize, because millions
+    of extra players are holding tickets too. The advertised number assumes
+    you're the only winner; the{" "}
+    <a href="/powerball-jackpot-analysis/" class="font-semibold text-blue-700 hover:underline">
+      jackpot analysis framework
+    </a>{" "}
+    walks through all five steps of sizing up any jackpot honestly — and the{" "}
+    <a href="/powerball-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+      payout calculator
+    </a>{" "}
+    compares cash against annuity for whatever the current figures are.
+  </p>
+</LearnArticle>

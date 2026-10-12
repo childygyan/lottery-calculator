@@ -1,0 +1,117 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "The jackpot says $500 million; the cash option says $250 million. The cash value isn't a fee or a penalty — it's the present value of the annuity: what three decades of future payments are worth today. Here's why the gap exists, why it moves, and why you'll always enter it yourself on this site.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What is the cash value of a lottery jackpot?",
+    answer:
+      "The cash value (cash option, lump sum) is the present-day value of the advertised annuity jackpot — the actual money sitting in the prize pool right now. It's always smaller than the advertised jackpot, often roughly half, and only the lottery publishes the current figure.",
+  },
+  {
+    question: "Why is the cash option always less than the jackpot?",
+    answer:
+      "Because of the time value of money: a dollar today is worth more than a dollar in 20 years. The advertised jackpot is the total of 30 years of future payments; the cash option is what that stream is worth right now, discounted to the present. The difference isn't a fee — it's interest-rate math.",
+  },
+  {
+    question: "Why does the cash value change between drawings?",
+    answer:
+      "The cash value moves with interest rates and with the size of the prize pool. When rates rise, future payments are worth less today, so the cash option shrinks relative to the annuity — and vice versa. That's why only the current published figure counts.",
+  },
+  {
+    question: "Where do I find the current cash value?",
+    answer:
+      "On the official lottery's website — powerball.com or megamillions.com — listed next to the advertised jackpot for the next drawing. Any site that shows you a cash value without citing the official source, or fills one in automatically, is inventing it.",
+  },
+  {
+    question: "Is the cash value taxed differently from the annuity?",
+    answer:
+      "The cash value is taxed as ordinary income in the single year you receive it — pushing nearly all of it into the top federal bracket. Annuity payments are taxed year by year as received. Compare both with the lottery payout calculator.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+  "irs-gambling-withholding",
+];
+---
+
+<LearnArticle
+  slug="/learn/what-is-lottery-cash-value/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Present value, plainly</h2>
+  <p>
+    Imagine someone offers you $1 million today or $1 million spread over 30
+    years. You'd take today's million — because you could invest it, and
+    because inflation erodes future dollars. The lottery's annuity is that
+    30-year stream; the{" "}
+    <strong class="font-semibold text-slate-800">cash value</strong> is the
+    lump sum the lottery considers equivalent today. The advertised jackpot
+    is the annuity total — the sum of all future payments, undiscounted. The
+    cash option is the discounted present value. Same prize, two honest
+    measurements.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Why the gap moves with interest rates</h2>
+  <p>
+    Discounting runs on interest rates. When rates are high, future payments
+    are worth less today, so the cash option falls further below the
+    advertised jackpot; when rates are low, the gap narrows. The prize pool
+    size matters too — more ticket sales grow both figures. The ratio is
+    often roughly half, but "roughly" is doing real work there: it shifts
+    with every drawing, which is why a cash value from last month is already
+    stale.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Why we never fill it in for you</h2>
+  <p>
+    Only the lottery knows the current cash value. Any calculator that
+    displays one without you typing it is either using an old figure or
+    making one up — and a wrong cash value corrupts every downstream number:
+    taxes, take-home, the whole comparison. So on this site the cash value is{" "}
+    <strong class="font-semibold text-slate-800">always user-entered</strong>.
+    Check the official lottery site for the next drawing's published figure,
+    type it in, and every estimate downstream is anchored to reality. Try it
+    in the{" "}
+    <a href="/lottery-cash-option-calculator/" class="font-semibold text-blue-700 hover:underline">
+      cash option calculator
+    </a>
+    .
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Cash value vs. take-home: don't confuse them</h2>
+  <p>
+    The cash value is what the lottery pays — before taxes. Your take-home is
+    what's left after federal withholding (24% on prizes over $5,000, a
+    prepayment — not the final bill), federal income tax (top bracket 37% on
+    most of a jackpot), and state tax. A $250 million cash value can easily
+    become roughly $150–160 million after taxes depending on your state. The{" "}
+    <a href="/lottery-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery tax calculator
+    </a>{" "}
+    keeps withholding and final liability on separate lines so the gap stays
+    visible.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The one decision the cash value informs</h2>
+  <p>
+    The cash-vs-annuity choice is really a question about the cash value
+    versus the payment stream: take the discounted lump sum now, or the full
+    nominal total spread over decades. This site never recommends one — the{" "}
+    <a href="/lottery-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+      payout calculator
+    </a>{" "}
+    shows both with identical assumptions, and our{" "}
+    <a href="/learn/cash-option-vs-annuity/" class="font-semibold text-blue-700 hover:underline">
+      cash vs annuity guide
+    </a>{" "}
+    walks through the trade-offs honestly.
+  </p>
+</LearnArticle>

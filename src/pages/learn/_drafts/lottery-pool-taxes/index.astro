@@ -1,0 +1,122 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Office pools win together — and then, too often, fight together. Splitting a lottery prize is simple arithmetic; splitting it without a fight takes a written agreement made before anyone wins. Here's how pool taxes work and how to keep the money from ruining the friendship.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "How are lottery pool winnings split?",
+    answer:
+      "However the pool agreed — usually pro-rata by contribution (if you put in $10 of a $100 pool, you get 10% of the prize). The split itself is just arithmetic; the disputes come from pools that never wrote the agreement down.",
+  },
+  {
+    question: "Does each pool member pay tax on their share?",
+    answer:
+      "Yes. Each member is taxed on their own share of the winnings as ordinary income. If one person claims the whole prize and then hands out shares, the IRS may treat those handoffs as gifts — which is why large pools should get professional tax advice before claiming.",
+  },
+  {
+    question: "Is withholding taken from the total or from each share?",
+    answer:
+      "Withholding happens at payout, on the prize as paid — 24% federal on winnings over $5,000, taken before the money is split. Each member then settles their own final tax on their share at filing time, with the withholding credited proportionally.",
+  },
+  {
+    question: "Do we need a written lottery pool agreement?",
+    answer:
+      "For anything beyond pocket change, yes. A simple written agreement listing members, contributions, the tickets covered, and the split formula prevents the most common disputes. This article isn't legal advice — for a large win, have a lawyer review the arrangement before anyone claims.",
+  },
+  {
+    question: "What if someone in the pool didn't pay for a particular drawing?",
+    answer:
+      "That's exactly the fight written agreements prevent. Decide in advance whether shares are per-drawing (only contributors to that drawing share) or ongoing, write it down, and have everyone acknowledge it. Verbal understandings evaporate the moment real money appears.",
+  },
+];
+
+const sourceIds = [
+  "irs-gambling-withholding",
+  "irs-rev-proc-2025-32",
+];
+---
+
+<LearnArticle
+  slug="/learn/lottery-pool-taxes/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The split is arithmetic; the fight is human</h2>
+  <p>
+    A lottery pool is simple: a group chips in, buys tickets together, and
+    splits any winnings. The standard split is pro-rata — your share equals
+    your contribution divided by the pool's total. Put in $10 of a $100 pool,
+    get 10% of whatever wins. The math takes ten seconds. The arguments it
+    prevents have destroyed friendships, workplaces, and at least a few
+    court calendars.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Each member is taxed on their share</h2>
+  <p>
+    For tax purposes, each pool member is an individual winner of their slice.
+    A $1 million prize split ten ways is ten $100,000 wins, and each member
+    reports their $100,000 as ordinary income — federal brackets, state tax,
+    all of it, exactly as described in our{" "}
+    <a href="/learn/how-lottery-taxes-work/" class="font-semibold text-blue-700 hover:underline">
+      lottery taxes guide
+    </a>
+    . Run your own share through the{" "}
+    <a href="/lottery-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery tax calculator
+    </a>{" "}
+    to estimate what you'd actually keep.
+  </p>
+  <p>
+    One trap to avoid: if a single person claims the entire prize and then
+    distributes shares informally, the tax authorities may view the
+    distributions as <em>gifts</em> from the claimant rather than co-owned
+    winnings — a much worse tax outcome. Large pools should sort out the
+    claiming structure with a tax professional <em>before</em> anyone signs
+    the ticket.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Withholding happens before the split</h2>
+  <p>
+    Withholding is taken at payout, on the prize as the lottery pays it: 24%
+    federal on winnings over $5,000 comes off the top before the money is
+    divided. Each member's final tax is then settled individually at filing
+    time, with their proportional share of the withholding credited against
+    their own bill — the same{" "}
+    <a href="/learn/lottery-withholding-vs-tax/" class="font-semibold text-blue-700 hover:underline">
+      withholding-vs-tax
+    </a>{" "}
+    distinction that applies to solo winners, multiplied by the number of
+    members.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Write it down before you win</h2>
+  <p>
+    A pool agreement doesn't need a law firm for small stakes — it needs
+    clarity. At minimum, write down: who's in the pool, how much each person
+    contributed, which drawing(s) the tickets cover, the exact split formula,
+    and who physically holds and claims the tickets. Everyone acknowledges
+    it — a group message everyone replies to counts as a start, a signed
+    page is better.
+  </p>
+  <p>
+    Decide the edge cases <em>now</em>: does someone who skipped this week's
+    contribution share in this week's win? What happens when a member leaves
+    the group? Who keeps copies of the tickets? Photograph every ticket and
+    share the photos with the group before each drawing — it's free, and it
+    ends "that was my personal ticket" disputes before they start.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">When the win is big, get professionals</h2>
+  <p>
+    This guide covers the mechanics, not your situation — it isn't legal or
+    tax advice. For a life-changing pool win, the right order is: sign the
+    ticket, secure it, then talk to a tax adviser and an attorney experienced
+    with windfalls <em>before</em> claiming. The claiming entity, the timing,
+    and the paperwork all affect what each member keeps, and those decisions
+    are much harder to fix after the money moves.
+  </p>
+</LearnArticle>

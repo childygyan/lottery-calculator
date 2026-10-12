@@ -1,0 +1,105 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Power Play is Powerball's $1 add-on that multiplies non-jackpot prizes 2X–10X. It sounds like free upside — but the extra dollar has its own math. Here's exactly how it works and what it does (and doesn't) change about a ticket.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What is Power Play in Powerball?",
+    answer:
+      "Power Play is a $1-per-play add-on. Before each drawing, a multiplier of 2X, 3X, 4X, 5X, or 10X is drawn; it multiplies every non-jackpot prize you win. The 10X multiplier is only available when the advertised jackpot is $150 million or less.",
+  },
+  {
+    question: "What happens to the $1 million prize with Power Play?",
+    answer:
+      "The Match 5 (5 white balls, no Powerball) prize is always $2 million when you add Power Play — regardless of which multiplier is drawn. That's the one fixed exception in the Power Play rules.",
+  },
+  {
+    question: "Does Power Play multiply the jackpot?",
+    answer:
+      "No. Power Play never applies to the jackpot — only to the eight non-jackpot prize tiers, from $4 up to the $1 million Match 5 prize.",
+  },
+  {
+    question: "Is Power Play worth the extra $1?",
+    answer:
+      "It depends on what you value. It multiplies any non-jackpot prize you win, but it also raises your cost per play by 50% (from $2 to $3) — and it cannot turn a ticket into a positive-expectation bet. This site doesn't recommend for or against it; the math below lets you judge the trade-off yourself.",
+  },
+  {
+    question: "Is Power Play available in every state?",
+    answer:
+      "In Idaho and Montana, Powerball is bundled with Power Play for a minimum $3 per play — you can't opt out there. Elsewhere it's an optional $1 add-on per play.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "powerball-prize-tiers",
+];
+---
+
+<LearnArticle
+  slug="/learn/what-is-powerball-power-play/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">How Power Play works</h2>
+  <p>
+    Add Power Play to your $2 Powerball ticket for $1 more. Before each
+    drawing, a separate Power Play drawing selects a multiplier — 2X, 3X, 4X,
+    5X, or 10X. If you win any of the eight non-jackpot prize tiers, your
+    prize is multiplied by that number. A $50,000 Match 4+Powerball prize
+    becomes $100,000 at 2X or $500,000 at 10X. The jackpot itself is never
+    multiplied.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The $2 million exception</h2>
+  <p>
+    Match all 5 white balls without the Powerball and the base prize is $1
+    million — but with Power Play, it's always{" "}
+    <strong class="font-semibold text-slate-800">$2 million</strong>, no matter
+    which multiplier was drawn. It's the one tier where Power Play behaves as
+    a fixed doubling rather than a random multiplier.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The 10X fine print</h2>
+  <p>
+    The 10X multiplier is only in play when the advertised jackpot is $150
+    million or less. When jackpots climb past that — exactly when the most
+    tickets are sold — the maximum multiplier drops to 5X. Worth knowing if
+    you're buying specifically for the big-jackpot drawings.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The honest expected-value framing</h2>
+  <p>
+    Power Play does exactly what it says: it multiplies non-jackpot prizes.
+    What it doesn't do is change the sign of the ticket's expected value. You
+    pay 50% more per play ($3 instead of $2) for bigger consolation prizes,
+    while the jackpot odds stay 1 in 292,201,338 and the jackpot stays
+    unmultiplied. Lotteries price add-ons so the house keeps its edge — a
+    multiplied prize table is still a losing proposition on average, just a
+    differently shaped one. See every tier's base prize and odds in the{" "}
+    <a href="/powerball-payout-chart/" class="font-semibold text-blue-700 hover:underline">
+      Powerball payout chart
+    </a>
+    , and run the odds yourself in the{" "}
+    <a href="/powerball-odds-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball odds calculator
+    </a>
+    .
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Taxes apply to multiplied prizes too</h2>
+  <p>
+    A multiplied prize is still ordinary income. A $100,000 Power Play prize
+    faces the same federal brackets and state rules as any other $100,000
+    win, with 24% federal withholding on prizes over $5,000. Estimate the
+    take-home on any tier with the{" "}
+    <a href="/powerball-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball tax calculator
+    </a>
+    .
+  </p>
+</LearnArticle>

@@ -1,0 +1,110 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "You don't have forever — every lottery sets a claim deadline, and missed deadlines mean forfeited prizes. Here's how claim windows work, why waiting is risky, and what to do in the meantime.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "How long do you have to claim lottery winnings?",
+    answer:
+      "It varies by game and lottery — typically anywhere from 90 days to a year from the drawing date, with smaller prizes sometimes claimable longer at retailers. Because the exact window depends on your specific lottery's rules, check the back of your ticket or your lottery's official claim rules rather than relying on a general number.",
+  },
+  {
+    question: "What happens if you miss the claim deadline?",
+    answer:
+      "The prize is forfeited. Unclaimed prize money typically goes back to the lottery — often to future prize pools or, depending on the state, to designated beneficiaries like education funds. There are no extensions for forgetting.",
+  },
+  {
+    question: "Should you claim right away or wait?",
+    answer:
+      "Don't wait without a reason, but don't sprint either. The sensible middle path: sign the ticket immediately, store it securely, quietly assemble a tax professional and an attorney, and then claim with advice in place — well before the deadline. Rushing to claim before you have advisers is how expensive mistakes happen.",
+  },
+  {
+    question: "Does the cash-vs-annuity choice affect the deadline?",
+    answer:
+      "No — the deadline is for claiming the prize itself. The cash-vs-annuity choice happens at claim time, so use the waiting period to work through the decision with your advisers and the payout calculator, not after.",
+  },
+  {
+    question: "Do annuity payments have their own deadlines?",
+    answer:
+      "Once you've claimed, the annuity schedule is contractual — the lottery pays on its timetable and you don't re-claim each year. The deadline that matters is the initial claim window.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+  "irs-gambling-withholding",
+];
+---
+
+<LearnArticle
+  slug="/learn/how-long-to-claim-lottery-winnings/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The window is real, and it varies</h2>
+  <p>
+    Every lottery sets its own claim deadline — commonly somewhere between
+    90 days and a year after the drawing, depending on the game and the
+    lottery running it. Jackpots usually must be claimed in person at a
+    claim center; smaller prizes can often be claimed at any retailer for
+    the same window. The only authoritative source for <em>your</em> ticket
+    is your lottery's official rules (often printed on the ticket back).
+    Treat any single number you read online — including here — as a reason
+    to go check, not as the answer.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Sign it, photograph it, secure it</h2>
+  <p>
+    The moment you realize you've won something significant: sign the back
+    of the ticket (an unsigned bearer ticket belongs to whoever holds it),
+    photograph both sides, and put the original somewhere genuinely secure —
+    a safe deposit box, not a kitchen drawer. Losing an unsigned winning
+    ticket before the deadline is the most avoidable tragedy in lottery
+    history, and it happens regularly.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Why you shouldn't wait until the last week</h2>
+  <p>
+    Deadlines don't negotiate. Beyond the obvious risk of forgetting, late
+    claims compress everything: less time to find the right advisers, less
+    time to think through the{" "}
+    <a href="/learn/cash-option-vs-annuity/" class="font-semibold text-blue-700 hover:underline">
+      cash-vs-annuity decision
+    </a>
+    , and more pressure to decide while the clock ticks. Aim to claim with
+    comfortable margin — months, not days. If your ticket is close to
+    expiring right now, stop reading and go claim it; the perfect plan is
+    worthless after the deadline.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Use the waiting time wisely</h2>
+  <p>
+    The gap between winning and claiming is the most valuable period in the
+    whole process. This is when you quietly hire a tax professional and an
+    attorney experienced with windfalls, run your numbers through the{" "}
+    <a href="/lottery-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery tax calculator
+    </a>{" "}
+    and the{" "}
+    <a href="/lottery-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+      payout calculator
+    </a>
+    , and decide — without an audience — what the money is for. Tell almost
+    no one until the claim is filed; sudden wealth attracts sudden opinions.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What happens to unclaimed prizes</h2>
+  <p>
+    Miss the window and the prize is gone — forfeited, no appeals. Unclaimed
+    money typically flows back into the lottery system: future prize pools
+    or state-designated beneficiaries such as education funds, depending on
+    the lottery. Every year, millions in prizes go unclaimed, most of them
+    small — a quiet reminder to check every ticket, not just the jackpot
+    ones.
+  </p>
+</LearnArticle>

@@ -1,0 +1,121 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Won $50 on a scratcher or $2,000 on Pick 5? Small wins have their own tax rules — and the most expensive myth is that small means tax-free. Here's the $5,000 line, the $600 line, and what you actually owe.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "Do I have to pay tax on small lottery winnings?",
+    answer:
+      "Yes. All lottery winnings are taxable income — there is no minimum amount below which winnings become tax-free. A $5 scratcher win is technically taxable, just like a $5 million jackpot.",
+  },
+  {
+    question: "What is the $5,000 rule for lottery winnings?",
+    answer:
+      "Federal law requires 24% withholding on lottery and gambling winnings over $5,000. Below $5,000 there's no withholding — but the winnings are still taxable income you must report. Withholding is about collection timing, not about whether tax is owed.",
+  },
+  {
+    question: "What is the $600 reporting rule?",
+    answer:
+      "Payers generally report gambling winnings of $600 or more to the IRS on Form W-2G. Between $600 and $5,000, your win is reported but nothing is withheld — you settle the tax when you file.",
+  },
+  {
+    question: "Can I deduct gambling losses against small winnings?",
+    answer:
+      "You can deduct gambling losses up to the amount of your winnings, but only if you itemize deductions — and you need records (tickets, receipts, a log). You can't deduct more than you won, and you can't use losses to create a tax benefit beyond wiping out the winnings.",
+  },
+  {
+    question: "I won $800 and nothing was withheld. Do I owe anything?",
+    answer:
+      "Very likely yes — the $800 is taxable income even though no tax was withheld. How much depends on your total income and filing status. Small wins often land in your normal marginal bracket; run the amount through the <a href=\"/lottery-tax-calculator/\" class=\"font-semibold text-blue-700 hover:underline\">lottery tax calculator</a> for an estimate.",
+  },
+];
+
+const sourceIds = [
+  "irs-gambling-withholding",
+  "irs-rev-proc-2025-32",
+];
+---
+
+<LearnArticle
+  slug="/learn/taxes-on-small-lottery-winnings/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">There's no tax-free minimum</h2>
+  <p>
+    Let's kill the myth first: <strong class="font-semibold text-slate-800">all
+    lottery winnings are taxable income</strong>, from a $2 scratcher to a
+    nine-figure jackpot. The tax code has no "too small to matter" exemption
+    for gambling winnings. In practice, tiny wins often don't change your
+    final bill — they just blend into your other income — but legally, every
+    dollar counts.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The $5,000 line: withholding, not taxability</h2>
+  <p>
+    Federal law requires <strong class="font-semibold text-slate-800">24%
+    withholding on winnings over $5,000</strong>. Win $5,001 and $1,200 is
+    held back before you see a cent; win $4,999 and you get the whole amount.
+    That cliff confuses people into thinking $4,999 is tax-free. It isn't —
+    the $4,999 is fully taxable; the government just collects its share at
+    filing time instead of at payout. Withholding is a collection mechanism,
+    not a taxability test. Our{" "}
+    <a href="/learn/lottery-withholding-vs-tax/" class="font-semibold text-blue-700 hover:underline">
+      withholding-vs-tax guide
+    </a>{" "}
+    explains the distinction in full.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The $600 line: reporting</h2>
+  <p>
+    There's a second threshold that matters: winnings of{" "}
+    <strong class="font-semibold text-slate-800">$600 or more</strong> are
+    generally reported to the IRS on Form W-2G. So the landscape looks like
+    this:
+  </p>
+  <ul class="list-disc space-y-2 pl-6">
+    <li>
+      <strong class="font-semibold text-slate-800">Under $600:</strong> taxable,
+      but typically unreported — you're on the honor system (and the law).
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-800">$600–$5,000:</strong> reported
+      on W-2G, no withholding — the IRS knows, and you'll settle up when you
+      file.
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-800">Over $5,000:</strong> reported
+      <em>and</em> 24% withheld up front.
+    </li>
+  </ul>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">No withholding doesn't mean no tax</h2>
+  <p>
+    This is where small winners get surprised. You win $2,000, receive the
+    full $2,000, spend it — and forget it was income. At filing time it's
+    still $2,000 of ordinary income, taxed at your marginal rate. On its own
+    it rarely moves the needle much, but stacked onto a year with other
+    income it adds up, and the IRS already has the W-2G. The fix is boring:
+    set aside a slice of every win over $600, sized to your bracket. The{" "}
+    <a href="/lottery-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery tax calculator
+    </a>{" "}
+    gives you an estimate for any amount — small wins included.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Losses can offset wins — with paperwork</h2>
+  <p>
+    If you itemize deductions, you can deduct gambling losses up to the
+    amount of your winnings — a $2,000 win and $2,000 of documented losses
+    nets to zero taxable gambling income. Three catches: you can't deduct
+    more than you won, you must itemize (so it only helps if your total
+    itemized deductions beat the standard deduction), and you need records —
+    losing tickets, receipts, a contemporaneous log. "I probably spent
+    about that much" doesn't survive an audit. And losses never create a
+    refund beyond erasing the winnings; there's no tax bonus for losing.
+  </p>
+</LearnArticle>

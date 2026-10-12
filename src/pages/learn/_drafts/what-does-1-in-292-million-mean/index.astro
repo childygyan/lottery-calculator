@@ -1,0 +1,134 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "1 in 292,201,338. You've seen the number on every Powerball ad, but almost nobody can actually feel what it means. Here's how to think about it honestly — what changes it, what doesn't, and why your brain keeps getting it wrong.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What does 1 in 292 million mean as a percentage?",
+    answer:
+      "About 0.00000034%. Odds of 1 in N and a probability of 1/N describe the same fact: divide 1 by 292,201,338 and you get roughly 0.0000000034, or 0.00000034%. The <a href=\"/lottery-probability-calculator/\" class=\"font-semibold text-blue-700 hover:underline\">probability explorer</a> shows this conversion for any game.",
+  },
+  {
+    question: "If I buy 100 tickets, are my odds 100 in 292 million?",
+    answer:
+      "Effectively yes — 100 different tickets give you 100 chances out of 292,201,338, or about 1 in 2.9 million. But each individual ticket is still 1 in 292,201,338; buying more tickets adds chances without improving any single ticket.",
+  },
+  {
+    question: "How long would it take to win if I played every drawing?",
+    answer:
+      "Powerball draws 3 times a week, or 156 times a year. At one ticket per drawing, the average wait for a jackpot would be about 1.87 million years (292,201,338 ÷ 156). That's an average, not a schedule — you could win on your first ticket or never.",
+  },
+  {
+    question: "Is 1 in 292 million the same for every ticket?",
+    answer:
+      "Yes. Every combination — quick-pick, birthday numbers, or the same numbers you've played for years — has exactly the same 1-in-292,201,338 chance in every drawing. Drawings are independent; past results change nothing.",
+  },
+  {
+    question: "Why does the jackpot feel more winnable than the odds suggest?",
+    answer:
+      "Human brains are bad at tiny probabilities: we round them up to 'it could happen to me' and round other people's wins up to 'it happens all the time.' News coverage of winners makes wins feel common while the hundreds of millions of losing tickets stay invisible.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "powerball-prize-tiers",
+  "megamillions-official-rules",
+];
+---
+
+<LearnArticle
+  slug="/learn/what-does-1-in-292-million-mean/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Odds and probability say the same thing</h2>
+  <p>
+    "1 in 292,201,338" (odds) and "0.00000034%" (probability) are two ways of
+    stating one fact: out of 292,201,338 possible Powerball tickets, exactly
+    one wins the jackpot. The odds format compares wins to total outcomes; the
+    probability format is wins divided by total outcomes. Neither version is
+    more "real" — but the percentage form tends to land harder, because
+    0.00000034% is visibly, undeniably tiny in a way that "1 in 292 million"
+    somehow isn't.
+  </p>
+  <p>
+    For Mega Millions the figure is 1 in 290,472,336 — different game, same
+    neighborhood of impossible. The{" "}
+    <a href="/lottery-probability-calculator/" class="font-semibold text-blue-700 hover:underline">
+      probability explorer
+    </a>{" "}
+    converts any game's odds into percentages so you can compare them
+    directly.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Your brain rounds tiny chances up</h2>
+  <p>
+    Psychologists have shown again and again that people can't feel the
+    difference between 1 in a million and 1 in 292 million — both register as
+    "basically never, but maybe." That's why jackpots feel closer than they
+    are. Two mental shortcuts do most of the damage:
+  </p>
+  <ul class="list-disc space-y-2 pl-6">
+    <li>
+      <strong class="font-semibold text-slate-800">The winner on TV.</strong>{" "}
+      You see the grinning winner, not the 292 million losing tickets. Wins
+      are vivid and public; losses are invisible and silent, so your brain
+      files winning under "things that happen."
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-800">The near-miss.</strong>{" "}
+      Matching 3 numbers feels like being "close," but you weren't close —
+      you were one specific combination out of 292 million, same as everyone
+      else who didn't win. Small prizes are designed to feel encouraging;
+      they're a separate, much easier event.
+    </li>
+  </ul>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">A yardstick you can actually hold</h2>
+  <p>
+    Comparisons help, as long as they're honest. Powerball draws 3 times a
+    week — 156 drawings a year. Play one ticket every drawing and your
+    <em>average</em> wait for a jackpot is about 1.87 million years. That's
+    not a prediction that you'll win in 1.87 million years; it's the
+    arithmetic of 292,201,338 divided by 156. Some players win on their first
+    ticket. Most never win. The average just tells you how thin the chance
+    is spread.
+  </p>
+  <p>
+    Another honest yardstick: the overall odds of winning <em>any</em>{" "}
+    Powerball prize are 1 in 24.87. That's the number behind the "I won $4!"
+    stories — a completely different event from the jackpot, roughly 11.7
+    million times easier. When someone says "people win all the time," they
+    mean the $4 tier.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">More tickets: what actually changes</h2>
+  <p>
+    One hundred different tickets give you 100 chances in 292,201,338 — about
+    1 in 2.9 million. That is genuinely better than one ticket, and it's the
+    whole honest story: more tickets add chances, linearly, with no tricks.
+    What more tickets do <em>not</em> do is change any single ticket's odds,
+    make a system "due," or turn the game positive. The expected value of a
+    $2 ticket stays negative whether you buy one or one thousand, because the
+    price of full coverage always exceeds what the jackpot pays after tax.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The one rule that never bends</h2>
+  <p>
+    Every drawing is independent. The balls don't remember last week, the
+    machine doesn't owe anyone, and your ticket — quick-pick or cherished
+    family numbers — is 1 in 292,201,338 every single time. Anyone selling a
+    method to "improve" that number is selling the one thing the lottery
+    guarantees: a lighter wallet. Play for the entertainment, spend only what
+    the fun is worth, and let the{" "}
+    <a href="/learn/how-lottery-odds-work/" class="font-semibold text-blue-700 hover:underline">
+      odds guide
+    </a>{" "}
+    be the reality check before the ticket counter.
+  </p>
+</LearnArticle>

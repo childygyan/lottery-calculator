@@ -1,0 +1,236 @@
+/**
+ * queue.ts — the 15-day daily article program for lotterycalculator.site
+ * (2026-10-13 → 2026-10-27).
+ *
+ * Each entry is a COMPLETE draft living in `src/pages/learn/_drafts/<slug>/`
+ * as a single self-contained `index.astro` built on the shared
+ * `LearnArticle.astro` layout. Astro ignores `_`-prefixed directories for
+ * routing, so drafts are invisible until published.
+ *
+ * IMPORTANT — import depth: drafts are written with the PUBLISHED depth
+ * (`../../../components/...`), i.e. 3 directories under src/pages. They are
+ * never compiled inside `_drafts/`; after the move in step 4 the imports
+ * resolve correctly. Do NOT change import depth when publishing.
+ *
+ * THE DAILY PUBLISHER (cron `daily-article-publish-lt`) takes QUEUE[0] and,
+ * in order:
+ *  1. Read this file. If QUEUE is empty: the program is complete — call
+ *     cron.remove with id `daily-article-publish-lt`, then report
+ *     "15-day lottery article program complete — all articles published."
+ *     and stop.
+ *  2. Date check FIRST: let today = current date (Asia/Kolkata, YYYY-MM-DD).
+ *     - If QUEUE[0].datePublished is AFTER today: do NOT publish. Report
+ *       "Next article '<title>' is scheduled for <datePublished> — nothing
+ *       to publish today." and stop. (The cron may fire before a date arrives.)
+ *     - If QUEUE[0].datePublished is more than 1 day BEFORE today (a previous
+ *       run failed): update this queue entry's datePublished to today, so the
+ *       schedule stays truthful.
+ *  3. Verify the draft exists: src/pages/learn/_drafts/<slug>/index.astro.
+ *     Take the whole QUEUE[0] entry (slug, title, description, crumbName,
+ *     primaryTopic, relatedTopics, datePublished).
+ *  4. Move the draft into place (run from the repo root):
+ *       mv src/pages/learn/_drafts/<slug> src/pages/learn/<slug>/
+ *     Do NOT touch the imports (see note above).
+ *  5. Register it in src/data/seo-pages.ts — append to LEARN_ARTICLES
+ *     (after the last existing entry, before the closing `];`):
+ *       {
+ *         slug: "/learn/<slug>/",
+ *         title: "<title>",
+ *         description: "<description>",
+ *         crumbName: "<crumbName>",
+ *         primaryTopic: "<primaryTopic>",
+ *         relatedTopics: [<relatedTopics>],
+ *       },
+ *     (Copy the values verbatim from the QUEUE[0] entry.)
+ *  6. Delete the QUEUE[0] entry you just published from this file.
+ *  7. Append to public/llms.txt under the "## Learn" section (after the
+ *     "Guides hub" line):
+ *       - <title>: https://lotterycalculator.site/learn/<slug>/
+ *     (Use the real title from the queue entry.)
+ *  8. From the repo root run: `npm run check`, then `npm run build`.
+ *     BOTH must pass with zero errors. If anything fails: STOP here, do NOT
+ *     push, and report the failure plainly.
+ *  9. NO deploy step — Firoz deploys this site's Worker manually. Do NOT
+ *     attempt any deployment.
+ * 10. Verify: dist/learn/<slug>/index.html exists; the SEO metadata gate in
+ *     the build output passed; `npm test` shows 0 failures.
+ * 11. Stage and push (cwd = repo root): `git add -A` first (the push script
+ *     reads tracked files from disk, so new/moved files must be staged),
+ *     then
+ *       python3 ~/workspace/skills/github/bin/gh_datapush.py childygyan/lottery-calculator main "Publish <slug> (<datePublished>)"
+ *     — expect "PUSH OK". If it fails with a transient error, retry once.
+ * 12. Optionally run `npm run indexnow` to submit the new URL (the key file
+ *     validates once Firoz deploys; a 403 here is expected pre-deploy and is
+ *     not a failure — just note it).
+ * 13. Report in Hinglish, short (2-4 lines): which article was published
+ *     (title + live path), verification counts (tests, pages, broken links),
+ *     and that it goes live on Firoz's next manual deploy.
+ *
+ * Standing honesty rules for every draft (already enforced while writing):
+ * no invented jackpot/cash values, no "cash is better"/"annuity is better",
+ * no winning-number predictions or "how to win" claims, every figure labeled
+ * an estimate, only real routes linked, only real registry sourceIds used.
+ */
+
+export interface LotteryArticleQueueEntry {
+  slug: string;
+  title: string;
+  description: string;
+  crumbName: string;
+  primaryTopic: string;
+  relatedTopics: string[];
+  datePublished: string; // YYYY-MM-DD, Asia/Kolkata
+}
+
+export const QUEUE: LotteryArticleQueueEntry[] = [
+  {
+    slug: "mega-millions-vs-powerball",
+    title: "Mega Millions vs Powerball — Rules, Odds and Payouts Compared",
+    description:
+      "Powerball vs Mega Millions side by side: ticket price, drawings, odds, annuity structures, and tax treatment — from the verified game rules.",
+    crumbName: "Mega Millions vs Powerball",
+    primaryTopic: "powerball",
+    relatedTopics: ["odds", "payout", "lottery-tax"],
+    datePublished: "2026-10-13",
+  },
+  {
+    slug: "what-is-powerball-power-play",
+    title: "What Is Powerball Power Play — and Is the Extra $1 Worth It?",
+    description:
+      "Power Play multiplies non-jackpot Powerball prizes 2X–10X for $1 more. Here's the honest math on what it changes and what it costs.",
+    crumbName: "What Is Power Play?",
+    primaryTopic: "powerball",
+    relatedTopics: ["odds", "payout"],
+    datePublished: "2026-10-14",
+  },
+  {
+    slug: "how-many-numbers-in-powerball",
+    title: "How Many Numbers Are in Powerball? The Game, Explained",
+    description:
+      "Powerball uses 5 white balls from 1–69 plus 1 Powerball from 1–26. What those numbers mean for odds, tickets, and prizes.",
+    crumbName: "How Many Numbers in Powerball?",
+    primaryTopic: "powerball",
+    relatedTopics: ["odds", "combinations"],
+    datePublished: "2026-10-15",
+  },
+  {
+    slug: "what-is-lottery-cash-value",
+    title: "What Is the Lottery Cash Value? Why It's Always Less Than the Jackpot",
+    description:
+      "The cash value is the prize pool's present worth — always smaller than the advertised jackpot. Why the gap exists and why you must enter it yourself.",
+    crumbName: "What Is the Cash Value?",
+    primaryTopic: "payout",
+    relatedTopics: ["cash-option", "annuity"],
+    datePublished: "2026-10-16",
+  },
+  {
+    slug: "how-lottery-annuity-payments-work",
+    title: "How Lottery Annuity Payments Are Calculated",
+    description:
+      "The math behind 30 graduated payments: how growth assumptions shape each year's check, and why no site can show the schedule without asking you first.",
+    crumbName: "How Annuity Payments Work",
+    primaryTopic: "annuity",
+    relatedTopics: ["payout", "cash-option"],
+    datePublished: "2026-10-17",
+  },
+  {
+    slug: "lump-sum-vs-annuity-questions",
+    title: "Lump Sum vs Annuity: 7 Questions to Ask Before You Choose",
+    description:
+      "No calculator can pick for you — but these seven questions (taxes, discipline, inflation, estate plans) frame the decision honestly.",
+    crumbName: "7 Questions Before You Choose",
+    primaryTopic: "payout",
+    relatedTopics: ["annuity", "cash-option", "lottery-tax"],
+    datePublished: "2026-10-18",
+  },
+  {
+    slug: "lottery-taxes-by-state",
+    title: "Lottery Taxes by State — 2026 Guide",
+    description:
+      "How each state taxes lottery winnings, which states charge nothing, and why California is special — with the calculator's planning-rate method explained.",
+    crumbName: "Lottery Taxes by State",
+    primaryTopic: "state-tax",
+    relatedTopics: ["lottery-tax", "withholding"],
+    datePublished: "2026-10-19",
+  },
+  {
+    slug: "states-with-no-tax-on-lottery-winnings",
+    title: "States With No Tax on Lottery Winnings",
+    description:
+      "California exempts its lottery winnings; nine states have no income tax at all. What 'no state tax' really means for winners.",
+    crumbName: "States With No Lottery Tax",
+    primaryTopic: "state-tax",
+    relatedTopics: ["lottery-tax"],
+    datePublished: "2026-10-20",
+  },
+  {
+    slug: "how-long-to-claim-lottery-winnings",
+    title: "How Long Do You Have to Claim Lottery Winnings?",
+    description:
+      "Claim deadlines vary by game and lottery — typically 90 days to a year. What the window means, why you shouldn't wait, and what to do first.",
+    crumbName: "How Long to Claim Winnings?",
+    primaryTopic: "payout",
+    relatedTopics: ["withholding"],
+    datePublished: "2026-10-21",
+  },
+  {
+    slug: "do-quick-picks-win-more-often",
+    title: "Do Quick Picks Win More Often? The Honest Answer",
+    description:
+      "Most jackpots are won on quick picks — but that's not because they're luckier. The selection-bias math, explained plainly.",
+    crumbName: "Do Quick Picks Win More?",
+    primaryTopic: "odds",
+    relatedTopics: ["number-generator", "probability"],
+    datePublished: "2026-10-22",
+  },
+  {
+    slug: "what-does-1-in-292-million-mean",
+    title: "What Does '1 in 292 Million' Actually Mean?",
+    description:
+      "Probability for beginners: what 1 in 292,201,338 feels like in real-world terms, and why human brains misjudge tiny chances.",
+    crumbName: "What Does 1 in 292 Million Mean?",
+    primaryTopic: "probability",
+    relatedTopics: ["odds", "combinations"],
+    datePublished: "2026-10-23",
+  },
+  {
+    slug: "how-lottery-jackpots-grow",
+    title: "How Lottery Jackpots Grow: Rollovers Explained",
+    description:
+      "Why jackpots climb for weeks: rollovers, ticket sales, and the math that turns a $20 million seed into a billion-dollar frenzy.",
+    crumbName: "How Jackpots Grow",
+    primaryTopic: "payout",
+    relatedTopics: ["odds"],
+    datePublished: "2026-10-24",
+  },
+  {
+    slug: "lottery-pool-taxes",
+    title: "Lottery Pools: Splitting Winnings and Taxes Without a Fight",
+    description:
+      "Office pools win together — then the tax bill arrives. How splits work, why each member is taxed on their share, and the paperwork that prevents disputes.",
+    crumbName: "Lottery Pool Taxes",
+    primaryTopic: "lottery-tax",
+    relatedTopics: ["payout", "withholding"],
+    datePublished: "2026-10-25",
+  },
+  {
+    slug: "annuity-vs-lump-sum-tax-example",
+    title: "Annuity vs Lump Sum Taxes: A Worked Example",
+    description:
+      "A $100 million win, worked through both payout choices with real 2026 federal brackets — so you can see exactly where the tax difference comes from.",
+    crumbName: "Annuity vs Lump Sum: Worked Example",
+    primaryTopic: "lottery-tax",
+    relatedTopics: ["annuity", "cash-option"],
+    datePublished: "2026-10-26",
+  },
+  {
+    slug: "taxes-on-small-lottery-winnings",
+    title: "Taxes on Small Lottery Winnings: The $5,000 Rule",
+    description:
+      "Win $600 or $4,999 or $10,000 — what changes at each line. The withholding threshold, reporting rules, and why small wins still count as income.",
+    crumbName: "Taxes on Small Winnings",
+    primaryTopic: "withholding",
+    relatedTopics: ["lottery-tax"],
+    datePublished: "2026-10-27",
+  },
+];

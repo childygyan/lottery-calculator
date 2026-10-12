@@ -1,0 +1,116 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Your state can be the difference between keeping an extra few percent of a jackpot or not. Here's how state lottery taxes work in 2026 — the categories, the exceptions, and exactly how this site's estimates handle them.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "Which states tax lottery winnings?",
+    answer:
+      "Most states tax lottery winnings as ordinary income, each with its own rates and brackets. A few states exempt lottery winnings specifically (California exempts California Lottery winnings), and states with no individual income tax — such as Texas, Florida, and Washington — levy $0 state tax on winnings. Select your state in the lottery tax calculator to see its treatment.",
+  },
+  {
+    question: "Do I pay tax in the state where I bought the ticket or where I live?",
+    answer:
+      "Usually the state where you claim the prize withholds its tax, and your home state may also want its share — with a credit for taxes paid elsewhere in many cases. The exact mechanics depend on the two states involved, which is another reason every figure on this site is labeled an estimate, not a filing-ready number.",
+  },
+  {
+    question: "How does this site estimate state tax?",
+    answer:
+      "A full 50-state return simulation isn't practical in a browser calculator, so our tools apply each state's clearly-labeled top marginal planning rate to the winnings. It's deliberately conservative and labeled as a planning estimate — your actual state liability depends on brackets, deductions, and credits a calculator can't see.",
+  },
+  {
+    question: "Is West Virginia's lottery tax rate certain?",
+    answer:
+      "Not fully. A reported 2026 rate change for West Virginia hasn't been confirmed against an authoritative source, so the site flags it as unverified rather than presenting a possibly-wrong number as fact. When in doubt, we label the doubt.",
+  },
+  {
+    question: "Does state tax apply to annuity payments too?",
+    answer:
+      "Yes — each annual annuity payment is taxable income in the year you receive it, in the state where you're a resident that year. If you move between states during a 30-year annuity, the state tax picture can change payment by payment.",
+  },
+];
+
+const sourceIds = [
+  "tax-foundation-state-2026",
+  "ca-lottery-exemption",
+  "nh-no-income-tax",
+  "wa-no-income-tax",
+];
+---
+
+<LearnArticle
+  slug="/learn/lottery-taxes-by-state/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Three kinds of states</h2>
+  <p>
+    For lottery winners, states fall into three buckets. Most states tax
+    winnings as ordinary income at their own rates — that's the default
+    assumption. A second group has{" "}
+    <strong class="font-semibold text-slate-800">no individual income
+    tax</strong> at all (Texas, Florida, Washington, and a few others), so
+    the state tax line on a win there is $0. The third bucket is the
+    interesting one: states that <em>do</em> tax income but specifically
+    exempt lottery winnings — California's exemption for California Lottery
+    winnings is the famous example. Federal tax, of course, applies in full
+    everywhere.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Why we use a planning rate, not a simulation</h2>
+  <p>
+    Computing your exact state tax would require your full return: other
+    income, deductions, credits, local taxes, filing status. No browser tool
+    can do that honestly, so ours doesn't pretend to. Instead, each state's
+    estimate applies a clearly-labeled{" "}
+    <strong class="font-semibold text-slate-800">top marginal planning
+    rate</strong> — deliberately conservative, so the take-home figure errs
+    on the side of caution. Treat it as a budgeting number for the "how much
+    should I set aside" question, not as the number you'll file.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What the estimate leaves out</h2>
+  <p>
+    Three things, stated plainly. First,{" "}
+    <strong class="font-semibold text-slate-800">local and city income
+    taxes</strong> are not included — some cities levy their own tax on top
+    of the state's. Second, the estimate assumes you're taxed as a resident
+    of the state you select; multi-state situations (buying in one state,
+    living in another) have their own withholding and credit mechanics.
+    Third, rates change: West Virginia's reported 2026 change is currently
+    flagged as unverified on this site rather than baked in as fact.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Annuity winners: the state can change mid-stream</h2>
+  <p>
+    A 30-year annuity outlasts most people's addresses. Each payment is taxed
+    by the state where you're resident when you receive it — move from a
+    high-tax state to a no-income-tax state in year 12, and years 13 through
+    30 look different. Nobody can model three decades of moves in advance,
+    but it's worth knowing the lever exists before you lock in the annuity
+    choice. Our{" "}
+    <a href="/learn/cash-option-vs-annuity/" class="font-semibold text-blue-700 hover:underline">
+      cash option vs annuity guide
+    </a>{" "}
+    covers the decision more broadly.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Try your state</h2>
+  <p>
+    Pick your state in the{" "}
+    <a href="/lottery-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery tax calculator
+    </a>{" "}
+    to see the estimated state tax line, the planning rate used, and the
+    resulting take-home — every figure labeled as an estimate. For the
+    fullest picture, run it alongside the{" "}
+    <a href="/learn/how-lottery-taxes-work/" class="font-semibold text-blue-700 hover:underline">
+      how lottery taxes work guide
+    </a>
+    .
+  </p>
+</LearnArticle>

@@ -1,0 +1,109 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "You've heard it: most jackpot winners used quick picks, so quick picks must win more. It's the most convincing wrong idea in lottery lore — here's why the logic collapses, and what actually matters.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "Do quick picks win more often than chosen numbers?",
+    answer:
+      "No. Every combination has exactly the same probability in every drawing, whether a machine picked it or you did. Quick picks appear among winners more often only because most players use quick picks — it's selection bias, not an advantage. Our number generator produces quick picks as a convenience; it cannot improve your odds.",
+  },
+  {
+    question: "What percentage of winners used quick picks?",
+    answer:
+      "Lotteries often report that a large majority of winners used quick picks — but they rarely emphasize that a similarly large majority of all tickets sold are quick picks. When 70% of tickets are quick picks, roughly 70% of winners holding quick picks is exactly what random chance predicts.",
+  },
+  {
+    question: "Is there any strategy to picking lottery numbers?",
+    answer:
+      "No strategy changes your probability of winning — drawings are independent and every combination is equally likely. The only genuine considerations are avoiding popular number patterns (birthdays, sequences) to reduce the chance of splitting a prize, and never spending money you can't afford to lose.",
+  },
+  {
+    question: "Do the same numbers ever win twice?",
+    answer:
+      "They can — each drawing is independent, so a combination that won last week is exactly as likely as any other this week. Past results have no influence on future drawings; balls have no memory.",
+  },
+  {
+    question: "Should I play the same numbers every time?",
+    answer:
+      "It makes no mathematical difference — your odds are identical whether you replay one combination or pick fresh numbers each drawing. Play the same numbers only if you enjoy the ritual, not because it improves anything.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+];
+---
+
+<LearnArticle
+  slug="/learn/do-quick-picks-win-more-often/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The statistic that fools everyone</h2>
+  <p>
+    "80% of winners used quick picks!" sounds like proof — until you ask what
+    percentage of <em>tickets</em> are quick picks. If most players let the
+    machine choose, then most winners holding quick picks is precisely what
+    you'd expect from pure chance. It's like noting that most car accidents
+    involve sober drivers and concluding sobriety causes accidents. The base
+    rate is the whole story, and the headline always leaves it out.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Every combination is identical</h2>
+  <p>
+    A Powerball drawing selects 5 white balls from 69 plus a Powerball from
+    26 — 292,201,338 possible combinations, each with probability exactly 1
+    in 292,201,338. The machine doesn't know or care how a combination was
+    chosen. Your birthday numbers, a quick pick, 1-2-3-4-5 plus 6: identical
+    odds, every drawing, no exceptions. Our{" "}
+    <a href="/learn/how-lottery-odds-work/" class="font-semibold text-blue-700 hover:underline">
+      how lottery odds work guide
+    </a>{" "}
+    walks through the counting behind those numbers.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The one real consideration: splitting</h2>
+  <p>
+    While no choice improves your chance of <em>winning</em>, some choices
+    affect your chance of <em>sharing</em>. Popular patterns — birthdays
+    (numbers 1–31), sequences, geometric shapes on the playslip — are picked
+    by thousands of players. If those numbers hit, the jackpot splits many
+    ways. A random quick pick is less likely to collide with someone else's
+    sentimental pattern. It's a small edge in expected <em>value</em>, not in
+    probability — and it cuts both ways, since any collision is still luck.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What our generator is — and isn't</h2>
+  <p>
+    The{" "}
+    <a href="/lottery-number-generator/" class="font-semibold text-blue-700 hover:underline">
+      lottery number generator
+    </a>{" "}
+    on this site produces random combinations using your browser's
+    cryptographic randomness — the same quality of randomness a lottery
+    terminal uses. It exists for convenience: picking numbers is tedious, and
+    random picks avoid the popular-pattern trap above. What it is not: a
+    prediction system. It has no memory, no model, no hot numbers, and no
+    opinion about what will be drawn next — because nothing could.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The honest bottom line</h2>
+  <p>
+    Play quick picks if you like the convenience. Play your own numbers if
+    you like the ritual. Either way, your odds are 1 in 292,201,338 for
+    Powerball and 1 in 290,472,336 for Mega Millions, and no selection
+    method moves those numbers a hair. Spend only what you'd happily spend
+    on entertainment — and if you want to see what a win would actually be
+    worth, the{" "}
+    <a href="/lottery-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery calculator
+    </a>{" "}
+    will show you, estimate-labeled as always.
+  </p>
+</LearnArticle>

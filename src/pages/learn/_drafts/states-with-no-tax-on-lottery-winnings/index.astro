@@ -1,0 +1,110 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "A handful of states won't take a cut of your lottery winnings at the state level. Here's exactly which situations those are, what still gets taxed, and the fine print people miss.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "Which states have no tax on lottery winnings?",
+    answer:
+      "Two situations produce $0 state tax: states with no individual income tax at all — such as Texas, Florida, and Washington — and states that specifically exempt lottery winnings, like California's exemption for California Lottery winnings. Federal tax still applies in full in every state.",
+  },
+  {
+    question: "Does California really not tax lottery winnings?",
+    answer:
+      "California exempts California Lottery winnings from state income tax — but federal tax applies normally, and the exemption covers California Lottery games specifically. Don't assume every prize connected to California is exempt; check the rules for the game you played.",
+  },
+  {
+    question: "If I live in a no-tax state but buy the ticket elsewhere, do I owe tax?",
+    answer:
+      "It depends on both states' rules: the state where you claim may withhold its tax, and your home state typically won't add more if it has no income tax. Multi-state claims have real complexity — get professional advice rather than assuming the $0 line holds.",
+  },
+  {
+    question: "How do I see the $0 state tax in the calculator?",
+    answer:
+      "Select a no-income-tax state or California in the lottery tax calculator and the state tax line shows $0, with the reason noted. Every other figure — federal tax, withholding, take-home — is still computed and labeled as an estimate.",
+  },
+  {
+    question: "Can moving to a no-tax state save tax on an annuity?",
+    answer:
+      "Each annuity payment is taxed by your state of residence when you receive it, so future payments could indeed face $0 state tax after a move. But residency rules, timing, and the state you claimed in all matter — this is squarely professional-advice territory, not a DIY loophole.",
+  },
+];
+
+const sourceIds = [
+  "ca-lottery-exemption",
+  "nh-no-income-tax",
+  "wa-no-income-tax",
+  "tax-foundation-state-2026",
+];
+---
+
+<LearnArticle
+  slug="/learn/states-with-no-tax-on-lottery-winnings/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The two ways state tax hits $0</h2>
+  <p>
+    There are exactly two paths to a $0 state tax line. The first: live in a
+    state with <strong class="font-semibold text-slate-800">no individual
+    income tax</strong> — Texas, Florida, and Washington are the well-known
+    examples — where there's simply no state income tax to apply to anything,
+    winnings included. The second: live in a state that taxes income
+    generally but <strong class="font-semibold text-slate-800">carves out
+    lottery winnings specifically</strong>. California is the big one here:
+    California Lottery winnings are exempt from California state income tax.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What "$0 state tax" does not mean</h2>
+  <p>
+    It never means $0 tax. Federal tax applies to lottery winnings in all 50
+    states — the IRS doesn't care where you live. On a jackpot, the top
+    federal bracket (37%) does most of the work, and 24% federal withholding
+    still comes out of prizes over $5,000 at payout. A $0 state line shrinks
+    the total bill; it doesn't erase it. Our{" "}
+    <a href="/learn/lottery-withholding-vs-tax/" class="font-semibold text-blue-700 hover:underline">
+      withholding vs tax guide
+    </a>{" "}
+    explains the federal side in detail.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The California fine print</h2>
+  <p>
+    California's exemption is generous but specific: it covers{" "}
+    <em>California Lottery</em> winnings. Multi-state games get murkier, and
+    the exemption is a creature of state law — it can change. If you're
+    counting on it for a nine-figure win, confirm the current statute with a
+    California tax professional rather than a blog post (including this one).
+    The same advice applies to any state's exemption: verify, don't assume.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The no-income-tax states, honestly</h2>
+  <p>
+    States like Texas, Florida, and Washington fund themselves differently —
+    through sales tax, property tax, and other revenue — which is why there's
+    no income tax to levy on your winnings. This is a genuine structural
+    $0, not a loophole, and our calculator reflects it directly. Just
+    remember the estimate still uses a planning-rate method for states that
+    <em>do</em> tax winnings, and local taxes are never included. See{" "}
+    <a href="/learn/how-lottery-taxes-work/" class="font-semibold text-blue-700 hover:underline">
+      how lottery taxes work
+    </a>{" "}
+    for the full methodology.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Check your own situation</h2>
+  <p>
+    Select your state in the{" "}
+    <a href="/lottery-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      lottery tax calculator
+    </a>{" "}
+    — no-income-tax states and California show the $0 line with the reason
+    stated. If your situation crosses state lines, treat the result as a
+    starting point for a conversation with a tax professional, not the final
+    word.
+  </p>
+</LearnArticle>

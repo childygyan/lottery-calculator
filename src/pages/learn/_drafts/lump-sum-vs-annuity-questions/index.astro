@@ -1,0 +1,133 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Nobody can tell you whether to take the lump sum or the annuity — but the right questions can. Work through these seven before you claim, and you'll be deciding with your own eyes open instead of someone else's opinion.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "Which is better, lump sum or annuity?",
+    answer:
+      "There is no universally better choice — it depends on your investment ability, discipline, tax situation, age, health, and estate plans. This site deliberately never recommends one over the other. The articles and calculators here show both options side by side so you can compare them with identical assumptions.",
+  },
+  {
+    question: "Can you change your mind after choosing?",
+    answer:
+      "Generally no. For Powerball and Mega Millions, the cash-vs-annuity choice is made at claim time and is effectively irrevocable. That is why working through the decision before you claim matters so much.",
+  },
+  {
+    question: "How does inflation affect the annuity?",
+    answer:
+      "A dollar received in year 29 buys less than a dollar today. Powerball's 30 graduated payments grow each year, and Mega Millions payments grow 5% annually, which partly offsets inflation — but no published graduation rate for Powerball is fixed, so model it with your own assumption in the annuity calculator.",
+  },
+  {
+    question: "Do heirs get the remaining annuity payments?",
+    answer:
+      "Annuity payments generally continue to a winner's estate or designated beneficiaries if the winner dies before the schedule ends — but the exact mechanics depend on the lottery's rules and your estate planning. This is one of the questions to settle with an estate attorney before claiming.",
+  },
+  {
+    question: "Where can I compare both options with my numbers?",
+    answer:
+      "Use the payout calculator with your game selected — it shows the cash option and the annuity side by side with estimated taxes, without ranking them. Remember to enter the current published cash value yourself; no calculator can know it for you.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+  "irs-gambling-withholding",
+];
+---
+
+<LearnArticle
+  slug="/learn/lump-sum-vs-annuity-questions/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">1. Could you actually manage a lump sum?</h2>
+  <p>
+    The cash option hands you the entire prize pool at once — after tax, still
+    a life-changing amount arriving on a single day. Be brutally honest: have
+    you ever managed a sum remotely this large? Studies of sudden wealth
+    consistently show that most people overestimate their financial
+    discipline. The annuity's enforced patience is, for many winners, a
+    feature rather than a limitation. If you take the lump sum, your plan for
+    the money needs to exist <em>before</em> the money does.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">2. What does 29 years of inflation do?</h2>
+  <p>
+    The annuity stretches payments over roughly three decades, and inflation
+    quietly taxes every one of them. Powerball's 30 graduated payments rise
+    each year; Mega Millions payments rise 5% annually by rule — both designs
+    partly offset inflation, but neither guarantees to beat it. With the lump
+    sum, inflation is your problem to outrun through investing. Model both
+    paths with your own growth assumptions in the{" "}
+    <a href="/lottery-annuity-calculator/" class="font-semibold text-blue-700 hover:underline">
+      annuity calculator
+    </a>{" "}
+    rather than trusting anyone's single scenario.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">3. How does the tax timing differ for you?</h2>
+  <p>
+    Take the lump sum and nearly the entire cash value lands in one tax year —
+    mostly in the 37% top federal bracket, plus your state's tax. Take the
+    annuity and each payment is taxed in the year you receive it, spreading
+    the income across decades. Neither is automatically "less tax"; the
+    difference is timing and which brackets each year's income falls into.
+    Our{" "}
+    <a href="/learn/lottery-withholding-vs-tax/" class="font-semibold text-blue-700 hover:underline">
+      withholding vs tax guide
+    </a>{" "}
+    explains why the 24% held back at payout is only a down payment either way.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">4. What are your estate and giving plans?</h2>
+  <p>
+    A lump sum is simpler to divide, gift, or place in a trust today. An
+    annuity is a stream of future payments — still transferable to heirs in
+    most cases, but with more paperwork and less flexibility. If supporting
+    family or charities is part of why the money matters to you, sketch those
+    plans with an estate attorney before choosing, because the choice shapes
+    what's possible later.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">5. Do you need the money now, or the security later?</h2>
+  <p>
+    Some winners have immediate uses — clearing debt, buying a home, funding
+    a business — that only a lump sum serves. Others value the annuity's
+    built-in paycheck: a rising payment every year that arrives whether or
+    not they make good decisions in between. There is no wrong answer here,
+    only your answer. Write down what the money is <em>for</em> before
+    deciding how it arrives.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">6. Who is advising you — and how are they paid?</h2>
+  <p>
+    Before claiming, assemble a tax professional and an attorney who have
+    handled windfalls before. Ask each one directly how they are compensated:
+    fee-only fiduciary advisers have no incentive to steer you toward products
+    that pay them commissions. Anyone who pressures you to decide quickly, or
+    who recommends a specific payout option before understanding your
+    situation, is someone to walk away from.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">7. Have you compared both with the same numbers?</h2>
+  <p>
+    Opinions are cheap; your numbers are not. Enter the advertised jackpot and
+    the current published cash value into the{" "}
+    <a href="/lottery-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+      payout calculator
+    </a>{" "}
+    and look at both columns — gross amounts, estimated taxes, and timing —
+    side by side. Then read our{" "}
+    <a href="/learn/cash-option-vs-annuity/" class="font-semibold text-blue-700 hover:underline">
+      cash option vs annuity guide
+    </a>{" "}
+    for the mechanics behind each column. When you can explain both options
+    out loud, you're ready to choose.
+  </p>
+</LearnArticle>

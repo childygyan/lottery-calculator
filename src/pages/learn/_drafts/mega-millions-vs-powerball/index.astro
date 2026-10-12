@@ -1,0 +1,127 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Powerball and Mega Millions look like twins — big jackpots, similar draws — but the details differ: ticket price, number matrix, drawings, odds, and how the annuity is paid. Here's a factual side-by-side so you can tell them apart, with no pick of which is 'better.'";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What is the difference between Powerball and Mega Millions?",
+    answer:
+      "The main differences: Powerball costs $2 per play (5/69 + 1/26, drawings Mon/Wed/Sat) while Mega Millions costs $5 per play (5/70 + 1/24, drawings Tue/Fri). Powerball's annuity is 30 graduated payments over 29 years; Mega Millions pays one immediate payment plus 29 annual payments, each 5% larger. Jackpot odds: 1 in 292,201,338 for Powerball, 1 in 290,472,336 for Mega Millions.",
+  },
+  {
+    question: "Which lottery has better odds, Powerball or Mega Millions?",
+    answer:
+      "Mega Millions' jackpot odds (1 in 290,472,336) are very slightly better than Powerball's (1 in 292,201,338) — but the difference is tiny, and both are so long that neither game gives you a realistic expectation of winning. Neither ticket is ever a good investment.",
+  },
+  {
+    question: "Is Powerball or Mega Millions cheaper to play?",
+    answer:
+      "Powerball is $2 per play; Mega Millions is $5 per play. Mega Millions includes its multiplier feature in the base price, while Powerball's Power Play add-on costs an extra $1.",
+  },
+  {
+    question: "Can you play both Powerball and Mega Millions in the same state?",
+    answer:
+      "In most states, yes — both games are sold in 45 states plus DC, Puerto Rico, and the U.S. Virgin Islands. Availability is set by each state's lottery, so check locally.",
+  },
+  {
+    question: "Do Powerball and Mega Millions tax winnings the same way?",
+    answer:
+      "Yes. Winnings from either game are ordinary income, taxed with the same federal brackets and the same state rules. Run either jackpot through the lottery tax calculator for an estimate.",
+  },
+];
+
+const sourceIds = [
+  "powerball-official-rules",
+  "megamillions-official-rules",
+  "powerball-prize-tiers",
+  "megamillions-prize-tiers",
+];
+---
+
+<LearnArticle
+  slug="/learn/mega-millions-vs-powerball/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Price and how you play</h2>
+  <p>
+    <strong class="font-semibold text-slate-800">Powerball</strong> costs $2
+    per play: you pick 5 white balls from 1–69 and 1 Powerball from 1–26.
+    Drawings are Monday, Wednesday, and Saturday at 10:59 p.m. ET.{" "}
+    <strong class="font-semibold text-slate-800">Mega Millions</strong> costs
+    $5 per play: you pick 5 white balls from 1–70 and 1 gold Mega Ball from
+    1–24. Drawings are Tuesday and Friday at 11:00 p.m. ET. Both games are
+    sold in 45 states plus DC, Puerto Rico, and the U.S. Virgin Islands.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Odds, side by side</h2>
+  <p>
+    Powerball's jackpot odds are{" "}
+    <strong class="font-semibold text-slate-800">1 in 292,201,338</strong>;
+    Mega Millions' are{" "}
+    <strong class="font-semibold text-slate-800">1 in 290,472,336</strong>.
+    Mega Millions is a hair better on paper, but the gap is negligible — both
+    are independent drawings where every combination has equal probability, and
+    no strategy changes either number. For the full tier-by-tier picture, see
+    the{" "}
+    <a href="/powerball-odds-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball odds calculator
+    </a>{" "}
+    and the{" "}
+    <a href="/mega-millions-odds-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Mega Millions odds calculator
+    </a>
+    .
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The annuity works differently</h2>
+  <p>
+    This is the least-known difference.{" "}
+    <strong class="font-semibold text-slate-800">Powerball</strong> pays the
+    jackpot as 30 graduated payments over 29 years — and the official rules
+    publish no fixed graduation rate, so any growth percentage you see is an
+    assumption.{" "}
+    <strong class="font-semibold text-slate-800">Mega Millions</strong> pays
+    one immediate payment followed by 29 annual payments, each 5% larger than
+    the last, per the official rules. Because the schedules differ, the same
+    advertised jackpot produces different year-by-year payments in each game.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Multipliers: included vs add-on</h2>
+  <p>
+    Mega Millions builds its multiplier into the $5 ticket: every non-jackpot
+    prize can be multiplied 2X–10X at no extra cost. Powerball's Power Play is
+    a $1 add-on that multiplies non-jackpot prizes 2X–10X (the 10X only when
+    the advertised jackpot is $150 million or less). Neither multiplier
+    applies to the jackpot, and neither makes a ticket positive-expectation.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Taxes work identically</h2>
+  <p>
+    A win from either game is ordinary income — same federal brackets, same
+    state treatment, same 24% withholding on prizes over $5,000. The game you
+    won doesn't change the tax math; only the prize size, your state, and your
+    filing status do. Compare both with the{" "}
+    <a href="/powerball-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball tax calculator
+    </a>{" "}
+    and the{" "}
+    <a href="/mega-millions-tax-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Mega Millions tax calculator
+    </a>
+    .
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">No winner in this comparison</h2>
+  <p>
+    This site doesn't rank the games. Powerball is cheaper per ticket with an
+    extra drawing day; Mega Millions has marginally better jackpot odds and a
+    published 5% annuity graduation. Both have negative expected value per
+    ticket. Pick the one you enjoy — or neither — and treat the ticket price
+    as entertainment spending, not an investment.
+  </p>
+</LearnArticle>

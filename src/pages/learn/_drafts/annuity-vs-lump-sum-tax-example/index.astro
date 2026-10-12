@@ -1,0 +1,147 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Everyone asks whether the lump sum or the annuity costs less in tax. Let's stop guessing and work it through: a hypothetical $100 million cash win, single filer, 2026 brackets — both paths, same assumptions, every figure labeled an estimate.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "In the example, which pays less tax: lump sum or annuity?",
+    answer:
+      "At this scale the federal marginal rate is nearly identical either way — even a single $6.67 million annuity payment lands mostly in the 37% top bracket. The real differences come from timing: when income is recognized, when withholding happens, and the time value of money. This article shows the mechanics; it doesn't recommend either path.",
+  },
+  {
+    question: "Why is the annuity total bigger than the cash value in the example?",
+    answer:
+      "The $200 million advertised jackpot is the nominal total of 30 payments spread over 29 years; the $100 million cash value is what that stream is worth today. The gap is the time value of money, not a bonus — a dollar in year 29 buys less than a dollar today.",
+  },
+  {
+    question: "Does the annuity really save on taxes?",
+    answer:
+      "Less than people assume, at jackpot scale. The often-quoted 'annuity tax advantage' matters most for smaller wins, where spreading income can keep payments in lower brackets. On $100 million, nearly every dollar is in the top bracket either way — the annuity's edge is timing and discipline, not a lower rate.",
+  },
+  {
+    question: "What assumptions does the worked example use?",
+    answer:
+      "A hypothetical $100M cash value ($200M advertised jackpot), single filer, 2026 federal brackets, 0% annual payment growth (equal payments — Powerball publishes no fixed graduation rate, so this is an assumption), no state tax shown, no other income. Change any of them and the numbers move; the <a href=\"/lottery-payout-calculator/\" class=\"font-semibold text-blue-700 hover:underline\">payout calculator</a> lets you do exactly that.",
+  },
+  {
+    question: "Should I choose lump sum or annuity based on this?",
+    answer:
+      "No article can answer that for you. Taxes are one input among many — investment returns, spending discipline, estate planning, and your personal situation matter at least as much. Talk to a fiduciary financial adviser before claiming.",
+  },
+];
+
+const sourceIds = [
+  "irs-rev-proc-2025-32",
+  "irs-gambling-withholding",
+  "powerball-official-rules",
+];
+---
+
+<LearnArticle
+  slug="/learn/annuity-vs-lump-sum-tax-example/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">The setup: one hypothetical win, two paths</h2>
+  <p>
+    Our hypothetical winner takes home a <strong class="font-semibold text-slate-800">$100
+    million cash value</strong> — the lump sum. The advertised jackpot behind
+    it is <strong class="font-semibold text-slate-800">$200 million</strong>,
+    the nominal total of 30 annuity payments over 29 years. (That 2:1 ratio
+    is illustrative, not a rule — the real ratio moves with interest rates,
+    which is why you always enter the actual published cash value.) Single
+    filer, 2026 federal brackets, no state tax in this example, no other
+    income. <strong class="font-semibold text-slate-800">Every dollar figure
+    below is an estimate.</strong>
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Path A: the lump sum, all in one year</h2>
+  <p>
+    Take the cash and the entire $100 million is taxable income in a single
+    year. The federal brackets are marginal, but at this scale marginal
+    barely matters: after the standard deduction, nearly the whole $100
+    million falls in the 37% top bracket. Rough estimate:{" "}
+    <strong class="font-semibold text-slate-800">~$37 million federal</strong>,
+    before the standard deduction shaves a little off.
+  </p>
+  <p>
+    At payout, the lottery withholds 24% — $24 million — as a prepayment.
+    Come filing time, the bill is ~$37 million, the credit is $24 million,
+    and our winner owes roughly <strong class="font-semibold text-slate-800">$13
+    million more</strong>, plus whatever their state charges. That's the
+    withholding-vs-liability gap in action: the 24% was never the bill.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Path B: the annuity, $6.67 million a year</h2>
+  <p>
+    Take the annuity and the $200 million arrives as 30 payments. With our
+    0% growth assumption — equal payments, since Powerball publishes no
+    fixed graduation rate — each annual payment is about{" "}
+    <strong class="font-semibold text-slate-800">$6.67 million</strong>,
+    taxed as ordinary income in the year it's received.
+  </p>
+  <p>
+    Here's the part most articles skip: a $6.67 million payment still lands
+    mostly in the 37% top bracket. So the federal <em>rate</em> on each
+    payment is nearly the same as the lump sum's rate. Each year gets its
+    own standard deduction and its own trip through the lower brackets —
+    worth something, but a small something next to $6.67 million. Rough
+    estimate per year: ~$2.4 million federal per payment, ~$72 million
+    nominal total across 30 years — <em>nominal</em> dollars, spread over
+    three decades.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">Where the difference actually comes from</h2>
+  <p>
+    If the tax rates are nearly identical, what's really different? Three
+    things:
+  </p>
+  <ul class="list-disc space-y-2 pl-6">
+    <li>
+      <strong class="font-semibold text-slate-800">Timing of income.</strong>{" "}
+      The lump sum concentrates everything into one tax year; the annuity
+      spreads recognition across 30. At this scale the bracket benefit is
+      small — but for smaller wins, spreading income can genuinely keep
+      payments in lower brackets.
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-800">Time value of money.</strong>{" "}
+      $72 million paid over 29 years is worth far less than $72 million
+      today. Comparing nominal totals flatters the annuity; the honest
+      comparison discounts later payments.
+    </li>
+    <li>
+      <strong class="font-semibold text-slate-800">Withholding and cash flow.</strong>{" "}
+      The lump sum hands $24 million to the IRS on day one and demands ~$13
+      million more at filing. The annuity withholds a slice of each payment,
+      year by year — no single-year shock, but three decades of tax returns
+      to file.
+    </li>
+  </ul>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">What this example can't tell you</h2>
+  <p>
+    Real life adds state tax (zero in some states, significant in others),
+    your other income, and what you'd actually <em>do</em> with a lump sum —
+    invest it, spend it, or watch it evaporate. None of that fits in an
+    article, and none of it points to a universal answer. Run your own
+    numbers in the{" "}
+    <a href="/powerball-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+      Powerball payout calculator
+    </a>{" "}
+    or the{" "}
+    <a href="/lottery-payout-calculator/" class="font-semibold text-blue-700 hover:underline">
+      generic payout calculator
+    </a>
+    , read the{" "}
+    <a href="/learn/cash-option-vs-annuity/" class="font-semibold text-blue-700 hover:underline">
+      cash-vs-annuity guide
+    </a>
+    , and then talk to a fiduciary adviser. The math can be estimated; the
+    decision can't be outsourced.
+  </p>
+</LearnArticle>
