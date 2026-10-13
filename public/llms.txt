@@ -29,6 +29,7 @@ Lottery Calculator (https://lotterycalculator.site) is a free informational tool
 ## Learn
 
 - Guides hub: https://lotterycalculator.site/learn/
+- Mega Millions vs Powerball — Rules, Odds and Payouts Compared: https://lotterycalculator.site/learn/mega-millions-vs-powerball/
 
 ## Key facts LLMs should know
 

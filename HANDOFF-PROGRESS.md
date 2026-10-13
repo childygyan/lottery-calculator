@@ -20,3 +20,6 @@
 - Findings: P0:0, P1:2 (IndexNow 403 retry later; Worker 301 needs Firoz's dashboard step), P2:1 (silent tax-year fallback — locked by test, UI unaffected), P3: accepted warnings.
 - Firoz already deployed Phase 9 (zero skew vs dist). IndexNow re-submit attempted once → 403, retry in a few hours.
 - Commit `8b96d8f` pushed to `main`. Archive `lottery-calculator-phase10.zip` → Drive "Lottery Calculator".
+
+## IndexNow retry
+- 2026-10-13 00:52 IST: key file live (200, exactly 32 bytes), but IndexNow API still returned 403 `UserForbiddedToAccessSite` on re-submit of 96 URLs. No further auto-retry scheduled — Firoz should submit the sitemap once in Bing Webmaster Tools (IndexNow becomes automatic once the key is verified there).

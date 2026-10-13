@@ -84,16 +84,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "mega-millions-vs-powerball",
-    title: "Mega Millions vs Powerball — Rules, Odds and Payouts Compared",
-    description:
-      "Powerball vs Mega Millions side by side: ticket price, drawings, odds, annuity structures, and tax treatment — from the verified game rules.",
-    crumbName: "Mega Millions vs Powerball",
-    primaryTopic: "powerball",
-    relatedTopics: ["odds", "payout", "lottery-tax"],
-    datePublished: "2026-10-13",
-  },
-  {
     slug: "what-is-powerball-power-play",
     title: "What Is Powerball Power Play — and Is the Extra $1 Worth It?",
     description:

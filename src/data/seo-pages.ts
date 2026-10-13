@@ -693,6 +693,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "combinations",
     relatedTopics: ["odds", "probability", "number-generator"],
   },
+  {
+    slug: "/learn/mega-millions-vs-powerball/",
+    title: "Mega Millions vs Powerball — Rules, Odds and Payouts Compared",
+    description:
+      "Powerball vs Mega Millions side by side: ticket price, drawings, odds, annuity structures, and tax treatment — from the verified game rules.",
+    crumbName: "Mega Millions vs Powerball",
+    primaryTopic: "powerball",
+    relatedTopics: ["odds", "payout", "lottery-tax"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>
