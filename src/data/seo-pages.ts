@@ -702,6 +702,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "powerball",
     relatedTopics: ["odds", "payout", "lottery-tax"],
   },
+  {
+    slug: "/learn/what-is-powerball-power-play/",
+    title: "What Is Powerball Power Play — and Is the Extra $1 Worth It?",
+    description:
+      "Power Play multiplies non-jackpot Powerball prizes 2X–10X for $1 more. Here's the honest math on what it changes and what it costs.",
+    crumbName: "What Is Power Play?",
+    primaryTopic: "powerball",
+    relatedTopics: ["odds", "payout"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>
