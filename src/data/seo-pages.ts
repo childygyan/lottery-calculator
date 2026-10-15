@@ -711,6 +711,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "powerball",
     relatedTopics: ["odds", "payout"],
   },
+  {
+    slug: "/learn/how-many-numbers-in-powerball/",
+    title: "How Many Numbers Are in Powerball? The Game, Explained",
+    description:
+      "Powerball uses 5 white balls from 1–69 plus 1 Powerball from 1–26. What those numbers mean for odds, tickets, and prizes.",
+    crumbName: "How Many Numbers in Powerball?",
+    primaryTopic: "powerball",
+    relatedTopics: ["odds", "combinations"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>

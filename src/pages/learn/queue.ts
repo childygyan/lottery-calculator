@@ -84,16 +84,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "how-many-numbers-in-powerball",
-    title: "How Many Numbers Are in Powerball? The Game, Explained",
-    description:
-      "Powerball uses 5 white balls from 1–69 plus 1 Powerball from 1–26. What those numbers mean for odds, tickets, and prizes.",
-    crumbName: "How Many Numbers in Powerball?",
-    primaryTopic: "powerball",
-    relatedTopics: ["odds", "combinations"],
-    datePublished: "2026-10-15",
-  },
-  {
     slug: "what-is-lottery-cash-value",
     title: "What Is the Lottery Cash Value? Why It's Always Less Than the Jackpot",
     description:
