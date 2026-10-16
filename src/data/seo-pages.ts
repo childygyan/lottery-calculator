@@ -720,6 +720,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "powerball",
     relatedTopics: ["odds", "combinations"],
   },
+  {
+    slug: "/learn/what-is-lottery-cash-value/",
+    title: "What Is the Lottery Cash Value? Why It's Always Less Than the Jackpot",
+    description:
+      "The cash value is the prize pool's present worth — always smaller than the advertised jackpot. Why the gap exists and why you must enter it yourself.",
+    crumbName: "What Is the Cash Value?",
+    primaryTopic: "payout",
+    relatedTopics: ["cash-option", "annuity"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>

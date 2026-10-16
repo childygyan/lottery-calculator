@@ -84,16 +84,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "what-is-lottery-cash-value",
-    title: "What Is the Lottery Cash Value? Why It's Always Less Than the Jackpot",
-    description:
-      "The cash value is the prize pool's present worth — always smaller than the advertised jackpot. Why the gap exists and why you must enter it yourself.",
-    crumbName: "What Is the Cash Value?",
-    primaryTopic: "payout",
-    relatedTopics: ["cash-option", "annuity"],
-    datePublished: "2026-10-16",
-  },
-  {
     slug: "how-lottery-annuity-payments-work",
     title: "How Lottery Annuity Payments Are Calculated",
     description:
