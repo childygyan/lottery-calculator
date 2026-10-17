@@ -84,16 +84,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "how-lottery-annuity-payments-work",
-    title: "How Lottery Annuity Payments Are Calculated",
-    description:
-      "The math behind 30 graduated payments: how growth assumptions shape each year's check, and why no site can show the schedule without asking you first.",
-    crumbName: "How Annuity Payments Work",
-    primaryTopic: "annuity",
-    relatedTopics: ["payout", "cash-option"],
-    datePublished: "2026-10-17",
-  },
-  {
     slug: "lump-sum-vs-annuity-questions",
     title: "Lump Sum vs Annuity: 7 Questions to Ask Before You Choose",
     description:
