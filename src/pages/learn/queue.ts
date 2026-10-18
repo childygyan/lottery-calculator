@@ -84,16 +84,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "lump-sum-vs-annuity-questions",
-    title: "Lump Sum vs Annuity: 7 Questions to Ask Before You Choose",
-    description:
-      "No calculator can pick for you — but these seven questions (taxes, discipline, inflation, estate plans) frame the decision honestly.",
-    crumbName: "7 Questions Before You Choose",
-    primaryTopic: "payout",
-    relatedTopics: ["annuity", "cash-option", "lottery-tax"],
-    datePublished: "2026-10-18",
-  },
-  {
     slug: "lottery-taxes-by-state",
     title: "Lottery Taxes by State — 2026 Guide",
     description:
