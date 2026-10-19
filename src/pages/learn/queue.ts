@@ -1,6 +1,9 @@
 /**
- * queue.ts — the 15-day daily article program for lotterycalculator.site
- * (2026-10-13 → 2026-10-27).
+ * queue.ts — the article program for lotterycalculator.site.
+ * Daily 2026-10-13 → 2026-10-18; every 2 days from 2026-10-19
+ * (Firoz, 2026-10-19) → last article 2026-11-04. 15 articles total.
+ * The publisher cron still fires daily; the date check below skips
+ * non-publish days, so the effective cadence is 1 article / 2 days.
  *
  * Each entry is a COMPLETE draft living in `src/pages/learn/_drafts/<slug>/`
  * as a single self-contained `index.astro` built on the shared
@@ -101,7 +104,7 @@ export const QUEUE: LotteryArticleQueueEntry[] = [
     crumbName: "States With No Lottery Tax",
     primaryTopic: "state-tax",
     relatedTopics: ["lottery-tax"],
-    datePublished: "2026-10-20",
+    datePublished: "2026-10-21",
   },
   {
     slug: "how-long-to-claim-lottery-winnings",
@@ -111,7 +114,7 @@ export const QUEUE: LotteryArticleQueueEntry[] = [
     crumbName: "How Long to Claim Winnings?",
     primaryTopic: "payout",
     relatedTopics: ["withholding"],
-    datePublished: "2026-10-21",
+    datePublished: "2026-10-23",
   },
   {
     slug: "do-quick-picks-win-more-often",
@@ -121,7 +124,7 @@ export const QUEUE: LotteryArticleQueueEntry[] = [
     crumbName: "Do Quick Picks Win More?",
     primaryTopic: "odds",
     relatedTopics: ["number-generator", "probability"],
-    datePublished: "2026-10-22",
+    datePublished: "2026-10-25",
   },
   {
     slug: "what-does-1-in-292-million-mean",
@@ -131,7 +134,7 @@ export const QUEUE: LotteryArticleQueueEntry[] = [
     crumbName: "What Does 1 in 292 Million Mean?",
     primaryTopic: "probability",
     relatedTopics: ["odds", "combinations"],
-    datePublished: "2026-10-23",
+    datePublished: "2026-10-27",
   },
   {
     slug: "how-lottery-jackpots-grow",
@@ -141,7 +144,7 @@ export const QUEUE: LotteryArticleQueueEntry[] = [
     crumbName: "How Jackpots Grow",
     primaryTopic: "payout",
     relatedTopics: ["odds"],
-    datePublished: "2026-10-24",
+    datePublished: "2026-10-29",
   },
   {
     slug: "lottery-pool-taxes",
@@ -151,7 +154,7 @@ export const QUEUE: LotteryArticleQueueEntry[] = [
     crumbName: "Lottery Pool Taxes",
     primaryTopic: "lottery-tax",
     relatedTopics: ["payout", "withholding"],
-    datePublished: "2026-10-25",
+    datePublished: "2026-10-31",
   },
   {
     slug: "annuity-vs-lump-sum-tax-example",
@@ -161,7 +164,7 @@ export const QUEUE: LotteryArticleQueueEntry[] = [
     crumbName: "Annuity vs Lump Sum: Worked Example",
     primaryTopic: "lottery-tax",
     relatedTopics: ["annuity", "cash-option"],
-    datePublished: "2026-10-26",
+    datePublished: "2026-11-02",
   },
   {
     slug: "taxes-on-small-lottery-winnings",
@@ -171,6 +174,6 @@ export const QUEUE: LotteryArticleQueueEntry[] = [
     crumbName: "Taxes on Small Winnings",
     primaryTopic: "withholding",
     relatedTopics: ["lottery-tax"],
-    datePublished: "2026-10-27",
+    datePublished: "2026-11-04",
   },
 ];
