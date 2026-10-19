@@ -747,6 +747,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "payout",
     relatedTopics: ["annuity", "cash-option", "lottery-tax"],
   },
+  {
+    slug: "/learn/lottery-taxes-by-state/",
+    title: "Lottery Taxes by State — 2026 Guide",
+    description:
+      "How each state taxes lottery winnings, which states charge nothing, and why California is special — with the calculator's planning-rate method explained.",
+    crumbName: "Lottery Taxes by State",
+    primaryTopic: "state-tax",
+    relatedTopics: ["lottery-tax", "withholding"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>
