@@ -87,16 +87,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "states-with-no-tax-on-lottery-winnings",
-    title: "States With No Tax on Lottery Winnings",
-    description:
-      "California exempts its lottery winnings; nine states have no income tax at all. What 'no state tax' really means for winners.",
-    crumbName: "States With No Lottery Tax",
-    primaryTopic: "state-tax",
-    relatedTopics: ["lottery-tax"],
-    datePublished: "2026-10-21",
-  },
-  {
     slug: "how-long-to-claim-lottery-winnings",
     title: "How Long Do You Have to Claim Lottery Winnings?",
     description:
