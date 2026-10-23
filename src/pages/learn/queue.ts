@@ -87,16 +87,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "how-long-to-claim-lottery-winnings",
-    title: "How Long Do You Have to Claim Lottery Winnings?",
-    description:
-      "Claim deadlines vary by game and lottery — typically 90 days to a year. What the window means, why you shouldn't wait, and what to do first.",
-    crumbName: "How Long to Claim Winnings?",
-    primaryTopic: "payout",
-    relatedTopics: ["withholding"],
-    datePublished: "2026-10-23",
-  },
-  {
     slug: "do-quick-picks-win-more-often",
     title: "Do Quick Picks Win More Often? The Honest Answer",
     description:

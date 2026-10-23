@@ -765,6 +765,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "state-tax",
     relatedTopics: ["lottery-tax"],
   },
+  {
+    slug: "/learn/how-long-to-claim-lottery-winnings/",
+    title: "How Long Do You Have to Claim Lottery Winnings?",
+    description:
+      "Claim deadlines vary by game and lottery — typically 90 days to a year. What the window means, why you shouldn't wait, and what to do first.",
+    crumbName: "How Long to Claim Winnings?",
+    primaryTopic: "payout",
+    relatedTopics: ["withholding"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>
