@@ -774,6 +774,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "payout",
     relatedTopics: ["withholding"],
   },
+  {
+    slug: "/learn/do-quick-picks-win-more-often/",
+    title: "Do Quick Picks Win More Often? The Honest Answer",
+    description:
+      "Most jackpots are won on quick picks — but that's not because they're luckier. The selection-bias math, explained plainly.",
+    crumbName: "Do Quick Picks Win More?",
+    primaryTopic: "odds",
+    relatedTopics: ["number-generator", "probability"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>

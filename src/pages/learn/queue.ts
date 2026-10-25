@@ -87,16 +87,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "do-quick-picks-win-more-often",
-    title: "Do Quick Picks Win More Often? The Honest Answer",
-    description:
-      "Most jackpots are won on quick picks — but that's not because they're luckier. The selection-bias math, explained plainly.",
-    crumbName: "Do Quick Picks Win More?",
-    primaryTopic: "odds",
-    relatedTopics: ["number-generator", "probability"],
-    datePublished: "2026-10-25",
-  },
-  {
     slug: "what-does-1-in-292-million-mean",
     title: "What Does '1 in 292 Million' Actually Mean?",
     description:
