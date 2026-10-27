@@ -783,6 +783,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "odds",
     relatedTopics: ["number-generator", "probability"],
   },
+  {
+    slug: "/learn/what-does-1-in-292-million-mean/",
+    title: "What Does '1 in 292 Million' Actually Mean?",
+    description:
+      "Probability for beginners: what 1 in 292,201,338 feels like in real-world terms, and why human brains misjudge tiny chances.",
+    crumbName: "What Does 1 in 292 Million Mean?",
+    primaryTopic: "probability",
+    relatedTopics: ["odds", "combinations"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>
