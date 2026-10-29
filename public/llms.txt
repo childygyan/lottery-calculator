@@ -40,6 +40,7 @@ Lottery Calculator (https://lotterycalculator.site) is a free informational tool
 - Lump Sum vs Annuity: 7 Questions to Ask Before You Choose: https://lotterycalculator.site/learn/lump-sum-vs-annuity-questions/
 - States With No Tax on Lottery Winnings: https://lotterycalculator.site/learn/states-with-no-tax-on-lottery-winnings/
 - How Long Do You Have to Claim Lottery Winnings?: https://lotterycalculator.site/learn/how-long-to-claim-lottery-winnings/
+- How Lottery Jackpots Grow: Rollovers Explained: https://lotterycalculator.site/learn/how-lottery-jackpots-grow/
 
 ## Key facts LLMs should know
 

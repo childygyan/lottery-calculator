@@ -87,16 +87,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "how-lottery-jackpots-grow",
-    title: "How Lottery Jackpots Grow: Rollovers Explained",
-    description:
-      "Why jackpots climb for weeks: rollovers, ticket sales, and the math that turns a $20 million seed into a billion-dollar frenzy.",
-    crumbName: "How Jackpots Grow",
-    primaryTopic: "payout",
-    relatedTopics: ["odds"],
-    datePublished: "2026-10-29",
-  },
-  {
     slug: "lottery-pool-taxes",
     title: "Lottery Pools: Splitting Winnings and Taxes Without a Fight",
     description:
