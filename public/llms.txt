@@ -29,6 +29,7 @@ Lottery Calculator (https://lotterycalculator.site) is a free informational tool
 ## Learn
 
 - Guides hub: https://lotterycalculator.site/learn/
+- Lottery Pools: Splitting Winnings and Taxes Without a Fight: https://lotterycalculator.site/learn/lottery-pool-taxes/
 - What Does '1 in 292 Million' Actually Mean?: https://lotterycalculator.site/learn/what-does-1-in-292-million-mean/
 - Do Quick Picks Win More Often? The Honest Answer: https://lotterycalculator.site/learn/do-quick-picks-win-more-often/
 - What Is the Lottery Cash Value? Why It's Always Less Than the Jackpot: https://lotterycalculator.site/learn/what-is-lottery-cash-value/

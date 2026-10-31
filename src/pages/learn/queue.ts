@@ -87,16 +87,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "lottery-pool-taxes",
-    title: "Lottery Pools: Splitting Winnings and Taxes Without a Fight",
-    description:
-      "Office pools win together — then the tax bill arrives. How splits work, why each member is taxed on their share, and the paperwork that prevents disputes.",
-    crumbName: "Lottery Pool Taxes",
-    primaryTopic: "lottery-tax",
-    relatedTopics: ["payout", "withholding"],
-    datePublished: "2026-10-31",
-  },
-  {
     slug: "annuity-vs-lump-sum-tax-example",
     title: "Annuity vs Lump Sum Taxes: A Worked Example",
     description:
