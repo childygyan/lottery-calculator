@@ -87,16 +87,6 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "annuity-vs-lump-sum-tax-example",
-    title: "Annuity vs Lump Sum Taxes: A Worked Example",
-    description:
-      "A $100 million win, worked through both payout choices with real 2026 federal brackets — so you can see exactly where the tax difference comes from.",
-    crumbName: "Annuity vs Lump Sum: Worked Example",
-    primaryTopic: "lottery-tax",
-    relatedTopics: ["annuity", "cash-option"],
-    datePublished: "2026-11-02",
-  },
-  {
     slug: "taxes-on-small-lottery-winnings",
     title: "Taxes on Small Lottery Winnings: The $5,000 Rule",
     description:

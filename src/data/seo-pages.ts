@@ -810,6 +810,15 @@ export const LEARN_ARTICLES: LearnArticleDef[] = [
     primaryTopic: "lottery-tax",
     relatedTopics: ["payout", "withholding"],
   },
+  {
+    slug: "/learn/annuity-vs-lump-sum-tax-example/",
+    title: "Annuity vs Lump Sum Taxes: A Worked Example",
+    description:
+      "A $100 million win, worked through both payout choices with real 2026 federal brackets — so you can see exactly where the tax difference comes from.",
+    crumbName: "Annuity vs Lump Sum: Worked Example",
+    primaryTopic: "lottery-tax",
+    relatedTopics: ["annuity", "cash-option"],
+  },
 ];
 
 const LEARN_PAGES: SEOPageEntry[] = LEARN_ARTICLES.map((a) =>
