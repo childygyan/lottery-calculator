@@ -4,6 +4,11 @@
  * (Firoz, 2026-10-19) → last article 2026-11-04. 15 articles total.
  * The publisher cron still fires daily; the date check below skips
  * non-publish days, so the effective cadence is 1 article / 2 days.
+ * TREND RULE (Firoz, 2026-11-03): before publishing, check Google Trends
+ * for lottery keywords and post according to the trending keyword. The
+ * 2026-11-04 finale was swapped to a trend-matched topic (tax-rate
+ * breakouts: "lottery winnings tax calculator", "what is the tax rate on
+ * lottery winnings", "powerball winnings after taxes breakdown").
  *
  * Each entry is a COMPLETE draft living in `src/pages/learn/_drafts/<slug>/`
  * as a single self-contained `index.astro` built on the shared
@@ -87,13 +92,13 @@ export interface LotteryArticleQueueEntry {
 
 export const QUEUE: LotteryArticleQueueEntry[] = [
   {
-    slug: "taxes-on-small-lottery-winnings",
-    title: "Taxes on Small Lottery Winnings: The $5,000 Rule",
+    slug: "what-is-the-tax-rate-on-lottery-winnings",
+    title: "What Is the Tax Rate on Lottery Winnings?",
     description:
-      "Win $600 or $4,999 or $10,000 — what changes at each line. The withholding threshold, reporting rules, and why small wins still count as income.",
-    crumbName: "Taxes on Small Winnings",
-    primaryTopic: "withholding",
-    relatedTopics: ["lottery-tax"],
+      "There is no single tax rate on lottery winnings — federal marginal brackets, state rates, and the 24% withholding all play different roles. Here's the honest breakdown.",
+    crumbName: "What Is the Tax Rate?",
+    primaryTopic: "lottery-tax",
+    relatedTopics: ["withholding", "state-tax"],
     datePublished: "2026-11-04",
   },
 ];

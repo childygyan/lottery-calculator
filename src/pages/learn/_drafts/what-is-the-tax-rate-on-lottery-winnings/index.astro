@@ -1,0 +1,154 @@
+---
+import LearnArticle from "../../../components/LearnArticle.astro";
+import type { FaqItem } from "../../../components/FAQ.astro";
+
+const intro =
+  "Ask 'what is the tax rate on lottery winnings?' and you'll get three different answers — 24%, 37%, and 'it depends' — and all three are partly right. That's because there is no single tax rate on a lottery win: federal withholding, federal marginal brackets, and state tax are three different numbers doing three different jobs. Here's how they fit together.";
+
+const faqs: FaqItem[] = [
+  {
+    question: "What is the tax rate on lottery winnings?",
+    answer:
+      "There is no single rate. Federally, winnings are ordinary income taxed through the progressive marginal brackets (up to 37% in 2026 on the top slice). Your state adds its own rate — or nothing at all, if you live in a state with no income tax or, like California, one that exempts lottery winnings. The 24% you hear about is withholding, not the final rate.",
+  },
+  {
+    question: "Is the tax rate on lottery winnings really 24%?",
+    answer:
+      "No — 24% is the federal withholding rate on winnings over $5,000. It is a prepayment credited against your final bill, like withholding from a paycheck. On a large jackpot your actual marginal rate is usually higher, so more tax is typically due when you file. See our <a href=\"/learn/lottery-withholding-vs-tax/\" class=\"font-semibold text-blue-700 hover:underline\">withholding vs tax guide</a>.",
+  },
+  {
+    question: "Do states tax lottery winnings at the same rate?",
+    answer:
+      "No. Rates vary widely: California exempts California Lottery winnings from state tax, several states have no individual income tax at all, and others tax winnings at their normal income-tax rates — for example, Georgia's 2026 planning rate is 5.19%. See our <a href=\"/learn/lottery-taxes-by-state/\" class=\"font-semibold text-blue-700 hover:underline\">state-by-state guide</a>.",
+  },
+  {
+    question: "Does taking cash or annuity change the tax rate?",
+    answer:
+      "It changes when the income lands, not the bracket system itself. A lump sum piles the whole win into one tax year, pushing most of it into the top bracket. An annuity spreads it over 30 years, so each year's payment is taxed in that year's brackets — which can mean a lower average rate, but never a guaranteed saving. Use the <a href=\"/lottery-tax-calculator/\" class=\"font-semibold text-blue-700 hover:underline\">lottery tax calculator</a> to compare both with your own numbers.",
+  },
+  {
+    question: "Are small lottery wins taxed at the same rate?",
+    answer:
+      "All lottery winnings are taxable income, even small ones — there is no tax-free minimum. The difference is practical: no federal withholding applies at or under $5,000, and a small win may sit in a lower bracket, so the actual rate on it is usually much lower than on a jackpot.",
+  },
+];
+
+const sourceIds = [
+  "irs-rev-proc-2025-32",
+  "irs-gambling-withholding",
+  "tax-foundation-state-2026",
+  "ca-lottery-exemption",
+];
+---
+
+<LearnArticle
+  slug="/learn/what-is-the-tax-rate-on-lottery-winnings/"
+  intro={intro}
+  faqs={faqs}
+  sourceIds={sourceIds}
+>
+  <h2 class="pt-2 text-xl font-bold text-slate-900">
+    There Is No Single Tax Rate — There Are Three Numbers
+  </h2>
+  <p>
+    Most confusion about lottery taxes comes from mixing up three different
+    numbers. First, the <strong>withholding rate</strong>: 24% federal, taken
+    off the top on winnings over $5,000 before you ever see the money. Second,
+    your <strong>marginal tax rate</strong>: the bracket your last dollar of
+    income falls into, up to 37% federally in 2026. Third, your{" "}
+    <strong>effective rate</strong>: the blended average across all your
+    brackets, which is always lower than your marginal rate. When someone asks
+    "what's the rate?", the honest answer needs all three — and your state on
+    top.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">
+    The Federal Rate: Marginal Brackets, Not a Flat Percentage
+  </h2>
+  <p>
+    Federal income tax is progressive: your income is sliced into bands, and
+    each band is taxed at its own rate. Only the slice above each threshold
+    gets the higher rate — a jackpot does not retroactively tax your first
+    dollars at 37%. In 2026 the top federal bracket is 37%, and on a large win
+    most of the prize lands there, which is why "roughly 37% federal" is a fair
+    planning shorthand for a big jackpot. But it is a shorthand, not a bill:
+    your filing status, deductions, and other income all move the real number.
+    The <a
+      href="/lottery-tax-calculator/"
+      class="font-semibold text-blue-700 hover:underline"
+      >lottery tax calculator</a
+    > runs the actual 2026 brackets for your filing status instead of guessing.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">
+    The 24% You See Withheld Is Not the Tax Rate
+  </h2>
+  <p>
+    If you win more than $5,000, the payer withholds 24% for federal tax
+    before paying you. That is a prepayment, credited against your final
+    liability when you file — exactly like the withholding on a paycheck. On a
+    jackpot, the final federal bill is usually higher than the 24% already
+    taken, because most of the win sits in brackets above 24%. The gap is
+    settled at filing time, which is why winners are warned not to spend the
+    whole check. Our{" "}
+    <a
+      href="/learn/lottery-withholding-vs-tax/"
+      class="font-semibold text-blue-700 hover:underline"
+      >withholding vs tax guide</a
+    > walks through the difference in detail.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">
+    State Rates: From 0% to Over 10%
+  </h2>
+  <p>
+    State tax is where the same win can produce very different outcomes.
+    California exempts California Lottery winnings from state tax entirely.
+    States with no individual income tax — such as Texas, Florida, and
+    Washington — also show $0 state tax. At the other end, states that tax
+    winnings as ordinary income apply their normal rates: Georgia's 2026
+    planning rate, for example, is 5.19%. Note that the rates on this site are
+    clearly labeled planning rates, not a full return simulation — local taxes
+    and multi-state situations can change the picture. The full breakdown is in
+    our{" "}
+    <a
+      href="/learn/lottery-taxes-by-state/"
+      class="font-semibold text-blue-700 hover:underline"
+      >lottery taxes by state guide</a
+    >.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">
+    A Worked Example: What You'd Keep on a $10 Million Win
+  </h2>
+  <p>
+    Take a hypothetical $10 million cash win, single filer, claimed in
+    Georgia. Roughly: federal tax at the top marginal rate on most of it comes
+    to about $3.7 million, and Georgia's 5.19% planning rate adds about
+    $519,000 — a combined bill near $4.2 million, leaving roughly $5.8 million.
+    Every figure here is an estimate for illustration, not a tax return: the
+    real bill depends on deductions, other income, and the year of filing. The
+    point is the shape of it — the federal bracket does most of the work, the
+    state rate is the swing factor, and the 24% withheld up front ($2.4
+    million) would leave roughly $1.8 million still due at filing. Run your own
+    numbers in the{" "}
+    <a
+      href="/lottery-tax-calculator/"
+      class="font-semibold text-blue-700 hover:underline"
+      >lottery tax calculator</a
+    > with your state and filing status selected.
+  </p>
+
+  <h2 class="pt-2 text-xl font-bold text-slate-900">
+    How to Get Your Own Rate
+  </h2>
+  <p>
+    Don't take anyone's single percentage — including ours — as your rate.
+    Enter your prize's cash value (from the official lottery source, never a
+    guess), your state, and your filing status into the calculator, and it
+    will show the federal estimate, the state estimate, and the withholding
+    separately. If the win is large, take that estimate to a tax professional
+    before you claim: the difference between withholding and liability is
+    exactly the kind of surprise you want priced in advance.
+  </p>
+</LearnArticle>
