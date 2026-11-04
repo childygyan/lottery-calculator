@@ -90,15 +90,4 @@ export interface LotteryArticleQueueEntry {
   datePublished: string; // YYYY-MM-DD, Asia/Kolkata
 }
 
-export const QUEUE: LotteryArticleQueueEntry[] = [
-  {
-    slug: "what-is-the-tax-rate-on-lottery-winnings",
-    title: "What Is the Tax Rate on Lottery Winnings?",
-    description:
-      "There is no single tax rate on lottery winnings — federal marginal brackets, state rates, and the 24% withholding all play different roles. Here's the honest breakdown.",
-    crumbName: "What Is the Tax Rate?",
-    primaryTopic: "lottery-tax",
-    relatedTopics: ["withholding", "state-tax"],
-    datePublished: "2026-11-04",
-  },
-];
+export const QUEUE: LotteryArticleQueueEntry[] = [];
